@@ -1,7 +1,5 @@
 QuaverSeries consists of a collaborative live coding environment and a domain-specific language.
 
-[A demo on Pink Floyd's *On the Run* sequence](https://www.youtube.com/watch?v=clGAGZfXWs8)
-
 ## Room Hierarchy
 
 #### Enter an existed room
