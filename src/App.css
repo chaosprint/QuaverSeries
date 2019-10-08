@@ -1,0 +1,9 @@
+a.powered-by-firepad {
+    display: none;
+}
+
+a:link,a:hover,a:active,a:visited {
+    color:rgb(0, 0, 0);
+    text-decoration:none;
+    font-style:bold 
+}
