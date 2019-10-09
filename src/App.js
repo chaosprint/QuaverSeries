@@ -80,16 +80,21 @@ export default function App() {
             try {
                 firepad.current.dispose()
             } catch {}
+            try {
+                let c = document.getElementById("cover")
+                editor.current.container.removeChild(c)
+            } catch(e) {console.log(e)}
+
             var firepadRef = getExampleRef(roomRef.current);
-            
+
             //// Create ACE
             editor.current = window.ace.edit("firepad");
             editor.current.resize()
             editor.current.setValue("")
-            editor.current.setTheme("ace/theme/tomorrow");
-            editor.current.setFontSize("24px");
+            editor.current.setTheme("ace/theme/"+editorTheme.current);
+            editor.current.setFontSize("20px");
             editor.current.setOptions({
-                fontFamily: "Inconsolata",
+                fontFamily: "Fira Code",
                 readOnly: true,
                 "highlightActiveLine": false
             })
@@ -157,7 +162,6 @@ export default function App() {
                     } else {
                         setNeedPassword(true)
                         editor.current.setOptions({
-                            fontFamily: "Inconsolata",
                             readOnly: true,
                         })
                     }
@@ -215,7 +219,6 @@ export default function App() {
                             setNeedPassword(false)
                             setShowIcon(false)
                             editor.current.setOptions({
-                                fontFamily: "Inconsolata",
                                 readOnly: false
                             })
                             let c = document.getElementById("cover")
@@ -233,7 +236,6 @@ export default function App() {
                 setNeedPassword(true)
                 setShowIcon(false)
                 editor.current.setOptions({
-                    fontFamily: "Inconsolata",
                     readOnly: false
                 })
                 let c = document.getElementById("cover")
