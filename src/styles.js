@@ -67,17 +67,12 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
   },
   back: {
-    position: 'absolute', left: '50%', top: '50%',
-    transform: 'translate(-50%, -50%)'
-  },
-  notice: {
-    position: 'relative',
-    // top: theme.spacing(1),
-    // width: "100%",
-    textAlign: 'left',
-    // padding: theme.spacing(3, 2),
-    // height: 500,
-  },
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+    zIndex:"-2000",
+  }
 }));
 
 const modalStyle = {

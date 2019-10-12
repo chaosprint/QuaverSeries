@@ -31,11 +31,11 @@ var actions = {
         down.run()
     },
 
-    Piece: (block)=> {
+    Piece: block => {
         block.run()
     },
 
-    Block: (block)=> {
+    Block: block => {
         if (block.ctorName === "Track") {block.run()} // otherwise it is a comment
     },
 
@@ -46,9 +46,9 @@ var actions = {
         if (name !== "") { // can be a mod or synth
             anonymous = false
             if (refList[name]) { // it is a ref, e.g. ~cut_freq: lfo 10 300 3000
-                refTarget = refList[name]
-            } else { // it is a synth ref
-                refName = name
+                refTarget = refList[name] //returns a ref
+            } else { // it is a synth ref, or users forget to write the ref target
+                refName = name // will use it later
                 playlist.push(refName) // synth ref should be put to playlist          
             }
         } else {
@@ -146,7 +146,7 @@ var run = (code) => {
         } catch (e) {console.log(e)}
     
         for (let item in tracks) {
-            if (tracks[item].seq) {
+            if ("seq" in tracks[item]) {
                 tracks[item].seq.start()
             }
         }
@@ -156,34 +156,34 @@ var run = (code) => {
 }
 
 var update = (code) => {
-    try {
-        playlist = []
+    // try {
+        playlist = [] // clear previous playlist
         var match = grammar.match(code)
     
         var next = nextBar()
 
-        for (let item in tracks) {
-            if (tracks[item].seq) {
-                tracks[item].seq.stop(next)
-            }
-        }
-    
-        if (match.succeeded()) {
+        if (match.succeeded()) { // if not, no update
             semantics(match).run() // get the tracks object right
-        };
-        
-        playlist.forEach( item => {
-            tracks[item].seq.start(next)
-        })
 
-        var tracksBackup = tracks
-        var playlistBackup = playlist
-    } catch(e) {
-        playlistBackup.forEach( item => {
-            tracksBackup[item].seq.start(next)
-        })
-        console.log(e)
-    }
+            for (let item in tracks) {
+                if ("seq" in tracks[item]) {
+                    try {
+                        tracks[item].seq.stop(next)
+                    } catch (e) {console.log(e)}
+                   
+                }
+            }
+            playlist.forEach( item => {
+                if (item in tracks) {
+                    if ("seq" in tracks[item]) {
+                        try {
+                            tracks[item].seq.start(next)
+                        } catch (e) {console.log(e)} 
+                       
+                    }
+                }
+            })
+        };
 }
 
 var stop = () => {

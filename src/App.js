@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react'
-import {AppBar, Toolbar, Typography, Paper, Grid} from '@material-ui/core/'
-import {Modal, Button, TextField, Fab} from '@material-ui/core/'
+import {AppBar, Toolbar, Typography, Paper} from '@material-ui/core/'
+import {Modal, Button, TextField, Fab, IconButton, InputAdornment} from '@material-ui/core/'
 
 import VpnKey from '@material-ui/icons/VpnKey';
+import WbSunnyIcon from '@material-ui/icons/WbSunny';
+import Brightness3Icon from '@material-ui/icons/Brightness3';
+
 import { ThemeProvider } from '@material-ui/styles';
 import {useStyles, theme, buttonTheme, modalStyle} from './styles'
 
@@ -22,6 +25,8 @@ export default function App() {
 
     const [needPassword, setNeedPassword] = useState(true)
     const [showIcon, setShowIcon] = useState(true)
+    const [darkMode, setDarkMode] = useState(false)
+    const [run, setRun] = useState(false)
 
     const modalRef = useRef()
     const editor = useRef()
@@ -60,6 +65,7 @@ export default function App() {
         window.firebase.database().ref(room+"/run").set({
               state: true
         });
+        setRun(true)
     }
 
     handleUpdate.current = () => {
@@ -68,11 +74,15 @@ export default function App() {
       });
     }
 
-    handleStop.current = () => {quaver.stop()}
+    handleStop.current = () => {
+        quaver.stop();
+        setRun(false)
+    }
 
     useEffect(()=>{
         window.firebase.initializeApp(firebaseConfig);
     }, [])
+
 
     useEffect(()=>{
         
@@ -83,7 +93,7 @@ export default function App() {
             try {
                 let c = document.getElementById("cover")
                 editor.current.container.removeChild(c)
-            } catch(e) {console.log(e)}
+            } catch {}
 
             var firepadRef = getExampleRef(roomRef.current);
 
@@ -123,15 +133,7 @@ export default function App() {
                 }, {
                     name: 'dark-mode',
                     bindKey: {win: 'Ctrl-B', mac: 'Command-B'},
-                    exec: ()=>{
-                        if (editorTheme.current === "tomorrow") {
-                            editor.current.setTheme("ace/theme/tomorrow-night")
-                            editorTheme.current = "tomorrow-night"
-                        } else {
-                            editor.current.setTheme("ace/theme/tomorrow")
-                            editorTheme.current = "tomorrow"
-                        }
-                    }
+                    exec: changeTheme
                 },{
                     name: 'comment-norge-win',
                     bindKey: {win: 'Ctrl-\\', mac: 'Command-\\'},
@@ -177,7 +179,7 @@ export default function App() {
                     });
                     try{
                         quaver.run(editor.current.getValue())
-                    } catch {}                    
+                    } catch(e) {console.log("run", e)}                    
                 }
             })
             var updateRef = window.firebase.database().ref(
@@ -189,12 +191,28 @@ export default function App() {
                     });
                     try {
                         quaver.update(editor.current.getValue())
-                    } catch {}                    
+                    } catch(e) {console.log("update", e)}                    
                 }
             })
         }
         return load
     }, [room])
+
+    const handleMouseDownPassword = event => {
+        event.preventDefault();
+    };
+
+    const changeTheme = ()=>{
+        if (editorTheme.current === "tomorrow") {
+            editor.current.setTheme("ace/theme/tomorrow-night")
+            editorTheme.current = "tomorrow-night"
+            setDarkMode(true)
+        } else {
+            editor.current.setTheme("ace/theme/tomorrow")
+            editorTheme.current = "tomorrow"
+            setDarkMode(false)
+        }
+    }
 
     const submitRoom = (e) => {
         e.preventDefault();
@@ -254,12 +272,12 @@ export default function App() {
 
         <ThemeProvider theme={buttonTheme}>
             <Button
-                variant="contained" color="primary"
+                variant="contained" color={run ? "default": "primary"}
                 disabled={disable} className={classes.button} onClick={handleRun.current}>
                 Run
             </Button>
             <Button
-                variant="contained" color="default" disabled={disable}
+                variant="contained" color={run ? "primary": "default"} disabled={disable}
                 className={classes.button} onClick={handleUpdate.current}>
                 Update
             </Button>
@@ -281,6 +299,20 @@ export default function App() {
                 margin="normal"
                 variant="outlined"
                 onChange={e=>{roomRef.current=e.target.value}}
+                InputProps={{
+                 endAdornment: (
+                    <InputAdornment position="end">
+                    <IconButton
+                     edge="end"
+                        aria-label="toggle password visibility"
+                        onClick={changeTheme}
+                        onMouseDown={handleMouseDownPassword}
+                      >
+                {room ? (darkMode ? < Brightness3Icon />:<WbSunnyIcon /> ) : null}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
             />
         </form>
         </div>
@@ -320,8 +352,6 @@ export default function App() {
             room ? <div className={classes.firepad} id="firepad"></div> :
 
             <div className={classes.back}>
-            <Grid container alignItems='center' justify='center' direction="column">
-            <Grid container className={classes.notice} alignItems='center' justify='center'>
             <Paper className={classes.inside}>
                 <ThemeProvider theme={theme}>
                 <Typography variant="h6" component="h6">
@@ -330,9 +360,6 @@ export default function App() {
                 </Typography>
                 </ThemeProvider>
             </Paper>
-
-            </Grid>
-            </Grid>
             </div>
         }
 

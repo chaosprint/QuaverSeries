@@ -1,137 +1,112 @@
-QuaverSeries consists of a collaborative live coding environment and a domain-specific language.
+## Enter a room
 
-## Room Hierarchy
+To get started, you can simply enter a room. If it is empty, then you can click the key icon on the bottom right to creat a password. Then, you can start editing. This also means that next time when you come to the same room, you need to remember your password to edit it.
 
-#### Enter an existed room
+## Make some noise
 
-Room  ```on-the-run```, ```the-model```, ```shape-of-you``` are for demonstration.
+Just try this line of code in your newly created room:
+```loop 20 20 20 20 >> membrane >> amp 0.3```
 
-Enter the name of the room in the box top right. Then hit "Enter" key.
+Put it into the editing area, and then press ```Run``` button or use the shortcut ```Command + Enter```. 
 
-You can only read and copy the code.
+This will create a flat-four kick drum loop, with the default beat-per-minute of 120. The numbers after ```loop``` means MIDI notes. As QuaverSeries is a beat-based live coding environment, ```loop``` will be very useful.
 
-To run the code, you need to create a new room.
+The ```membrane``` function means a sound generator. It is essentially a sine wave oscillator, with some build-in envelop.
 
-#### Create a new room
+Obviously, ```amp``` means amplitute. It is treated as part of the audio effect chain in QuaverSeries. In this line of code, the audio effect only contains the ```amp```.
 
-To create a new room, enter some name in the room box. Then hit "Enter" key.
+So, the example above demonstrates how the syntax works: the order matters. Always have a ```loop``` on the far left, followed by a ```synth```. The order of effects can be reorganised, while the ```amp``` should always be the last function.
 
-If the name is not occupied, a new room will be created.
+You can change the parameters to experience the differences, e.g. changing 20 to 40, 0.3 to 0.8. After you modify the parameters, you need to click the ```Update``` button of use keyboard shortcut ```Shift + Enter``` to update the whole piece. The update will be effective on the beginning of the next bar.
 
-Click the ```key``` icon on the bottom right.
+## Understand the note representation
 
-The password you create will become the only password for the room.
+Currently, we use only MIDI notes. Everything after the ```loop``` is called ```sequence```, and it is separated into different ```notes``` by blank spaces. A ```sequence``` will always occupy the length a bar. Since we always use 4/4, the ```sequence``` occupies a whole note, and all the ```notes``` will be divided equally.
 
-Then the buttons will be available, and you can now paste some code and run it.
+Try the following code:
+```loop 20 30 40 50 >> membrane >> amp 0.3```
+Then change the line and update it:
+```loop 20 30 40 50 60 >> membrane >> amp 0.3```
+Change again to:
+```loop 20 30 40 >> membrane >> amp 0.3```
 
-#### Watch a code stream
+Besides MIDI note, a ```note``` can also be an underscore that represents a rest ```_```, or a compound one (e.g. ```50_50_```, ```_50```).
 
-Enter an existed room to watch a performance.
+This means that a ```note``` can be further equally divided by the total number of MIDI note numbers and underscores. For example, if a ```note``` occupies the length of an eighth note, ```_33``` means that a sixteenth MIDI note 33 will be played after a sixteenth rest. Likewise, ```33_33``` means a swing rhythm. ```1_1_1_``` means sixteenth triplets.
 
-Though you cannot co-edit, every change of text and sound will be broadcast to you.    
+## Synth
 
-#### Backup your code
+Currently, there are only a few available synths, including ```sawtooth```, ```square```, ```membrane```, ```fm```, ```brown```, ```white```, ```pluck```. No parameter after the synth can be edited, which we will update soon.
 
-As this the current version is just for the test, please take care of the backup by yourself.
+## Effect
 
-## Run the code
-
-Run: ```command(ctrl) + enter```
-
-Update: ```shift + enter```
-
-Stop: ```command + period```
-
-It will read the whole page and run.
-
-Updating will take effect on the beginning of the next bar.
-
-## Syntax
-
-#### Function chain
-
-The Quaver language is a minimal and beat-based live coding DSL.
-
-The syntax of Quaver is very easy:
-
+Low-pass filter:
 ```
-~bass: loop 30 _ _31 _ >> sawtooth >> lpf 300 1 >> amp 0.5
+>> lpf [cutOffFrequency] [Q value] >>
 ```
-
-This is a basic signal chain. It demonstrates how the syntax works: the order matters. Hence, always have a ```loop``` on the far left, followed by a ```synth```. The order of effects can be reorganised, while the ```amp``` should always be the last function.
-
-#### Notation system
-
-The notation system is the key of the syntax.
-
-Despite the controversity of MIDI, from a personal perspective, it is necessary that electronic musicians remember the MIDI note. Another reason is that compared with some other character notation, numbers are cleaner for me.
-
-Everything after the ```loop``` is called ```sequence```, and it is separated into different ```notes``` by blank spaces.
-
-A ```note``` can be a MIDI note number(e.g. 60, 30), an underscore placeholder that represents a rest ```_```, or a compound one (e.g. ```50_50_```, ```_50```).
-
-A ```sequence``` will always occupy the length a bar. Since we always use 4/4, the ```sequence``` occupies a whole note, and all the ```notes``` will be divided equally.
-
-Within each ```note```, it can be further equally divided by the total number of MIDI note numbers and underscores. For example, if a ```note``` occupies the length of an eighth note, ```_33``` means that a sixteenth MIDI note 33 will be played after a sixteenth rest. Likewise, ```33_33``` means a swing rhythm. ```1_1_1_``` means sixteenth triplets.
-
-Try these with ```update```:
-
+High-pass filter:
 ```
-~test: loop 20 20 20 20 >> membrane >> amp 0.3
+>> hpf [cutOffFrequency] [Q value] >>
 ```
+Reverb:
 ```
-~test: loop 20 20 20 20 20 >> membrane >> amp 0.3
+>> reverb [roomSize] [dampening] >>
 ```
+Ping-ping delay:
 ```
-~test: loop 20_20 20 20 20 20 >> membrane >> amp 0.3
+>> pingpong [delayTime] [maxDelayTime] >>
+```
+ADSR envelop:
+```
+>> adsr [attack] [decay] [sustain] [release] >>
+```
+A simple example to show how they can be connected:
+```
+loop 1 1 1 1, 1 1 1 1 >> brown
+>> adsr 0.005 0.2 0 _
+>> lpf 12000 1 >> hpf 9000 1
+>> pingpong 0.5 2
+>> reverb 0.6 0.8
+>> amp 0.3
 ```
 
-#### Synth
-
-Currently, there are only a few available synths, including ```sawtooth```, ```square```, ```membrane```, ```fm```, ```brown```, ```white```. No parameter for the synth can be edited. We will update it soon.
-
-#### Effect
-
-```
-low pass filter: >> lpf [cutOffFrequency] [Q value] >>
-
-high pass filter: >> hpf [cutOffFrequency] [Q value] >>
-
-freeverb: >> freeverb [roomSize] [dampening] >>
-
-pingpong delay:  >> pingpong [delayTime] [maxDelayTime] >>
-
-adsr: >> adsr [attack] [decay] [sustain] [release] >>
-```
-
-Everything between the brackets is the parameters.
+This will create a hi-hat sequence. The comma after the ```loop``` is only for the sake of visibility of the total numbers. Since the MIDI note will be sent to trigger the brown noise oscillator, the pitch can be any number.
 
 The underscore can also be used in effect parameters to be a placeholder. For instance, ```adsr 0.01 0.2 0 _``` means we keep the release as default value as the sustain is already set to 0.
 
-#### Reference (to a function)
+## Reference (to a part)
 
+The ```ref``` is vital for modulating a parameter.
+For example:
 ```
-loop 30 31 >> sawtooth >> lpf ~cutoff_freq 1 >> amp
+loop 30 31 >> sawtooth
+>> lpf ~cutoff_freq 1 >> amp 0.5
 
 ~cutoff_freq: lfo 20 200 3000
 ```
 
-The ```~cut``` here is a reference so that an LFO can control the cut-off frequency of the low pass filter.
+Intuitively, the ```~cutoff_freq``` is a ```ref```. It begins with a tilde (~). In this example, the low-frequency osscillator (```lfo```) is used to modulate the cut-off frequency parameter of the low-pass filter.
 
-The name of the ref should start with a tilde, and we strongly recommend to add a ref to the main loop:
-
+The syntax for ```lfo``` is as below:
 ```
-~lead: loop 30 31 >> sawtooth >> lpf ~cutoff_freq 1 >> amp
+lfo [frequency] [min] [max]
+```
+For the sake of consistency, we strongly recommend you add a ```ref``` to the main function chain too:
+```
+
+~lead: loop 30 31 >> sawtooth >> lpf ~cutoff_freq 1 >> amp 0.3
 
 ~cutoff_freq: lfo 20 200 3000
 ```
 
-#### Block
+## Block
 
 To form a complete music piece, you need to separate each function chain with an empty line.
 
 The following code is a simplified cover of Kraftwerk's *The Model*:
+
 ```
+
 bpm 68
 
 ~bass: loop 33 _33 _ 33 >> fm >> adsr 0.04 0.2 0 _ >> amp 1
@@ -147,22 +122,32 @@ bpm 68
 >> white >> adsr 0.01 0.02 0 _
 >> lpf 4000 1 >> amp 0.3
 
-~hh: loop 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+~hh: loop 1 1 1 1, 1 1 1 1, 1 1 1 1, 1 1 1 1
 >> brown >> adsr 0.01 0.01 0 _ >> hpf 8000 3 >> amp 0.8
 ```
 
-#### Comment
+## Performance
+Now, since you can write a complete piece, you can start to perform, even with your friends in different places.
 
-Comment should start with ```//```.
+You can invite your collaborator to enter the same room you are in. Once your collaborator enters the password, you can co-edit the editing area, which is similar to using a Google-doc.
 
-For multi lines, just use multiple ```//```.
+You can see the cursor position or all your collaborators in real-time, thanks to the [firepad](https://firepad.io/).
 
-You can alwasy use keyboard shortcut ```command + /```.
+The online 'audience' can also watch the cursor moving and code change in real-time, though they cannot edit the code.
+
+Co-running is an important feature of QuaverSeries. Once any online performer clicks the ```run``` button of hotkey, the code will run in every client, including all the collaborators and the online audience. This is also the case with ```update```.
+
+## Comment
+
+Comment should start with ```//```. For multi lines, just use multiple ```//```. You can alwasy use keyboard shortcut ```command + /```.
+
+Comment can be used with the ```update``` button or hotkey to mute a track in a performance.
 
 ## Miscellaneous
 
 - Always use the lowered case characters for the reference name, connected with underscores. So, no numbers are allowed in the reference name, at least for now.
-- Always make sure to have a blank line between two function chains. 
+
+- Always make sure to have a blank line between two function chains.
 
 ## Reference
 
@@ -171,7 +156,3 @@ The parser is written with [Ohm.js](https://github.com/harc/ohm).
 There is a great [tutorial for Ohm.js](https://nextjournal.com/dubroy/ohm-parsing-made-easy).
 
 The web deployment is based on [Google Firebase](https://firebase.com/).
-
-## Usage
-
-If you want to make some modification on the open-source code, you need to create a new Firebase account and copy the key to the key.js file.
