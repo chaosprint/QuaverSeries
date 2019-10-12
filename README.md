@@ -1,3 +1,5 @@
+QuaverSeries consists of a collaborative live coding environment and a domain-specific language.
+
 ## Enter a room
 
 To get started, you can simply enter a room. If it is empty, then you can click the key icon on the bottom right to creat a password. Then, you can start editing. This also means that next time when you come to the same room, you need to remember your password to edit it.
@@ -5,7 +7,10 @@ To get started, you can simply enter a room. If it is empty, then you can click 
 ## Make some noise
 
 Just try this line of code in your newly created room:
-```loop 20 20 20 20 >> membrane >> amp 0.3```
+
+```
+loop 20 20 20 20 >> membrane >> amp 0.3
+```
 
 Put it into the editing area, and then press ```Run``` button or use the shortcut ```Command + Enter```. 
 
@@ -24,10 +29,15 @@ You can change the parameters to experience the differences, e.g. changing 20 to
 Currently, we use only MIDI notes. Everything after the ```loop``` is called ```sequence```, and it is separated into different ```notes``` by blank spaces. A ```sequence``` will always occupy the length a bar. Since we always use 4/4, the ```sequence``` occupies a whole note, and all the ```notes``` will be divided equally.
 
 Try the following code:
+
 ```loop 20 30 40 50 >> membrane >> amp 0.3```
+
 Then change the line and update it:
+
 ```loop 20 30 40 50 60 >> membrane >> amp 0.3```
+
 Change again to:
+
 ```loop 20 30 40 >> membrane >> amp 0.3```
 
 Besides MIDI note, a ```note``` can also be an underscore that represents a rest ```_```, or a compound one (e.g. ```50_50_```, ```_50```).
@@ -145,9 +155,9 @@ Comment can be used with the ```update``` button or hotkey to mute a track in a 
 
 ## Miscellaneous
 
-- Always use the lowered case characters for the reference name, connected with underscores. So, no numbers are allowed in the reference name, at least for now.
+Always use the lowered case characters for the reference name, connected with underscores. So, no numbers are allowed in the reference name, at least for now.
 
-- Always make sure to have a blank line between two function chains.
+Always make sure to have a blank line between two function chains.
 
 ## Reference
 
