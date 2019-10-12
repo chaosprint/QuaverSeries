@@ -25,7 +25,6 @@ export default function App() {
 
     const [needPassword, setNeedPassword] = useState(true)
     const [showIcon, setShowIcon] = useState(true)
-    const [darkMode, setDarkMode] = useState(false)
     const [run, setRun] = useState(false)
 
     const modalRef = useRef()
@@ -35,7 +34,13 @@ export default function App() {
     const handleRun = useRef()
     const handleUpdate = useRef()
     const handleStop = useRef()
-    const editorTheme = useRef("tomorrow")
+
+    var date = new Date()
+    var hour = date.getHours()
+    const dm = hour < 6 || hour > 18 // darkMode
+    const et = dm ? "tomorrow-night" : "tomorrow" // editorTheme
+    const editorTheme = useRef(et)
+    const [darkMode, setDarkMode] = useState(dm)
 
     const [open, setOpen] = useState(false)
 
@@ -65,7 +70,6 @@ export default function App() {
         window.firebase.database().ref(room+"/run").set({
             state: true
         });
-        setRun(true)
     }
 
     handleUpdate.current = () => {
@@ -179,7 +183,8 @@ export default function App() {
                     });
                     try{
                         quaver.run(editor.current.getValue())
-                    } catch(e) {console.log("run", e)}                    
+                    } catch(e) {console.log("run", e)}
+                    setRun(true)               
                 }
             })
             var updateRef = window.firebase.database().ref(
