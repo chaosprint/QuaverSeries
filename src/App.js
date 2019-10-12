@@ -19,7 +19,7 @@ export default function App() {
     const [room, setRoom] = useState()
     const roomRef = useRef(room)
 
-    const passwordRef = useRef()
+    const passwordRef = useRef("")
 
     const [disable, setDisable] = useState(true)
 
@@ -63,7 +63,7 @@ export default function App() {
 
     handleRun.current = () => {
         window.firebase.database().ref(room+"/run").set({
-              state: true
+            state: true
         });
         setRun(true)
     }
@@ -71,7 +71,7 @@ export default function App() {
     handleUpdate.current = () => {
         window.firebase.database().ref(room+"/update").set({
             state: true
-      });
+        });
     }
 
     handleStop.current = () => {
@@ -194,6 +194,8 @@ export default function App() {
                     } catch(e) {console.log("update", e)}                    
                 }
             })
+
+            setOpen(true);
         }
         return load
     }, [room])
@@ -272,13 +274,19 @@ export default function App() {
 
         <ThemeProvider theme={buttonTheme}>
             <Button
-                variant="contained" color={run ? "default": "primary"}
-                disabled={disable} className={classes.button} onClick={handleRun.current}>
+                variant="contained"
+                color={run ? "default": "primary"}
+                disabled={disable || (run)}
+                className={classes.button}
+                onClick={handleRun.current}>
                 Run
             </Button>
             <Button
-                variant="contained" color={run ? "primary": "default"} disabled={disable}
-                className={classes.button} onClick={handleUpdate.current}>
+                variant="contained"
+                color={run ? "primary": "default"}
+                disabled={disable || (!run)}
+                className={classes.button}
+                onClick={handleUpdate.current}>
                 Update
             </Button>
             <Button
@@ -325,22 +333,28 @@ export default function App() {
         >
         <div style={modalStyle} className={classes.paper}>
             <Typography variant="h6" id="modal-title">
-                {needPassword ? "Enter the password:":"Create a password:"}
+                {needPassword ?
+                "Enter the password to edit:"
+                :  
+                "Create a password to edit:"
+                }
             </Typography>
             <form onSubmit={sumbitPassword}>
                 <TextField
                     id="password"
-                    className={classes.text}
-                    label="password"
+                    className={classes.password}
                     type="password"
                     name="password"
+                    label="password"
                     autoComplete="password"
                     margin="normal"
-                    variant="filled"
                     ref={modalRef}
                     onChange={e=>passwordRef.current=e.target.value}
                 />
             </form>
+            <Typography variant="body2" id="modal-title">
+                *Click the blank area to enter watch mode.
+            </Typography>
         </div>
         </Modal>
 
@@ -355,8 +369,7 @@ export default function App() {
             <Paper className={classes.inside}>
                 <ThemeProvider theme={theme}>
                 <Typography variant="h6" component="h6">
-                QuaverSeries is a live coding environment for music performance. <br />
-                For further informantion, please see <a target={"_blank"} rel={"noopener noreferrer"} href={"https://github.com/chaosprint/QuaverSeries"}>QuaverSeries GitHub repository</a>.
+                QuaverSeries is a live coding environment for music performance. For further informantion, please see <a target={"_blank"} rel={"noopener noreferrer"} href={"https://github.com/chaosprint/QuaverSeries"}>QuaverSeries GitHub repository</a>.
                 </Typography>
                 </ThemeProvider>
             </Paper>

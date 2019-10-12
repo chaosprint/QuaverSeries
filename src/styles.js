@@ -10,9 +10,9 @@ const theme = createMuiTheme({
   typography: {
     fontFamily: [
       'Inconsolata',
+      'Roboto Mono',
       'Monospace',
       'Helvetica Neue',
-      'Roboto',
       'Courier',
       'Consolas'
     ].join(','),
@@ -34,6 +34,10 @@ const useStyles = makeStyles(theme => ({
   text: {
     margin: theme.spacing(1),
     width: 120
+  },
+  password: {
+    width: "50%",
+    position: 'relative'
   },
   button: {
     width: 80,

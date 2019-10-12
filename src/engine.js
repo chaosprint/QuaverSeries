@@ -104,6 +104,7 @@ var actions = {
                 }
             } else {
                 // when there is an amp, we need to organise the current synth
+                if (anonymous) {playlist.push(trackName)}
                 let track = tracks[trackName]
                 let amp = paras[0] !== "_" ? parseFloat(paras[0]) : 1
                 track.effectList.push(Tone.Master)
@@ -134,22 +135,22 @@ var run = (code) => {
         // tracks = {}
         if (match.succeeded()) {
             semantics(match).run() // get the tracks object right
-        };
-        
-        Tone.Transport.stop()
-        Tone.Transport.start()
 
-        try {
-            for (let item in tracks) {
-                tracks[item].seq.stop()
-            }
-        } catch (e) {console.log(e)}
+            Tone.Transport.stop()
+            Tone.Transport.start()
     
-        for (let item in tracks) {
-            if ("seq" in tracks[item]) {
-                tracks[item].seq.start()
+            try {
+                for (let item in tracks) {
+                    tracks[item].seq.stop()
+                }
+            } catch (e) {console.log(e)}
+        
+            for (let item in tracks) {
+                if ("seq" in tracks[item]) {
+                    tracks[item].seq.start()
+                }
             }
-        }
+        };
     } catch(e) {
         console.log(e)
     }
@@ -157,14 +158,12 @@ var run = (code) => {
 
 var update = (code) => {
     // try {
-        playlist = [] // clear previous playlist
         var match = grammar.match(code)
-    
-        var next = nextBar()
 
         if (match.succeeded()) { // if not, no update
-            semantics(match).run() // get the tracks object right
+            playlist = [] // clear previous playlist
 
+            let next = nextBar()
             for (let item in tracks) {
                 if ("seq" in tracks[item]) {
                     try {
@@ -173,6 +172,9 @@ var update = (code) => {
                    
                 }
             }
+
+            semantics(match).run() // get the tracks object right
+
             playlist.forEach( item => {
                 if (item in tracks) {
                     if ("seq" in tracks[item]) {

@@ -89,7 +89,7 @@ ADSR envelop:
 A simple example to show how they can be connected:
 
 ```
-loop 1 1 1 1, 1 1 1 1 >> brown
+loop 1 2 3 4, 1 2 3 4 >> brown
 >> adsr 0.005 0.2 0 _
 >> lpf 12000 1 >> hpf 9000 1
 >> pingpong 0.5 2
@@ -97,9 +97,9 @@ loop 1 1 1 1, 1 1 1 1 >> brown
 >> amp 0.3
 ```
 
-This will create a hi-hat sequence. The comma after the ```loop``` is only for the sake of visibility of the total numbers. Since the MIDI note will be sent to trigger the brown noise oscillator, the pitch can be any number.
+This will create a hi-hat sequence. The comma after the ```loop``` is only for the sake of readability of the total numbers. Since the MIDI note will be sent to trigger the brown noise oscillator, the pitch can be any number.
 
-The underscore can also be used in effect parameters to be a placeholder. For instance, ```adsr 0.01 0.2 0 _``` means we keep the release as default value as the sustain is already set to 0.
+The underscore can also be used in effect parameters to be a placeholder. For instance, ```adsr 0.005 0.2 0 _``` means we keep the release as default value as the sustain is already set to 0.
 
 ## Reference (to a part)
 
@@ -107,10 +107,10 @@ The ```ref``` is vital for modulating a parameter.
 For example:
 
 ```
-loop 30 31 >> sawtooth
+loop 30 _ _31 _ >> sawtooth
 >> lpf ~cutoff_freq 1 >> amp 0.5
 
-~cutoff_freq: lfo 20 200 3000
+~cutoff_freq: lfo 3 100 1000
 ```
 
 Intuitively, the ```~cutoff_freq``` is a ```ref```. It begins with a tilde (~). In this example, the low-frequency osscillator (```lfo```) is used to modulate the cut-off frequency parameter of the low-pass filter.
@@ -151,7 +151,7 @@ bpm 68
 >> white >> adsr 0.01 0.02 0 _
 >> lpf 4000 1 >> amp 0.3
 
-~hh: loop 1 1 1 1, 1 1 1 1, 1 1 1 1, 1 1 1 1
+~hh: loop 1 2 3 4, 1 2 3 4, 1 2 3 4, 1 2 3 4
 >> brown >> adsr 0.01 0.01 0 _ >> hpf 8000 3 >> amp 0.8
 ```
 
