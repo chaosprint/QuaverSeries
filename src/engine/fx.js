@@ -1,93 +1,79 @@
 var Tone = require('tone')
 
-const fxLib = {
-    amp: (paras) => {
-        return Tone.Master
-    },
+const amp = (vol) => {
+    // vol is a string
+    return (signal) => {
+        let amp = vol[0] !== "_" ? parseFloat(vol[0]) : 0.5
+        signal.synth.volume.value = 20 * Math.log10(amp)
+        signal.effects.push(Tone.Master)
+        signal.synth.chain(...signal.effects)
+        window.playlist = window.playlist.filter( i => i.seq.state === "stopped")
+        window.playlist.push(signal)
+        console.log(window.playlist)
+        signal.seq.start(signal.schedule)
+  }
+}
 
-    lpf: (paras) => {
+const filter = (type) => {
+    return (paras) => {
+        // paras has freq and q
+        var freq = parseFloat(paras[0])
+        var q = parseFloat(paras[1])
 
-        // well you get a list of paras
-        // you need to analyse where the ref is (it can be refs too!)
-        let ref = {}
-        let filter = new Tone.Filter({
-            type: "lowpass",
-        })
+        return (signal) => {
 
-        if (paras[0][0] === '~') {
-            ref[paras[0]] = filter.frequency
-        } else {
-            filter.frequency.value = parseFloat(paras[0])
+            var fx = new Tone.Filter({
+                type: type,
+                Q: isNaN(q) ? 1 : q // if Q is not number, it is "_", use default val 1
+            })
+            
+            if (isNaN(freq)) {
+                if (freq === "_") {
+                    fx.frequency.value = 1000
+                } else {
+                    freq = paras[0]
+                    freq = window.funcList[freq][0]()
+                    freq.connect(fx.frequency)
+                    freq.start()  
+                }
+            } else {
+                fx.frequency.value = freq
+            }
+
+            signal.effects.push(fx)
+            return signal
         }
-
-        // modulate Q is not a good idea
-        filter.Q.value = parseFloat(paras[1])
-
-        return {item: filter, ref: ref}
-    },
-
-    freeverb: (paras) => {
-        let ref = {}
-        let roomSize = paras[0] ? parseFloat(paras[0]) : 0.7
-        let dampening = paras[1] ? parseFloat(paras[1]) : 3000
-        let item = new Tone.Freeverb({
-            roomSize: roomSize,
-            dampening: dampening
-        });
-
-        return {item: item, ref: ref}
-    },
-
-    pingpong: (paras) => {
-        let delayTime = paras[0] ? parseFloat(paras[0]) : 0.25
-        let maxDelayTime = paras[1] ? parseFloat(paras[1]) : 1
-        let item = new Tone.PingPongDelay({
-            delayTime: delayTime,
-            maxDelayTime: maxDelayTime
-        });
-
-        return {item: item, ref: {}}
-    },
-
-    hpf: (paras) => {
-
-        // well you get a list of paras
-        // you need to analyse where the ref is (it can be refs too!)
-        let ref = {}
-        let filter = new Tone.Filter({
-            type: "highpass",
-        })
-
-        if (paras[0][0] === '~') {
-            ref[paras[0]] = filter.frequency
-        } else {
-            filter.frequency.value = parseFloat(paras[0])
-        }
-
-        // modulate Q is not a good idea
-        filter.Q.value = parseFloat(paras[1])
-
-        return {item: filter, ref: ref}
-    }, //
-
-    lfo: (paras) => {
-        let ref = {}
-        let lfo = new Tone.LFO({
-        })
-
-        if (paras[0][0] === '~') {
-            ref[paras[1]] = lfo.frequency
-        } else {
-            lfo.frequency.value = parseFloat(paras[0])
-        };
-
-        // min and max cannot be modulated!
-
-        lfo.min = parseFloat(paras[1])
-        lfo.max = parseFloat(paras[2])
-
-        return {item: lfo, ref: ref}
     }
 }
 
-export {fxLib}
+const reverb = (paras) => {
+
+    return (signal) => {
+
+        let roomSize = paras[0] ? parseFloat(paras[0]) : 0.7
+        let dampening = paras[1] ? parseFloat(paras[1]) : 3000
+        let fx = new Tone.Freeverb({
+            roomSize: roomSize,
+            dampening: dampening
+        });
+        
+        signal.effects.push(fx)
+        return signal
+    }
+}
+
+const pingpong = (paras) => {
+    return (signal) => {
+
+        let delayTime = paras[0] ? parseFloat(paras[0]) : 0.25
+        let maxDelayTime = paras[1] ? parseFloat(paras[1]) : 1
+        let fx = new Tone.PingPongDelay({
+            delayTime: delayTime,
+            maxDelayTime: maxDelayTime
+        });
+        signal.effects.push(fx)
+        return signal
+    }
+}
+
+export {amp, filter, reverb, pingpong}

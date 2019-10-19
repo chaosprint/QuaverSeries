@@ -1,12 +1,13 @@
 {
   "name": "quaver-series",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.1.1",
     "@material-ui/icons": "^4.2.0",
     "firebase": "^6.2.2",
     "firebase-tools": "^7.0.1",
+    "lodash": "^4.17.15",
     "react": "^16.8.6",
     "react-ace": "^7.0.2",
     "react-dom": "^16.8.6",
