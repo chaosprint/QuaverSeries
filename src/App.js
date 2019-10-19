@@ -10,7 +10,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import {useStyles, theme, buttonTheme, modalStyle} from './styles'
 
 import {firebaseConfig, suffix} from './key'
-import quaver from './engine'
+import quaver from './runtime'
 import "./App.css"
 
 export default function App() {

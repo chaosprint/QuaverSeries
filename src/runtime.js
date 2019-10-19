@@ -1,5 +1,5 @@
-import {lang} from './engine/lang'
-import {funcLib} from './engine/func'
+import {lang} from './quaver/lang'
+import {funcLib} from './quaver/func'
 import {pipe, nextBar} from './helpers'
 
 const Tone = require('tone')
@@ -11,7 +11,6 @@ var refName = "";
 window.tracks = {}
 window.playlist = []
 window.funcList = {};
-window.refNameList = {}
 
 var actions = {
 
@@ -71,6 +70,9 @@ const run = (code) => {
     let match = grammar.match(code)
 
     if (match.succeeded()) {
+        window.playlist = [] // clean the playlist ref
+        window.funcList = {}
+        window.tracks = {}
         Tone.context.dispose()
         Tone.context = new AudioContext()
         Tone.Transport.stop()

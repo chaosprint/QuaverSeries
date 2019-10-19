@@ -27,8 +27,6 @@ const adsr = (paras) => {
     }
 }
 
-
-    
 const loop = (notes) => {
 
     notes = notes.map(

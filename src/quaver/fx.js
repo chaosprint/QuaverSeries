@@ -52,11 +52,7 @@ const reverb = (paras) => {
 
         let roomSize = paras[0] ? parseFloat(paras[0]) : 0.7
         let dampening = paras[1] ? parseFloat(paras[1]) : 3000
-        let fx = new Tone.Freeverb({
-            roomSize: roomSize,
-            dampening: dampening
-        });
-        
+        let fx = new Tone.Freeverb(roomSize, dampening);     
         signal.effects.push(fx)
         return signal
     }
