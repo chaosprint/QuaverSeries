@@ -15,9 +15,9 @@ window.refNameList = {}
 
 var actions = {
 
-    Piece_stack: (top, n1, n2, n3, down) => {
-        top.run()
-        down.run()
+    Piece_stack: (above, newLine1, newLine2, newLine3, below) => {
+        above.run()
+        below.run()
     },
 
     Piece: block => {
