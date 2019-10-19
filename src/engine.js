@@ -7,9 +7,11 @@ var ohm = require('ohm-js')
 var grammar = ohm.grammar(lang)
 var semantics = grammar.createSemantics();
 
-var refName;
+var refName = "";
+window.tracks = {}
 window.playlist = []
 window.funcList = {};
+window.refNameList = {}
 
 var actions = {
 
@@ -29,9 +31,8 @@ var actions = {
     },
 
     Track: (ref, colon, chain) => {
-        ref = ref.sourceString
-        refName = ref === "" ? Math.random() : ref // refering to current function chain
-        window.funcList[refName] = []
+        refName = ref.sourceString  // can be "", anonymous
+        if (refName !== "") { window.funcList[refName] = [] }
         chain.run()
     },
 
@@ -48,6 +49,11 @@ var actions = {
 
         let funcName = name.sourceString
         let funcElem = paras.sourceString.split(" ") // an array with string paras
+
+        if (refName === "") {
+            refName = funcName // todo: logic connction with Tracks
+            window.funcList[refName] = []
+        }
         
         if (funcName === "") { // the func is only a ref e.g. >> ~func >>
             window.funcList[refName].push(...window.funcList[funcElem])
@@ -71,9 +77,16 @@ const run = (code) => {
         Tone.Transport.start()
 
         semantics(match).run() // get the tracks object right
+
         for (let item in window.funcList) {
             let chain = pipe(...window.funcList[item])
-            chain()
+            chain(item) // this should be different
+        }
+
+        for (let item in window.tracks) {
+            if ("seq" in window.tracks[item]) {
+                window.tracks[item].seq.start()
+            }
         }
     };
 }
@@ -83,23 +96,31 @@ const update = (code) => {
     let match = grammar.match(code)
 
     if (match.succeeded()) {
+
+        window.playlist = [] // clean the playlist ref
+        window.funcList = {}
         semantics(match).run() // will get window.funcList right
 
         let next = nextBar()
 
-        // stop current playlist at the beginning of next bar
-        window.playlist.forEach( trackObject => trackObject.seq.stop(next) )
+        // stop current tracks at the beginning of next bar
+        for (let item in window.tracks) {
+            window.tracks[item].seq.stop(next)
+        }
 
-        // schedule playlist for the next bar
+        // schedule tracks for the next bar
         for (let item in window.funcList) {
             let chain = pipe(...window.funcList[item])
-            chain(next)
+            chain(item) // this refName should be different
         }
+
+        window.playlist.forEach( item => {
+            window.tracks[item].seq.start(next)
+        })
     };
 }
 
 const stop = () => {
-    window.playlist.forEach( trackObject => trackObject.seq.stop(nextBar()))
     Tone.context.dispose()
     Tone.context = new AudioContext();
 }

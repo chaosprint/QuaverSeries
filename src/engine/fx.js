@@ -7,10 +7,10 @@ const amp = (vol) => {
         signal.synth.volume.value = 20 * Math.log10(amp)
         signal.effects.push(Tone.Master)
         signal.synth.chain(...signal.effects)
-        window.playlist = window.playlist.filter( i => i.seq.state === "stopped")
-        window.playlist.push(signal)
-        console.log(window.playlist)
-        signal.seq.start(signal.schedule)
+        
+        window.playlist.push(signal.ref)
+        window.tracks[signal.ref] = signal
+        console.log(window.tracks, window.playlist)
   }
 }
 

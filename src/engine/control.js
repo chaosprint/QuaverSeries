@@ -47,9 +47,9 @@ const loop = (notes) => {
             }
         }
     )
-    return (schedule="0.001") => synth => {
+    return (ref) => synth => {
         return {
-            schedule: schedule,
+            ref: ref,
             synth: synth,
             effects: [],
             seq: new Tone.Sequence(
