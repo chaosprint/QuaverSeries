@@ -2,7 +2,9 @@ QuaverSeries consists of a collaborative live coding environment and a domain-sp
 
 ## Enter a room
 
-To get started, you can simply enter a room. If it is empty, then you can click the key icon on the bottom right to creat a password. Then, you can start editing. This also means that next time when you come to the same room, you need to remember your password to edit it.
+To get started, you need to enter a ```room```. Typing a name you like, e.g. ```on-the-run```, on the top right corner of the index page. If the room is empty, then you can creat a password to edit. Then, you can start editing.
+
+The next time when you come to the same room, you need to remember your password to edit it.
 
 ## Make some noise
 
@@ -20,7 +22,7 @@ The ```membrane``` function means a sound generator. It is essentially a sine wa
 
 Obviously, ```amp``` means amplitute. It is treated as part of the audio effect chain in QuaverSeries. In this line of code, the audio effect only contains the ```amp```.
 
-So, the example above demonstrates how the syntax works: the order matters. Always have a ```loop``` on the far left, followed by a ```synth```. The order of effects can be reorganised, while the ```amp``` should always be the last function.
+So, the example above demonstrates how the syntax works: we have three functions, i.e. ```loop```, ```membrane``` and ```amp```, written from left to right and connected by the double greater-than sign ```>>```. This also indicates the signal flows. The ```loop``` function takes a ```sequence``` as input and outputs a ```trigger```. The ```membrane``` takes a trigger from left, and outputs a ```signal```. The ```amp``` takes a ```signal``` and outputs it as sound in the browser.
 
 You can change the parameters to experience the differences, e.g. changing 20 to 40, 0.3 to 0.8. After you modify the parameters, you need to click the ```Update``` button of use keyboard shortcut ```Shift + Enter``` to update the whole piece. The update will be effective on the beginning of the next bar.
 
@@ -50,6 +52,19 @@ Besides MIDI note, a ```note``` can also be an underscore that represents a rest
 
 This means that a ```note``` can be further equally divided by the total number of MIDI note numbers and underscores. For example, if a ```note``` occupies the length of an eighth note, ```_33``` means that a sixteenth MIDI note 33 will be played after a sixteenth rest. Likewise, ```33_33``` means a swing rhythm. ```1_1_1_``` means sixteenth triplets.
 
+This example may help you understand the note representation better:
+```
+loop 30 _ _31 _ >> sawtooth >> amp 0.3
+```
+
+In some context such as 16th hi-hat, we need to write 16 notes in total. Comma can be used as a visual hint, which basically doesn't do anything in the sequence.
+```
+loop 1 2 3 4, 1 2 3 4, 1 2 3 4, 1 2 3 4
+>> brown
+>> hpf 8000 1
+>> adsr 0.01 0.1 0 _
+>> amp 0.3
+```
 ## Synth
 
 Currently, there are only a few available synths, including ```sawtooth```, ```square```, ```membrane```, ```fm```, ```brown```, ```white```, ```pluck```. No parameter after the synth can be edited, which we will update soon.
@@ -93,7 +108,7 @@ loop 1 2 3 4, 1 2 3 4 >> brown
 >> adsr 0.005 0.2 0 _
 >> lpf 12000 1 >> hpf 9000 1
 >> pingpong 0.5 2
->> reverb 0.6 0.8
+>> reverb 0.6 1000
 >> amp 0.3
 ```
 
@@ -128,6 +143,29 @@ For the sake of consistency, we strongly recommend you add a ```ref``` to the ma
 
 ~cutoff_freq: lfo 20 200 3000
 ```
+
+## Laziness
+The reference in QuaverSeries is lazy, which means that you can define a ref before or after using it. For the abovementioned example, the following order is also valid:
+```
+~cutoff_freq: lfo 20 200 3000
+
+~lead: loop 30 31 >> sawtooth >> lpf ~cutoff_freq 1 >> amp 0.3
+```
+To use it more expressively, you can write some code like this:
+```
+~note: loop 30 31
+
+~fx: reverb 0.6 1000
+
+~mod: lfo 30 1 20
+
+~cutoff_freq: lfo ~mod 200 3000
+
+~lead: ~note >> sawtooth
+>> lpf ~cutoff_freq 1
+>> ~fx >> amp 0.3
+```
+
 
 ## Block
 

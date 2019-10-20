@@ -11,14 +11,12 @@ const adsr = (paras) => {
 
     return signal => {
 
-    // well you get a list of paras
-    // you need to analyse where the ref is (it can be refs too!)
-        let p = paras.map((x)=>{return x === "_"? null: parseFloat(x)})
+        let p = paras.map(parseFloat)
         let env = {
-            "attack": (p[0] !== null) ? p[0] : 0.1,
-            "decay": (p[1] !== null) ? p[1] : 0.1,
-            "sustain": (p[2] !== null) ? p[2] : 0.5,
-            "release": (p[3] !== null) ? p[3] : 0.5
+            "attack": isNaN(p[0]) ? 0.1 : p[0],
+            "decay": isNaN(p[1]) ? 0.1 : p[1],
+            "sustain": isNaN(p[2]) ? 0.5 : p[2],
+            "release": isNaN(p[3]) ? 0.5 : p[3] 
         }
         try {
             signal.synth.set({envelope: env})
@@ -29,14 +27,14 @@ const adsr = (paras) => {
 
 const loop = (notes) => {
 
-    notes = notes.map(
-        (x) => { // x can be compound
-            if (x.indexOf("_")===-1) { // if this is only number
+    notes = notes.map( // convert notes from string array to Tone.js note array
+        (x) => {
+            if (x.indexOf("_")===-1) { // x is only MIDI note number
                 // return "C1"
                 return Tone.Frequency(parseFloat(x), "midi").toNote()
-            } else if (x ==="_") {
+            } else if (x ==="_") { // x is a rest
                 return null
-            } else {
+            } else { // x is compound note
                 while (x.indexOf("_") !== -1) {
                     x = x.replace("_", ",r,")
                 }

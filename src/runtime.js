@@ -8,9 +8,11 @@ var grammar = ohm.grammar(lang)
 var semantics = grammar.createSemantics();
 
 var refName = "";
+
+window.funcList = {}
+window.lazyList = {}
 window.tracks = {}
 window.playlist = []
-window.funcList = {};
 
 var actions = {
 
@@ -49,18 +51,36 @@ var actions = {
         let funcName = name.sourceString
         let funcElem = paras.sourceString.split(" ") // an array with string paras
 
-        if (refName === "") {
+        if (refName === "") { // for anonymous ref, use funcName as refName
             refName = funcName // todo: logic connction with Tracks
             window.funcList[refName] = []
         }
         
         if (funcName === "") { // the func is only a ref e.g. >> ~func >>
-            window.funcList[refName].push(...window.funcList[funcElem])
+            
+            // first implementation
+            // window.funcList[refName].push(...window.funcList[funcElem])
+            // if window.funcList[funcElem] is still empty, if raised errors
+            // cannot support lazy run
+
+            if (window.lazyList[refName]) {
+                window.lazyList[refName].push({
+                    index: window.funcList[refName].length,
+                    item: funcElem
+                })
+            } else {
+                window.lazyList[refName] = [{
+                    index: window.funcList[refName].length,
+                    item: funcElem
+                }]
+            }
+
+            console.log("from Func.run()", window.lazyList)
         } else {
             let func = funcLib[funcName](funcElem)
             window.funcList[refName].push(func)
         }
-    },
+    }
 }
 
 semantics.addOperation('run', actions);
@@ -70,9 +90,11 @@ const run = (code) => {
     let match = grammar.match(code)
 
     if (match.succeeded()) {
-        window.playlist = [] // clean the playlist ref
         window.funcList = {}
+        window.lazyList = {}
         window.tracks = {}
+        window.playlist = []
+
         Tone.context.dispose()
         Tone.context = new AudioContext()
         Tone.Transport.stop()
@@ -81,6 +103,19 @@ const run = (code) => {
         semantics(match).run() // get the tracks object right
 
         for (let item in window.funcList) {
+            if (!window.lazyList[item]) {
+                let chain = pipe(...window.funcList[item])
+                chain(item) // this should be different
+            }
+        }
+
+        for (let item in window.lazyList) {
+            let shift = 0
+            window.lazyList[item].forEach( (lazy)=> {
+                // window.funcList[lazy.item] is a non-piped func array 
+                window.funcList[item].splice(lazy.index+shift, 0, ...window.funcList[lazy.item])
+                shift += window.funcList[lazy.item].lenth
+            })
             let chain = pipe(...window.funcList[item])
             chain(item) // this should be different
         }
@@ -99,8 +134,9 @@ const update = (code) => {
 
     if (match.succeeded()) {
 
-        window.playlist = [] // clean the playlist ref
         window.funcList = {}
+        window.lazyList = {}
+        window.playlist = []
         semantics(match).run() // will get window.funcList right
 
         let next = nextBar()
@@ -112,8 +148,21 @@ const update = (code) => {
 
         // schedule tracks for the next bar
         for (let item in window.funcList) {
+            if (!window.lazyList[item]) {
+                let chain = pipe(...window.funcList[item])
+                chain(item) // this should be different
+            }
+        }
+
+        for (let item in window.lazyList) {
+            let shift = 0
+            window.lazyList[item].forEach( (lazy)=> {
+                // window.funcList[lazy.item] is a non-piped func array 
+                window.funcList[item].splice(lazy.index+shift, 0, ...window.funcList[lazy.item])
+                shift += window.funcList[lazy.item].lenth
+            })
             let chain = pipe(...window.funcList[item])
-            chain(item) // this refName should be different
+            chain(item) // this should be different
         }
 
         window.playlist.forEach( item => {

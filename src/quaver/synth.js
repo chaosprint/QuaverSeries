@@ -8,6 +8,7 @@ const monoSynth = (type) => {
                     type: type
                 }, 
             })
+            console.log(trigger)
             return trigger(sawtooth)
         }
     }
