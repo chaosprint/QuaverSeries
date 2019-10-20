@@ -1,17 +1,13 @@
 var Tone = require('tone')
 
-const monoSynth = (type) => {
-    return (paras) => { // paras should be used to set volumn
-        return (trigger) => {
-            const sawtooth = new Tone.MonoSynth({
-                oscillator: {
-                    type: type
-                }, 
-            })
-            console.log(trigger)
-            return trigger(sawtooth)
-        }
-    }
+const monoSynth = (type) => (paras) => (trigger) => {
+    const sawtooth = new Tone.MonoSynth({
+        oscillator: {
+            type: type
+        }, 
+    })
+    console.log(trigger)
+    return trigger(sawtooth)
 }
 
 const lfo = (paras) => {
@@ -43,45 +39,33 @@ const lfo = (paras) => {
     }
 }
 
-const noise = (type) => {
-    return (paras) => { // paras should be amp
-        return (trigger) => {
-            const noise = new Tone.NoiseSynth({
-              noise: {
-                type: type
-              }
-            })
-            return trigger(noise)
+const noise = (type) => (paras) => (trigger) => {
+    const noise = new Tone.NoiseSynth({
+        noise: {
+        type: type
         }
-    }
+    })
+    return trigger(noise)
 }
 
-const membrane = (paras) => { // paras should be amp
-    return (trigger) => {
-        var synth = new Tone.MembraneSynth()
-        return trigger(synth)
-    }
+const membrane = (paras) => (trigger) => {
+    var synth = new Tone.MembraneSynth()
+    return trigger(synth)
 }
 
-const pluck = (paras) => { // paras should be amp
-        return (trigger) => {
-            const pluck = new Tone.PluckSynth()
-            return trigger(pluck)
-        }
+const pluck = (paras) => (trigger) => {
+    const pluck = new Tone.PluckSynth()
+    return trigger(pluck)
 }
 
-const metalphone = (paras) => { // paras should be amp
-    return (trigger) => {
-        var synth = new Tone.MetalSynth()
-        return trigger(synth)
-    }
+const metalphone = (paras) => (trigger) => {
+    var synth = new Tone.MetalSynth()
+    return trigger(synth)
 }
 
-const fm = (paras) => { // paras should be amp and fm.
-    return (trigger) => {
-        var synth = new Tone.FMSynth()
-        return trigger(synth)
-    }
+const fm = (paras) => (trigger) => {
+    var synth = new Tone.FMSynth()
+    return trigger(synth)
 }
 
 export {noise, monoSynth, lfo, membrane, pluck, metalphone, fm}

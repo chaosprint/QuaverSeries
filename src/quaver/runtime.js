@@ -1,5 +1,5 @@
-import {lang} from './quaver/lang'
-import {funcLib} from './quaver/func'
+import {lang} from './lang'
+import {funcLib} from './func'
 import {pipe, nextBar} from './helpers'
 
 const Tone = require('tone')
@@ -75,7 +75,6 @@ var actions = {
                 }]
             }
 
-            console.log("from Func.run()", window.lazyList)
         } else {
             let func = funcLib[funcName](funcElem)
             window.funcList[refName].push(func)
