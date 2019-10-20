@@ -2,7 +2,7 @@ QuaverSeries consists of a collaborative live coding environment and a domain-sp
 
 ## Enter a room
 
-To get started, you need to enter a ```room```. Typing a name you like, e.g. ```on-the-run```, on the top right corner of the index page. If the room is empty, then you can creat a password to edit. Then, you can start editing.
+To get started, you need to enter a ```room```. Type a name you like on the top right corner of the index page. If the room is empty, you can create a password to start editing.
 
 The next time when you come to the same room, you need to remember your password to edit it.
 

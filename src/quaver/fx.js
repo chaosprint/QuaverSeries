@@ -1,17 +1,13 @@
 var Tone = require('tone')
 
-const amp = (vol) => {
-    // vol is a string
-    return (signal) => {
-        let amp = vol[0] !== "_" ? parseFloat(vol[0]) : 0.5
-        signal.synth.volume.value = 20 * Math.log10(amp)
-        signal.effects.push(Tone.Master)
-        signal.synth.chain(...signal.effects)
-        
-        window.playlist.push(signal.ref)
-        window.tracks[signal.ref] = signal
-        console.log(window.tracks, window.playlist)
-  }
+const amp = (vol) => (signal) => {
+    let amp = vol[0] !== "_" ? parseFloat(vol[0]) : 0.5
+    signal.synth.volume.value = 20 * Math.log10(amp)
+    signal.effects.push(Tone.Master)
+    signal.synth.chain(...signal.effects)
+    
+    window.playlist.push(signal.ref)
+    window.tracks[signal.ref] = signal
 }
 
 const filter = (type) => {
@@ -46,20 +42,16 @@ const filter = (type) => {
     }
 }
 
-const reverb = (paras) => {
+const reverb = (paras) => (signal) => {
 
-    return (signal) => {
-
-        let roomSize = paras[0] ? parseFloat(paras[0]) : 0.7
-        let dampening = paras[1] ? parseFloat(paras[1]) : 3000
-        let fx = new Tone.Freeverb(roomSize, dampening);     
-        signal.effects.push(fx)
-        return signal
-    }
+    let roomSize = paras[0] ? parseFloat(paras[0]) : 0.7
+    let dampening = paras[1] ? parseFloat(paras[1]) : 3000
+    let fx = new Tone.Freeverb(roomSize, dampening);     
+    signal.effects.push(fx)
+    return signal
 }
 
-const pingpong = (paras) => {
-    return (signal) => {
+const pingpong = (paras) => (signal) => {
 
         let delayTime = paras[0] ? parseFloat(paras[0]) : 0.25
         let maxDelayTime = paras[1] ? parseFloat(paras[1]) : 1
@@ -69,7 +61,6 @@ const pingpong = (paras) => {
         });
         signal.effects.push(fx)
         return signal
-    }
 }
 
 export {amp, filter, reverb, pingpong}

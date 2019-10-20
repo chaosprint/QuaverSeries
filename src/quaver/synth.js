@@ -6,7 +6,6 @@ const monoSynth = (type) => (paras) => (trigger) => {
             type: type
         }, 
     })
-    console.log(trigger)
     return trigger(sawtooth)
 }
 
