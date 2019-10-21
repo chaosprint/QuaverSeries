@@ -7,57 +7,66 @@ const bpm = paras => {
     return () => {}
 }
 
-const adsr = (paras) => {
-
-    return signal => {
-
-        let p = paras.map(parseFloat)
-        let env = {
-            "attack": isNaN(p[0]) ? 0.1 : p[0],
-            "decay": isNaN(p[1]) ? 0.1 : p[1],
-            "sustain": isNaN(p[2]) ? 0.5 : p[2],
-            "release": isNaN(p[3]) ? 0.5 : p[3] 
+const noteToTone = (x) => {
+    if (x.indexOf("_")===-1) { // x is only MIDI note number
+        return parseFloat(x)
+        // return Tone.Frequency(parseFloat(x), "midi").toNote()
+    } else if (x ==="_") { // x is a rest
+        return null
+    } else { // x is compound note
+        while (x.indexOf("_") !== -1) {
+            x = x.replace("_", "$_$")
         }
-        try {
-            signal.synth.set({envelope: env})
-        } catch {}
-        return signal
+        return x.split("$").filter(x => x !== "").map(
+            x => x === "_" ? null: parseFloat(x) )
     }
 }
 
 const loop = (notes) => {
 
-    notes = notes.map( // convert notes from string array to Tone.js note array
-        (x) => {
-            if (x.indexOf("_")===-1) { // x is only MIDI note number
-                // return "C1"
-                return Tone.Frequency(parseFloat(x), "midi").toNote()
-            } else if (x ==="_") { // x is a rest
-                return null
-            } else { // x is compound note
-                while (x.indexOf("_") !== -1) {
-                    x = x.replace("_", ",r,")
-                }
-                return x.split(",").filter(x => x !== "").map(
-                    x => x==="r" ? null: Tone.Frequency(parseFloat(x), "midi").toNote() )
+    notes = notes.map(noteToTone)
+
+    return (ref) => ({
+        n: notes,
+        trigger: function (synth) {
+            return {
+                ref: ref,
+                synth: synth,
+                effects: [],
+                seq: new Tone.Sequence(
+                    (time, note) => {
+                        if (synth.noise) {
+                            synth.triggerAttack(time);
+                        } else {
+                            synth.triggerAttackRelease(note, "16n", time);
+                        }
+                    },
+                    this.n.map(i=>i===null?null:Tone.Frequency(i, "midi").toNote()),
+                    Tone.Time('1m') / this.n.length
+                )
             }
         }
-    )
-    return (ref) => synth => {
-        return {
-            ref: ref,
-            synth: synth,
-            effects: [],
-            seq: new Tone.Sequence(
-                (time, note) => {
-                    if (synth.noise) {
-                        synth.triggerAttack(time);
-                    } else {
-                        synth.triggerAttackRelease(note, "16n", time);
-                    }
-                }, notes, Tone.Time('1m') / notes.length)
-        }
+    })
+}
+
+const dub = (notes) => {
+
+    notes = notes.map(noteToTone)
+
+    const add = (arr1, arr2) => {
+        arr1.forEach( (item,index) => {
+            if (Array.isArray(item)) {
+                add(item, arr2[index])
+            } else {
+                arr1[index] += arr2[index]
+            }
+        })
+    }
+
+    return (triggerObj) => {
+        add(triggerObj.n, notes)
+        return triggerObj
     }
 }
 
-export {bpm, adsr, loop}
+export {bpm, loop, dub}

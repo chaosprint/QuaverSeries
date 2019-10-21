@@ -1,6 +1,6 @@
-import {amp, filter, reverb, pingpong} from "./fx"
+import {amp, filter, reverb, pingpong, adsr} from "./fx"
 import {monoSynth, noise, lfo, membrane, metalphone, fm, pluck} from './synth'
-import {bpm, adsr, loop} from './control'
+import {bpm, loop, dub} from './control'
 
 const funcLib = {
 
@@ -21,12 +21,13 @@ const funcLib = {
     hpf: filter("highpass"),
     reverb: reverb,
     pingpong: pingpong,
+    adsr: adsr,
     amp: amp,
 
     // control
     bpm: bpm,
-    adsr: adsr,
     loop: loop,
+    dub: dub
 }
 
 export {funcLib}

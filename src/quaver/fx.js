@@ -42,6 +42,25 @@ const filter = (type) => {
     }
 }
 
+
+const adsr = (paras) => {
+
+    return signal => {
+
+        let p = paras.map(parseFloat)
+        let env = {
+            "attack": isNaN(p[0]) ? 0.1 : p[0],
+            "decay": isNaN(p[1]) ? 0.1 : p[1],
+            "sustain": isNaN(p[2]) ? 0.5 : p[2],
+            "release": isNaN(p[3]) ? 0.5 : p[3] 
+        }
+        try {
+            signal.synth.set({envelope: env})
+        } catch {}
+        return signal
+    }
+}
+
 const reverb = (paras) => (signal) => {
 
     let roomSize = paras[0] ? parseFloat(paras[0]) : 0.7
@@ -63,4 +82,4 @@ const pingpong = (paras) => (signal) => {
         return signal
 }
 
-export {amp, filter, reverb, pingpong}
+export {amp, filter, reverb, pingpong, adsr}

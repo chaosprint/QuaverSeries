@@ -1,12 +1,12 @@
 var Tone = require('tone')
 
-const monoSynth = (type) => (paras) => (trigger) => {
+const monoSynth = (type) => (paras) => (obj) => {
     const sawtooth = new Tone.MonoSynth({
         oscillator: {
             type: type
         }, 
     })
-    return trigger(sawtooth)
+    return obj.trigger(sawtooth)
 }
 
 const lfo = (paras) => {
@@ -38,33 +38,33 @@ const lfo = (paras) => {
     }
 }
 
-const noise = (type) => (paras) => (trigger) => {
+const noise = (type) => (paras) => (obj) => {
     const noise = new Tone.NoiseSynth({
         noise: {
         type: type
         }
     })
-    return trigger(noise)
+    return obj.trigger(noise)
 }
 
-const membrane = (paras) => (trigger) => {
+const membrane = (paras) => (obj) => {
     var synth = new Tone.MembraneSynth()
-    return trigger(synth)
+    return obj.trigger(synth)
 }
 
-const pluck = (paras) => (trigger) => {
+const pluck = (paras) => (obj) => {
     const pluck = new Tone.PluckSynth()
-    return trigger(pluck)
+    return obj.trigger(pluck)
 }
 
-const metalphone = (paras) => (trigger) => {
+const metalphone = (paras) => (obj) => {
     var synth = new Tone.MetalSynth()
-    return trigger(synth)
+    return obj.trigger(synth)
 }
 
-const fm = (paras) => (trigger) => {
+const fm = (paras) => (obj) => {
     var synth = new Tone.FMSynth()
-    return trigger(synth)
+    return obj.trigger(synth)
 }
 
 export {noise, monoSynth, lfo, membrane, pluck, metalphone, fm}
