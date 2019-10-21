@@ -2,7 +2,7 @@ import {lang} from './lang'
 import {funcLib} from './func'
 import {pipe, nextBar} from './helpers'
 
-const Tone = require('tone')
+var Tone = require('tone')
 var ohm = require('ohm-js')
 var grammar = ohm.grammar(lang)
 var semantics = grammar.createSemantics();
@@ -48,6 +48,8 @@ var actions = {
 
     Func: (name, paras) => {
 
+
+
         let funcName = name.sourceString
         let funcElem = paras.sourceString.split(" ") // an array with string paras
 
@@ -57,11 +59,6 @@ var actions = {
         }
         
         if (funcName === "") { // the func is only a ref e.g. >> ~func >>
-            
-            // first implementation
-            // window.funcList[refName].push(...window.funcList[funcElem])
-            // if window.funcList[funcElem] is still empty, if raised errors
-            // cannot support lazy run
 
             if (window.lazyList[refName]) {
                 window.lazyList[refName].push({
@@ -101,22 +98,18 @@ const run = (code) => {
 
         semantics(match).run() // get the tracks object right
 
-        for (let item in window.funcList) {
-            if (!window.lazyList[item]) {
-                let chain = pipe(...window.funcList[item])
-                chain(item) // this should be different
-            }
-        }
-
         for (let item in window.lazyList) {
             let shift = 0
             window.lazyList[item].forEach( (lazy)=> {
                 // window.funcList[lazy.item] is a non-piped func array 
                 window.funcList[item].splice(lazy.index+shift, 0, ...window.funcList[lazy.item])
-                shift += window.funcList[lazy.item].lenth
+                shift += window.funcList[lazy.item].length
             })
+        }
+
+        for (let item in window.funcList) {
             let chain = pipe(...window.funcList[item])
-            chain(item) // this should be different
+            try {chain(item)} catch {}
         }
 
         for (let item in window.tracks) {

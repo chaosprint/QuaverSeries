@@ -5,7 +5,7 @@ const amp = (vol) => (signal) => {
     signal.synth.volume.value = 20 * Math.log10(amp)
     signal.effects.push(Tone.Master)
     signal.synth.chain(...signal.effects)
-    
+
     window.playlist.push(signal.ref)
     window.tracks[signal.ref] = signal
 }

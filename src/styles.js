@@ -8,14 +8,8 @@ const theme = createMuiTheme({
     secondary: pink,
   },
   typography: {
-    fontFamily: [
-      'Inconsolata',
-      'Roboto Mono',
-      'Monospace',
-      'Helvetica Neue',
-      'Courier',
-      'Consolas'
-    ].join(','),
+    fontFamily: '\'Inconsolata\', monospace'
+    // fontFamily: 'Inconsolata'
   }
 });
 
