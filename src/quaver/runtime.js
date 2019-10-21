@@ -81,6 +81,23 @@ var actions = {
 
 semantics.addOperation('run', actions);
 
+const handleLazyFunc = () => {
+    for (let item in window.lazyList) {
+        let shift = 0
+        window.lazyList[item].forEach( (lazy)=> {
+            // window.funcList[lazy.item] is a non-piped func array 
+            window.funcList[item].splice(lazy.index+shift, 0, ...window.funcList[lazy.item])
+            shift += window.funcList[lazy.item].length
+        })
+    }
+
+    for (let item in window.funcList) {
+        let chain = pipe(...window.funcList[item])
+        try {chain(item)} catch {}
+    }
+}
+
+
 const run = (code) => {
 
     let match = grammar.match(code)
@@ -98,19 +115,7 @@ const run = (code) => {
 
         semantics(match).run() // get the tracks object right
 
-        for (let item in window.lazyList) {
-            let shift = 0
-            window.lazyList[item].forEach( (lazy)=> {
-                // window.funcList[lazy.item] is a non-piped func array 
-                window.funcList[item].splice(lazy.index+shift, 0, ...window.funcList[lazy.item])
-                shift += window.funcList[lazy.item].length
-            })
-        }
-
-        for (let item in window.funcList) {
-            let chain = pipe(...window.funcList[item])
-            try {chain(item)} catch {}
-        }
+        handleLazyFunc()
 
         for (let item in window.tracks) {
             if ("seq" in window.tracks[item]) {
@@ -138,24 +143,7 @@ const update = (code) => {
             window.tracks[item].seq.stop(next)
         }
 
-        // schedule tracks for the next bar
-        for (let item in window.funcList) {
-            if (!window.lazyList[item]) {
-                let chain = pipe(...window.funcList[item])
-                chain(item) // this should be different
-            }
-        }
-
-        for (let item in window.lazyList) {
-            let shift = 0
-            window.lazyList[item].forEach( (lazy)=> {
-                // window.funcList[lazy.item] is a non-piped func array 
-                window.funcList[item].splice(lazy.index+shift, 0, ...window.funcList[lazy.item])
-                shift += window.funcList[lazy.item].lenth
-            })
-            let chain = pipe(...window.funcList[item])
-            chain(item) // this should be different
-        }
+        handleLazyFunc()
 
         window.playlist.forEach( item => {
             window.tracks[item].seq.start(next)
