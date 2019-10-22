@@ -49,7 +49,7 @@ var actions = {
     Func: (name, paras) => {
 
         let funcName = name.sourceString
-        let funcElem = paras.sourceString.split(" ") // an array with string paras
+        let funcElem = paras.sourceString.replace(/,/g, "").split(" ") // an array with string paras
 
         if (refName === "") { // for anonymous ref, use funcName as refName
             refName = funcName // todo: logic connction with Tracks
@@ -108,9 +108,6 @@ const run = (code) => {
         initGlobalVariable()
         window.tracks = {}
 
-        Tone.context.dispose()
-        Tone.context = new AudioContext()
-        Tone.Transport.stop()
         Tone.Transport.start()
 
         semantics(match).run() // get the tracks object right
@@ -126,13 +123,15 @@ const run = (code) => {
 }
 
 const update = (code) => {
-
+    
     let match = grammar.match(code)
 
     if (match.succeeded()) {
 
         let next = nextBar()
+
         initGlobalVariable()
+
         semantics(match).run() // set window.funcList right
         
         // stop current tracks at the beginning of next bar

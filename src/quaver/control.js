@@ -15,11 +15,19 @@ const noteToTone = (x) => {
         return null
     } else { // x is compound note
         while (x.indexOf("_") !== -1) {
-            x = x.replace("_", "$_$")
+            x = x.replace("_", "@$")
         }
         return x.split("$").filter(x => x !== "").map(
-            x => x === "_" ? null: parseFloat(x) )
+            x => x === "@" ? null: parseFloat(x) )
     }
+}
+
+const numToMIDI = (item) => {
+    if ( Array.isArray(item) ) {
+        item = item.map(numToMIDI)
+        return item
+    }
+    return item === null ? null : Tone.Frequency(item, "midi").toNote()
 }
 
 const loop = (notes) => {
@@ -41,7 +49,7 @@ const loop = (notes) => {
                             synth.triggerAttackRelease(note, "16n", time);
                         }
                     },
-                    this.n.map(i=>i===null?null:Tone.Frequency(i, "midi").toNote()),
+                    this.n.map(numToMIDI),
                     Tone.Time('1m') / this.n.length
                 )
             }
