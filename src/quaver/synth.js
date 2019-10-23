@@ -5,6 +5,16 @@ const monoSynth = (type) => (paras) => (obj) => {
         oscillator: {
             type: type
         }, 
+
+        filter: {
+            Q: 1
+        }
+        // envelope : {
+        //     attack: 0.005,
+        //     release: 1,
+        //     sustain: 0.1,
+        //     release: 0.5/4
+        // }
     })
     return obj.trigger(sawtooth)
 }
@@ -41,7 +51,7 @@ const lfo = (paras) => {
 const noise = (type) => (paras) => (obj) => {
     const noise = new Tone.NoiseSynth({
         noise: {
-        type: type
+            type: type
         }
     })
     return obj.trigger(noise)

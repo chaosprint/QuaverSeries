@@ -9,6 +9,10 @@ var semantics = grammar.createSemantics();
 
 var refName = "";
 
+var codeRef = {}
+var bypass = []
+var modify = []
+
 window.funcList = {}
 window.lazyList = {}
 window.tracks = {}
@@ -33,7 +37,20 @@ var actions = {
 
     Track: (ref, _colon, chain) => {
         refName = ref.sourceString  // can be "", anonymous
-        if (refName !== "") { window.funcList[refName] = [] }
+        if (refName !== "") {
+            window.funcList[refName] = []
+        } else {
+            refName = "anonymous"
+        }
+
+        if (codeRef[refName] === chain.sourceString) {// there is no update
+            // do not stop this ref in update, no need to schedule its playing
+            bypass.push(refName)
+        } else { // there is some update
+            modify.push(refName)
+        }
+
+        codeRef[refName] = chain.sourceString
         chain.run()
     },
 
@@ -51,7 +68,7 @@ var actions = {
         let funcName = name.sourceString
         let funcElem = paras.sourceString.replace(/,/g, "").split(" ") // an array with string paras
 
-        if (refName === "") { // for anonymous ref, use funcName as refName
+        if (refName === "anonymous") { // for anonymous ref, use funcName as refName
             refName = funcName // todo: logic connction with Tracks
             window.funcList[refName] = []
         }
@@ -75,28 +92,12 @@ var actions = {
 
 semantics.addOperation('run', actions);
 
-const handleLazyFunc = () => {
-
-    for (let item in window.lazyList) { // set funcList Right
-        let shift = 0
-        window.lazyList[item].forEach( (lazy)=> {
-            window.funcList[item].splice(lazy.index+shift, 0, ...window.funcList[lazy.item])
-            shift += window.funcList[lazy.item].length
-        })
-    }
-
-    for (let item in window.funcList) {
-        let chain = pipe(...window.funcList[item])
-        try {chain(item)} catch(e) {
-            // console.log(e)
-        }
-    }
-}
-
-const initGlobalVariable = () => {
+const initGlobalVariables = () => {
     window.funcList = {}
     window.lazyList = {}
     window.playlist = []
+    bypass = []
+    modify = []
 }
 
 const run = (code) => {
@@ -105,44 +106,101 @@ const run = (code) => {
 
     if (match.succeeded()) {
 
-        initGlobalVariable()
+        initGlobalVariables()
         window.tracks = {}
+        codeRef = {}
 
         Tone.Transport.start()
 
         semantics(match).run() // get the tracks object right
 
-        handleLazyFunc()
+        for (let item in window.lazyList) { // set funcList Right
+            let shift = 0
+            window.lazyList[item].forEach( (lazyFunc)=> {
+                window.funcList[item].splice(lazyFunc.index+shift,
+                    0, ...window.funcList[lazyFunc.item])
+                shift += window.funcList[lazyFunc.item].length
+    
+            })
+        }
+
+        for (let item in window.funcList) {
+            if (bypass.indexOf(item) === -1) {
+                let chain = pipe(...window.funcList[item])
+                try {chain(item)} catch(e) {
+                    console.log(e)
+                }
+            }
+        }
 
         for (let item in window.tracks) {
-            if ("seq" in window.tracks[item]) {
-                window.tracks[item].seq.start()
-            }
+            window.tracks[item].seq.start()
         }
     };
 }
 
 const update = (code) => {
-    
+
     let match = grammar.match(code)
 
     if (match.succeeded()) {
 
         let next = nextBar()
 
-        initGlobalVariable()
+        initGlobalVariables()
 
         semantics(match).run() // set window.funcList right
-        
-        // stop current tracks at the beginning of next bar
-        for (let item in window.tracks) {
-            window.tracks[item].seq.stop(next)
+
+        if (bypass.length > 0) {
+            bypass = bypass.filter(i=>{
+                return modify.filter( j=>(codeRef[i].search(j) !== -1) ).length === 0
+            })
         }
 
-        handleLazyFunc()
+        let comment = Object.keys(codeRef).filter(
+            item => (bypass.concat(modify).indexOf(item) === -1) )
+            
+        comment.forEach( i => {
+            codeRef[i] = "commented"
+        })
+
+        // console.log(
+        //     "bypass", bypass,
+        //     "\n modify", modify
+        // )
+
+        // stop current tracks at the beginning of next bar
+        for (let item in window.tracks) {
+            if (bypass.indexOf(item) === -1) {
+                window.tracks[item].seq.stop(next)
+            }
+        }
+
+        for (let item in window.lazyList) { // set funcList Right
+            let shift = 0
+            window.lazyList[item].forEach( (lazyFunc)=> {
+    
+                window.funcList[item].splice(lazyFunc.index+shift,
+                    0, ...window.funcList[lazyFunc.item])
+                shift += window.funcList[lazyFunc.item].length
+            })
+        }
+    
+        for (let item in window.funcList) {
+            if (bypass.indexOf(item) === -1) {
+                // console.log(item, "chain and run")
+                let chain = pipe(...window.funcList[item])
+                try {chain(item)} catch(e) {
+                    // console.log(e)
+                }
+            }
+        }
 
         window.playlist.forEach( item => {
-            window.tracks[item].seq.start(next)
+            if (bypass.indexOf(item) === -1) {
+                // console.log(item, "play")
+                window.tracks[item].seq.start(next)
+            }     
         })
     };
 }
@@ -150,6 +208,8 @@ const update = (code) => {
 const stop = () => {
     Tone.context.dispose()
     Tone.context = new AudioContext();
+    initGlobalVariables()
+    codeRef = {}
 }
 
 export default {run, stop, update}
