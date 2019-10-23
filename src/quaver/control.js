@@ -46,8 +46,8 @@ const loop = (notes) => {
                         if (synth.noise) {
                             synth.triggerAttack(time);
                         } else {
-                            let dur = synth.envelope.attack + synth.envelope.decay
-                            synth.triggerAttackRelease(note, dur.toString(), time);
+                            // let dur = synth.envelope.attack + synth.envelope.decay
+                            synth.triggerAttackRelease(note, "16n", time);
                         }
                     },
                     this.n.map(numToMIDI),
