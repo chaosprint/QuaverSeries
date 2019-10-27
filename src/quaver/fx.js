@@ -1,6 +1,8 @@
 var Tone = require('tone')
 
 const amp = (vol) => (signal) => {
+
+    // console.log(signal)
     let amp = vol[0] !== "_" ? parseFloat(vol[0]) : 0.5
     signal.synth.volume.value = 20 * Math.log10(amp)
     signal.effects.push(Tone.Master)

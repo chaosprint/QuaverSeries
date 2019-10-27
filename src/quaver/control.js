@@ -1,3 +1,5 @@
+import {noteToNum, numToMIDI, notesFuncExec, reducer} from './helpers'
+
 var Tone = require('tone')
 
 const bpm = paras => {
@@ -7,75 +9,82 @@ const bpm = paras => {
     return () => {}
 }
 
-const noteToTone = (x) => {
-    if (x.indexOf("_")===-1) { // x is only MIDI note number
-        return parseFloat(x)
-        // return Tone.Frequency(parseFloat(x), "midi").toNote()
-    } else if (x ==="_") { // x is a rest
-        return null
-    } else { // x is compound note
-        while (x.indexOf("_") !== -1) {
-            x = x.replace("_", "@$")
-        }
-        return x.split("$").filter(x => x !== "").map(
-            x => x === "@" ? null: parseFloat(x) )
-    }
-}
+const loop = (paras) => (ref) => ({ // this obj is the trigger for sytnh
+        notes: paras,
+        shift: 0,
+        period: 1,
+        connector: function (synth) { // non-arrow function in order to use "this"
 
-const numToMIDI = (item) => {
-    if ( Array.isArray(item) ) {
-        item = item.map(numToMIDI)
-        return item
-    }
-    return item === null ? null : Tone.Frequency(item, "midi").toNote()
-}
+            // console.log(this.notes.map(notesFuncExec))
 
-const loop = (notes) => {
+            return { // this obj is the signal for fx
 
-    notes = notes.map(noteToTone)
-
-    return (ref) => ({
-        n: notes,
-        trigger: function (synth) {
-            return {
-                ref: ref,
+                ref: ref, // ref can be empty ""
                 synth: synth,
                 effects: [],
                 seq: new Tone.Sequence(
+
+                    // the function to call for each note
                     (time, note) => {
                         if (synth.noise) {
                             synth.triggerAttack(time);
                         } else {
-                            // let dur = synth.envelope.attack + synth.envelope.decay
-                            synth.triggerAttackRelease(note, "16n", time);
+                            synth.triggerAttackRelease(note, "16n", time); // todo: sustain time
                         }
                     },
-                    this.n.map(numToMIDI),
-                    Tone.Time('1m') / this.n.length
+
+                     // an array of notes
+                    this.notes
+                    .map(notesFuncExec) // keep the shape same, only process functions
+                    .map(noteToNum(this.shift) ) // one array or nested array
+                    .map(numToMIDI),
+
+                    // the gap between each note
+                    Tone.Time('1m') * this.period / this.notes.map(noteToNum(this.shift)).length
                 )
             }
         }
-    })
-}
+})
 
-const dub = (notes) => {
+const every = (paras) => {
+    let period = parseFloat(paras[0])
+    let ref = paras[1]
 
-    notes = notes.map(noteToTone)
+    let notes = () => {
+        // console.log("reduce result", window.funcList[ref].reduce(reducer, ref) )
 
-    const add = (arr1, arr2) => {
-        arr1.forEach( (item,index) => {
-            if (Array.isArray(item)) {
-                add(item, arr2[index])
-            } else {
-                arr1[index] += arr2[index]
-            }
-        })
+        // this will ignore the speed
+        let alternativeRef = window.funcList[ref].reduce(reducer, ref)
+        return alternativeRef.notes.map( noteToNum(alternativeRef.shift) )
     }
 
     return (triggerObj) => {
-        add(triggerObj.n, notes)
+
+        let newNotes = []
+        for (let i = 0; i < period - 1; i++) {
+            newNotes.push(triggerObj.notes)
+        }
+        newNotes.push(notes)
+        // console.log(newNotes)
+        triggerObj.period = triggerObj.period * period
+        triggerObj.notes = newNotes
         return triggerObj
     }
 }
 
-export {bpm, loop, dub}
+const speed = (paras) => { // only one para speed
+    let speedTimes = parseFloat(paras[0])
+    return (trigger) => {
+        trigger.period = trigger.period / speedTimes
+        return trigger
+    }
+}
+
+const shift = (shift) => {
+    return (trigger) => {
+        trigger.shift = parseFloat(shift)
+        return trigger
+    }
+}
+
+export {bpm, loop, shift, every, speed}

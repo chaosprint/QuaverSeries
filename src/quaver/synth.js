@@ -1,22 +1,16 @@
 var Tone = require('tone')
 
-const monoSynth = (type) => (paras) => (obj) => {
+const monoSynth = (type) => (paras) => (trigger) => {
     const sawtooth = new Tone.MonoSynth({
         oscillator: {
             type: type
         }, 
-
         filter: {
             Q: 1
         }
-        // envelope : {
-        //     attack: 0.005,
-        //     release: 1,
-        //     sustain: 0.1,
-        //     release: 0.5/4
-        // }
     })
-    return obj.trigger(sawtooth)
+    // console.log("connector", trigger)
+    return trigger.connector(sawtooth)
 }
 
 const lfo = (paras) => {
@@ -36,8 +30,7 @@ const lfo = (paras) => {
             if (freq === "_") {
                 sig.frequency.value = 10 // defaul
             } else { // freq is ref
-                freq = paras[0]
-                freq = window.funcList[freq][0]()
+                freq = window.funcList[paras[0]][0]()
                 freq.connect(sig.frequency)
                 freq.start()
             }
@@ -48,33 +41,33 @@ const lfo = (paras) => {
     }
 }
 
-const noise = (type) => (paras) => (obj) => {
+const noise = (type) => (paras) => (trigger) => {
     const noise = new Tone.NoiseSynth({
         noise: {
             type: type
         }
     })
-    return obj.trigger(noise)
+    return trigger.connector(noise)
 }
 
-const membrane = (paras) => (obj) => {
+const membrane = (paras) => (trigger) => {
     var synth = new Tone.MembraneSynth()
-    return obj.trigger(synth)
+    return trigger.connector(synth)
 }
 
-const pluck = (paras) => (obj) => {
+const pluck = (paras) => (trigger) => {
     const pluck = new Tone.PluckSynth()
-    return obj.trigger(pluck)
+    return trigger.connector(pluck)
 }
 
-const metalphone = (paras) => (obj) => {
+const metalphone = (paras) => (trigger) => {
     var synth = new Tone.MetalSynth()
-    return obj.trigger(synth)
+    return trigger.connector(synth)
 }
 
-const fm = (paras) => (obj) => {
+const fm = (paras) => (trigger) => {
     var synth = new Tone.FMSynth()
-    return obj.trigger(synth)
+    return trigger.connector(synth)
 }
 
 export {noise, monoSynth, lfo, membrane, pluck, metalphone, fm}

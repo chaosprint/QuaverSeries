@@ -25,9 +25,9 @@ Quaver {
     
     subPara = number | "_"
 
-	number = "-"? digit* "." digit+ -- fullFloat
-    | "-"? digit "." -- dot
-	| "-"? digit+ -- int
+	number = "+"? "-"? digit* "." digit+ -- fullFloat
+    | "+"? "-"? digit "." -- dot
+	| "+"? "-"? digit+ -- int
     
     funcRef = "~" validName
 

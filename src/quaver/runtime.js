@@ -1,6 +1,6 @@
 import {lang} from './lang'
 import {funcLib} from './func'
-import {pipe, nextBar} from './helpers'
+import {nextBar, reducer} from './helpers'
 
 var Tone = require('tone')
 var ohm = require('ohm-js')
@@ -10,11 +10,10 @@ var semantics = grammar.createSemantics();
 var refName = "";
 
 var codeRef = {}
-var bypass = []
-var modify = []
+var unModifiedRefList = []
+var modifiedRefList = []
 
 window.funcList = {}
-window.lazyList = {}
 window.tracks = {}
 window.playlist = []
 
@@ -36,21 +35,19 @@ var actions = {
     },
 
     Track: (ref, _colon, chain) => {
+
         refName = ref.sourceString  // can be "", anonymous
-        if (refName !== "") {
-            window.funcList[refName] = []
+        refName = refName === "" ? "anonymous" : refName
+
+        window.funcList[refName] = []
+
+        if (codeRef[refName] === chain.sourceString) {
+            unModifiedRefList.push(refName)
         } else {
-            refName = "anonymous"
+            modifiedRefList.push(refName)
         }
 
-        if (codeRef[refName] === chain.sourceString) {// there is no update
-            // do not stop this ref in update, no need to schedule its playing
-            bypass.push(refName)
-        } else { // there is some update
-            modify.push(refName)
-        }
-
-        codeRef[refName] = chain.sourceString
+        codeRef[refName] = chain.sourceString // an obj to store code
         chain.run()
     },
 
@@ -68,23 +65,11 @@ var actions = {
         let funcName = name.sourceString
         let funcElem = paras.sourceString.replace(/,/g, "").split(" ") // an array with string paras
 
-        if (refName === "anonymous") { // for anonymous ref, use funcName as refName
-            refName = funcName // todo: logic connction with Tracks
-            window.funcList[refName] = []
-        }
-        
         if (funcName === "") { // the func is only a ref e.g. >> ~func >>
-
-            let newLazyFunc = {
-                index: window.funcList[refName].length,
-                item: funcElem
-            }
-
-            window.lazyList[refName] = window.lazyList[refName] ? 
-               [...window.lazyList[refName], newLazyFunc] : [newLazyFunc] 
+            window.funcList[refName].push(funcElem[0]) // funcElem is sth like "~my_fx"
 
         } else {
-            let func = funcLib[funcName](funcElem)
+            let func = funcLib[funcName](funcElem) // take a fun from the lib
             window.funcList[refName].push(func)
         }
     }
@@ -94,10 +79,9 @@ semantics.addOperation('run', actions);
 
 const initGlobalVariables = () => {
     window.funcList = {}
-    window.lazyList = {}
     window.playlist = []
-    bypass = []
-    modify = []
+    unModifiedRefList = []
+    modifiedRefList = []
 }
 
 const run = (code) => {
@@ -106,36 +90,38 @@ const run = (code) => {
 
     if (match.succeeded()) {
 
+        // clean global variables right
         initGlobalVariables()
         window.tracks = {}
         codeRef = {}
 
         Tone.Transport.start()
 
-        semantics(match).run() // get the tracks object right
+        // get global variables right
+        semantics(match).run()
 
-        for (let item in window.lazyList) { // set funcList Right
-            let shift = 0
-            window.lazyList[item].forEach( (lazyFunc)=> {
-                window.funcList[item].splice(lazyFunc.index+shift,
-                    0, ...window.funcList[lazyFunc.item])
-                shift += window.funcList[lazyFunc.item].length
-    
-            })
-        }
-
-        for (let item in window.funcList) {
-            if (bypass.indexOf(item) === -1) {
-                let chain = pipe(...window.funcList[item])
-                try {chain(item)} catch(e) {
-                    console.log(e)
-                }
+        // lazy evaluation
+        for (let ref in window.funcList) {
+            // if (unModifiedRefList.indexOf(ref) === -1) {
+            try {
+                window.funcList[ref].reduce(reducer, ref)
+            } catch(e){
+                console.log(e)
             }
+            // }
         }
 
         for (let item in window.tracks) {
             window.tracks[item].seq.start()
         }
+
+        console.log(
+            "window.funcList\n\n",window.funcList,
+            "\n\nwindow.playlist\n\n", window.playlist,
+            "\n\nwindow.tracks\n\n", window.tracks,
+            "\n\nunModifiedRefList\n\n", unModifiedRefList,
+            "\n\nmodifiedRefList\n\n", modifiedRefList
+        )
     };
 }
 
@@ -149,59 +135,76 @@ const update = (code) => {
 
         initGlobalVariables()
 
-        semantics(match).run() // set window.funcList right
+        // get global variables right
+        semantics(match).run()
 
-        if (bypass.length > 0) {
-            bypass = bypass.filter(i=>{
-                return modify.filter( j=>(codeRef[i].search(j) !== -1) ).length === 0
-            })
-        }
+        // 1. user can comment in and out the same thing
+        let commentOutList = Object.keys(codeRef).filter(
+            // neither in unModifiedRefList nor in modifiedRefList
+            item => (unModifiedRefList.concat(modifiedRefList).indexOf(item) === -1) )
 
-        let comment = Object.keys(codeRef).filter(
-            item => (bypass.concat(modify).indexOf(item) === -1) )
-            
-        comment.forEach( i => {
-            codeRef[i] = "commented"
+        commentOutList.forEach( i => {
+            codeRef[i] = "commented out" // this string can be anything
         })
 
-        // console.log(
-        //     "bypass", bypass,
-        //     "\n modify", modify
-        // )
+        // 2. recursively use the modifiedRefList to search unmodifiedRefList
 
-        // stop current tracks at the beginning of next bar
+        if (unModifiedRefList.length > 0) {
+
+            const relatedToModifiedRefs = ref => {
+                let code = codeRef[ref]
+                let searchResult = modifiedRefList.filter( serachItem => {
+                    return code.search(serachItem) !== -1
+                })
+                return searchResult.length !== 0
+            }
+
+            const has = (arr) => (item) => !arr.includes(item)
+
+            for (let i = 0; i < 100; i++) { // can change to while true
+                let findings = unModifiedRefList.filter(relatedToModifiedRefs)
+                modifiedRefList.push(...findings)
+                unModifiedRefList = unModifiedRefList.filter( has(findings) )
+
+                if (findings.length === 0) {
+                    break
+                }
+            }
+        }
+
+        // schedule to stop current playing tracks on the start of next bar 
         for (let item in window.tracks) {
-            if (bypass.indexOf(item) === -1) {
+            if (modifiedRefList.indexOf(item) !== -1) {
                 window.tracks[item].seq.stop(next)
             }
         }
 
-        for (let item in window.lazyList) { // set funcList Right
-            let shift = 0
-            window.lazyList[item].forEach( (lazyFunc)=> {
-    
-                window.funcList[item].splice(lazyFunc.index+shift,
-                    0, ...window.funcList[lazyFunc.item])
-                shift += window.funcList[lazyFunc.item].length
-            })
-        }
-    
-        for (let item in window.funcList) {
-            if (bypass.indexOf(item) === -1) {
-                // console.log(item, "chain and run")
-                let chain = pipe(...window.funcList[item])
-                try {chain(item)} catch(e) {
+        // create new tracks and playlist
+        for (let ref in window.funcList) {
+            if (unModifiedRefList.indexOf(ref) === -1) {
+                try {
+                    window.funcList[ref].reduce(reducer, ref)
+                } catch(e){
                     // console.log(e)
                 }
             }
         }
 
+        // schedule to start new playlist
         window.playlist.forEach( item => {
-            if (bypass.indexOf(item) === -1) {
-                // console.log(item, "play")
+            if (modifiedRefList.indexOf(item) !== -1) {
                 window.tracks[item].seq.start(next)
-            }     
+            }
         })
+
+        console.log(
+            "window.funcList\n\n",window.funcList,
+            "\n\nwindow.playlist\n\n", window.playlist,
+            "\n\nwindow.tracks\n\n", window.tracks,
+            "\n\nunModifiedRefList\n\n", unModifiedRefList,
+            "\n\nmodifiedRefList\n\n", modifiedRefList
+        )
+
     };
 }
 

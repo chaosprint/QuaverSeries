@@ -210,15 +210,17 @@ export default function App() {
     };
 
     const changeTheme = ()=>{
-        if (editorTheme.current === "tomorrow") {
-            editor.current.setTheme("ace/theme/tomorrow-night")
-            editorTheme.current = "tomorrow-night"
-            setDarkMode(true)
-        } else {
-            editor.current.setTheme("ace/theme/tomorrow")
-            editorTheme.current = "tomorrow"
-            setDarkMode(false)
-        }
+        try {
+            if (editorTheme.current === "tomorrow") {
+                editor.current.setTheme("ace/theme/tomorrow-night")
+                editorTheme.current = "tomorrow-night"
+                setDarkMode(true)
+            } else {
+                editor.current.setTheme("ace/theme/tomorrow")
+                editorTheme.current = "tomorrow"
+                setDarkMode(false)
+            }
+        } catch {}
     }
 
     const submitRoom = (e) => {
