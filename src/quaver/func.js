@@ -1,6 +1,6 @@
 import {amp, filter, reverb, pingpong, adsr} from "./fx"
 import {monoSynth, noise, lfo, membrane, metalphone, fm, pluck} from './synth'
-import {bpm, loop, shift, every, speed} from './control'
+import {bpm, loop, shift, every, speed, range, choose} from './control'
 
 const funcLib = {
 
@@ -29,7 +29,9 @@ const funcLib = {
     loop: loop,
     shift: shift,
     every: every,
-    speed: speed
+    speed: speed,
+    range: range,
+    choose: choose
 }
 
 export {funcLib}

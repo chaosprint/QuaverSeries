@@ -1,10 +1,10 @@
 const Tone = require('tone')
 
-const pipe = (...args) => {
-    return x => {
-        args.reduce(
-            (outputValue, currentFunction) => currentFunction(outputValue),
-        x)
+const reducer = (funcChain, currentFunc) => {
+    if (typeof currentFunc === "function") {
+        return currentFunc(funcChain)
+    } else { // should be a ref String
+        return window.funcList[currentFunc].reduce(reducer, funcChain)
     }
 }
 
@@ -17,34 +17,27 @@ const nextBar = () => {
     return pos
 }
 
-const slightlyBefore = (pos) => {
-    pos = pos.split(":")
-    pos[0] = (parseInt(pos[0]) - 1).toString()
-    pos[1] = "3"
-    // convert 0.01s to 16th note portion
-    pos[2] = (1 - (0.01 /(60 / Tone.Transport.bpm.value /4))).toString()
-    pos = pos.join(":")
-    console.log("join", pos)
-    return pos
-}
-
 const noteToNum = (shift) => (note) => {
 
     // console.log(note)
 
-    if (typeof note === "function") {
+    if (typeof note === "function" || typeof note  === "number" || note  === null) {
+
         return note
+
     } else if (Array.isArray(note)) {
-        return note.map(noteToNum(shift))
-    } else if (typeof note  === "number") {
-            return note
-    } else if (note  === null) {
-        return note
+
+        return note.map( noteToNum(shift) )
+
     } else {
 
         if (note.indexOf("_")===-1) { // x is only MIDI note number
 
-            return parseFloat(note) + shift
+            if (!isNaN(parseFloat(note))) {
+                return parseFloat(note) + shift
+            } else {
+                return window.funcList[note].reduce(reducer, shift)
+            }
         
         } else if (note ==="_") { // x is a rest
 
@@ -58,17 +51,35 @@ const noteToNum = (shift) => (note) => {
 
             // return an array to make it nested, Tone.js uses Tidal style
             return note.split("$").filter(note => note !== "").map(
-                note => note === "@" ? null: (parseFloat(note) + shift) )
+                note => {
+                    if (note === "@") {
+                        return null
+                    } else {
+                        if (!isNaN(parseFloat(note))) {
+                            return parseFloat(note) + shift
+                        } else {
+                            return window.funcList[note].reduce(reducer, shift)
+                        }
+                    }
+            })
         }
     }
 }
 
 const numToMIDI = (item) => {
+    // console.log("tomidi", typeof item)
+
     if ( Array.isArray(item) ) {
         item = item.map(numToMIDI)
         return item
     }
-    return item === null ? null : Tone.Frequency(item, "midi").toNote()
+
+    if (typeof item === "function") {
+        // console.log("return", item)
+        return item
+    } else {
+        return item === null ? null : Tone.Frequency(item, "midi").toNote()
+    }
 }
 
 const notesFuncExec = firstLayerArray => {
@@ -78,15 +89,4 @@ const notesFuncExec = firstLayerArray => {
         return firstLayerArray
 }
 
-const reducer = (funcChain, currentFunc) => {
-
-    // console.log(funcChain, currentFunc)
-
-    if (typeof currentFunc === "function") {
-        return currentFunc(funcChain)
-    } else { // should be a ref String
-        return window.funcList[currentFunc].reduce(reducer, funcChain)
-    }
-}
-
-export {pipe, nextBar, slightlyBefore, noteToNum, numToMIDI, notesFuncExec, reducer}
+export {nextBar, noteToNum, numToMIDI, notesFuncExec, reducer}

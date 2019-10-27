@@ -7,6 +7,8 @@
 - shift
 - every
 - speed
+- choose
+- range
 
 ### Synth
 

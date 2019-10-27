@@ -16,7 +16,6 @@ const loop = (paras) => (ref) => ({ // this obj is the trigger for sytnh
         connector: function (synth) { // non-arrow function in order to use "this"
 
             // console.log(this.notes.map(notesFuncExec))
-
             return { // this obj is the signal for fx
 
                 ref: ref, // ref can be empty ""
@@ -25,18 +24,26 @@ const loop = (paras) => (ref) => ({ // this obj is the trigger for sytnh
                 seq: new Tone.Sequence(
 
                     // the function to call for each note
+
                     (time, note) => {
                         if (synth.noise) {
                             synth.triggerAttack(time);
                         } else {
-                            synth.triggerAttackRelease(note, "16n", time); // todo: sustain time
+                            // console.log(typeof note)
+                            if (typeof note === "function") {      
+                                note = numToMIDI(note())
+                            }
+                            if (note !== "C-1") {
+                                synth.triggerAttackRelease(note, "16n", time);
+                                // todo: sustain time should not be limited to "16n"
+                            }
                         }
                     },
 
                      // an array of notes
                     this.notes
                     .map(notesFuncExec) // keep the shape same, only process functions
-                    .map(noteToNum(this.shift) ) // one array or nested array
+                    .map( noteToNum(this.shift) ) // one array or nested array
                     .map(numToMIDI),
 
                     // the gap between each note
@@ -51,8 +58,6 @@ const every = (paras) => {
     let ref = paras[1]
 
     let notes = () => {
-        // console.log("reduce result", window.funcList[ref].reduce(reducer, ref) )
-
         // this will ignore the speed
         let alternativeRef = window.funcList[ref].reduce(reducer, ref)
         return alternativeRef.notes.map( noteToNum(alternativeRef.shift) )
@@ -87,4 +92,19 @@ const shift = (shift) => {
     }
 }
 
-export {bpm, loop, shift, every, speed}
+const range = (paras) => (shift) => {
+    // console.log("shift is", shift)
+    let a = parseFloat(paras[0])
+    let b = parseFloat(paras[1])
+    let min = a < b ? a : b
+    let max = a < b ? b : a
+    let range = Math.abs(max - min)
+    return () => Math.floor( Math.random() * range + min + shift)
+}
+
+const choose = (paras) => (shift) => {
+    let choice = paras.map(parseFloat)
+    return () => choice[Math.floor(Math.random() * choice.length)] + shift
+}
+
+export {bpm, loop, shift, every, speed, range, choose}

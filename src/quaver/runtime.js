@@ -115,13 +115,13 @@ const run = (code) => {
             window.tracks[item].seq.start()
         }
 
-        console.log(
-            "window.funcList\n\n",window.funcList,
-            "\n\nwindow.playlist\n\n", window.playlist,
-            "\n\nwindow.tracks\n\n", window.tracks,
-            "\n\nunModifiedRefList\n\n", unModifiedRefList,
-            "\n\nmodifiedRefList\n\n", modifiedRefList
-        )
+        // console.log(
+        //     "window.funcList\n\n",window.funcList,
+        //     "\n\nwindow.playlist\n\n", window.playlist,
+        //     "\n\nwindow.tracks\n\n", window.tracks,
+        //     "\n\nunModifiedRefList\n\n", unModifiedRefList,
+        //     "\n\nmodifiedRefList\n\n", modifiedRefList
+        // )
     };
 }
 
@@ -174,7 +174,7 @@ const update = (code) => {
 
         // schedule to stop current playing tracks on the start of next bar 
         for (let item in window.tracks) {
-            if (modifiedRefList.indexOf(item) !== -1) {
+            if (unModifiedRefList.indexOf(item) === -1) {
                 window.tracks[item].seq.stop(next)
             }
         }
@@ -192,18 +192,18 @@ const update = (code) => {
 
         // schedule to start new playlist
         window.playlist.forEach( item => {
-            if (modifiedRefList.indexOf(item) !== -1) {
+            if (unModifiedRefList.indexOf(item) === -1) {
                 window.tracks[item].seq.start(next)
             }
         })
 
-        console.log(
-            "window.funcList\n\n",window.funcList,
-            "\n\nwindow.playlist\n\n", window.playlist,
-            "\n\nwindow.tracks\n\n", window.tracks,
-            "\n\nunModifiedRefList\n\n", unModifiedRefList,
-            "\n\nmodifiedRefList\n\n", modifiedRefList
-        )
+        // console.log(
+        //     "window.funcList\n\n",window.funcList,
+        //     "\n\nwindow.playlist\n\n", window.playlist,
+        //     "\n\nwindow.tracks\n\n", window.tracks,
+        //     "\n\nunModifiedRefList\n\n", unModifiedRefList,
+        //     "\n\nmodifiedRefList\n\n", modifiedRefList
+        // )
 
     };
 }
