@@ -36,6 +36,9 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
         token: "variable.parameter",
         regex: "(((((_)+)?((~)[a-z])((_)+)?)+)|(_))(\\s|\\n|~)?\\b"
       }, {
+        token : "support.constant",
+        regex : ","
+      }, {
         token : "constant.character",
         regex : "(((((_)+)?([0-9]+)((_)+)?)+)|(_))(\\s|\\n|~)?\\b"
       }, {
