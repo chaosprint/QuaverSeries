@@ -42,7 +42,7 @@ ace.define("ace/theme/tomorrow",["require","exports","module","ace/lib/dom"], fu
   border: 1px solid #D6D6D6\
   }\
   .ace-tomorrow .ace_invisible {\
-  color: #D1D1D1\
+  color: #808080\
   }\
   .ace-tomorrow .ace_meta,\
   .ace-tomorrow .ace_storage,\

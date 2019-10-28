@@ -54,7 +54,7 @@ ace.define("ace/theme/tomorrow-night",["require","exports","module","ace/lib/dom
       }
       
       .ace-tomorrow-night .ace_invisible {
-        color: #4B4E55
+        color: #808080
       }
     .ace-tomorrow-night .ace_meta,
     .ace-tomorrow-night .ace_storage,

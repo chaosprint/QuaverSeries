@@ -29,6 +29,9 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
         regex: "//$",
         next: "start"
       }, {
+        token: "invisible",
+        regex: ">>|:"
+      }, {
         token: "comment",
         regex: "//",
         next: "singleLineComment"
