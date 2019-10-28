@@ -33,14 +33,17 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
         regex: "//",
         next: "singleLineComment"
       }, {
+        token: "variable.parameter",
+        regex: "(((((_)+)?((~)[a-z])((_)+)?)+)|(_))(\\s|\\n|~)?\\b"
+      }, {
+        token : "constant.character",
+        regex : "(((((_)+)?([0-9]+)((_)+)?)+)|(_))(\\s|\\n|~)?\\b"
+      }, {
         token: "string",
-        regex: "(~)([a-z]+(_)?)+\\b"
+        regex: "((~)([a-z]+(_)?)+)\\b"
       },{
         token : "constant.numeric",
         regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?(?:L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
-      }, {
-        token : "constant.character",
-        regex : "(((((_)+)?[0-9]+((_)+)?)+)|(_))(\\s|\\n)?\\b"
       }, {
         token : keywordMapper,
         regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"

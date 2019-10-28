@@ -29,9 +29,9 @@ var actions = {
     },
 
     Block: block => {
-        if (block.ctorName === "Track") {
+        if (block.ctorName === "Track") { // otherwise it is a comment
             block.run()
-        } // otherwise it is a comment
+        }
     },
 
     Track: (ref, _colon, chain) => {
@@ -60,10 +60,10 @@ var actions = {
         func.run() // a func
     },
 
-    Func: (name, paras) => {
+    Func: (name, elem) => {
 
         let funcName = name.sourceString
-        let funcElem = paras.sourceString.replace(/,/g, "").split(" ") // an array with string paras
+        let funcElem = elem.sourceString.replace(/,/g, "").split(" ")
 
         if (funcName === "") { // the func is only a ref e.g. >> ~func >>
             window.funcList[refName].push(funcElem[0]) // funcElem is sth like "~my_fx"
@@ -102,13 +102,13 @@ const run = (code) => {
 
         // lazy evaluation
         for (let ref in window.funcList) {
-            // if (unModifiedRefList.indexOf(ref) === -1) {
-            try {
-                window.funcList[ref].reduce(reducer, ref)
-            } catch(e){
-                console.log(e)
+            if (unModifiedRefList.indexOf(ref) === -1) {
+                try {
+                    window.funcList[ref].reduce(reducer, ref)
+                } catch(e){
+                    console.log(e)
+                }
             }
-            // }
         }
 
         for (let item in window.tracks) {
@@ -161,7 +161,7 @@ const update = (code) => {
 
             const has = (arr) => (item) => !arr.includes(item)
 
-            for (let i = 0; i < 100; i++) { // can change to while true
+            for (let i = 0; i < 500; i++) { // can change to while true
                 let findings = unModifiedRefList.filter(relatedToModifiedRefs)
                 modifiedRefList.push(...findings)
                 unModifiedRefList = unModifiedRefList.filter( has(findings) )

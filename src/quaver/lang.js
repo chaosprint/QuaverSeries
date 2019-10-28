@@ -18,22 +18,18 @@ Quaver {
    
     Func =  funcName listOf<funcElem, separator>
     
-    funcElem = para | funcRef
-      
-   	para = para subPara -- combine
+    funcElem = funcElem subPara -- combine
     | subPara
     
-    subPara = number | "_"
+    subPara = number | "_" | funcRef
 
 	number = "+"? "-"? digit* "." digit+ -- fullFloat
     | "+"? "-"? digit "." -- dot
 	| "+"? "-"? digit+ -- int
     
-    funcRef = "~" validName
-
-    funcName = validName
+    funcRef = "~" funcName
     
-    validName = listOf<letter+, "_">
+    funcName = listOf<letter+, "_">
 
     separator = ","? space 
 }
