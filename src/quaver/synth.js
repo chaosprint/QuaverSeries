@@ -1,6 +1,5 @@
-var Tone = require('tone')
-
-
+import {handlePara} from './helpers'
+import Tone from 'tone'
 
 const monoSynth = (type) => (paras) => (trigger) => {
     const sawtooth = new Tone.MonoSynth({
@@ -15,32 +14,27 @@ const monoSynth = (type) => (paras) => (trigger) => {
     return trigger.connector(sawtooth)
 }
 
-const lfo = (paras) => {
-    // paras should be freq, min, max
-    var freq = parseFloat(paras[0])
-    var min = parseFloat(paras[1])
-    var max = parseFloat(paras[2])
+const lfo = (paras) => () => {
 
-    return () => {
+    let freq = parseFloat(paras[0])
 
-        let sig = new Tone.LFO({
-            min: min === "_" ? 100 : paras[1],
-            max: max === "_" ? 10000 : paras[2]
-        })
+    let sig = new Tone.LFO({
+        min: handlePara(paras[1], 100),
+        max: handlePara(paras[2], 10000),
+    })
 
-        if (isNaN(freq)) {
-            if (freq === "_") {
-                sig.frequency.value = 10 // defaul
-            } else { // freq is ref
-                freq = window.funcList[paras[0]][0]()
-                freq.connect(sig.frequency)
-                freq.start()
-            }
-        } else {
-            sig.frequency.value = freq // freq is number
+    if (isNaN(freq)) {
+        if (freq === "_") {
+            sig.frequency.value = 10 // defaul
+        } else { // freq is ref
+            freq = window.funcList[paras[0]][0]()
+            freq.connect(sig.frequency)
+            freq.start()
         }
-        return sig
+    } else {
+        sig.frequency.value = freq // freq is number
     }
+    return sig
 }
 
 const noise = (type) => (paras) => (trigger) => {
@@ -59,28 +53,32 @@ const membrane = (paras) => (trigger) => {
 
 const pluck = (paras) => (trigger) => {
     const pluck = new Tone.PluckSynth({
-        attackNoise : !isNaN(paras[0]) ? parseFloat(paras[0]): 1 ,
-        dampening : !isNaN(paras[1])  ? parseFloat(paras[1]):  4000 ,
-        resonance : !isNaN(paras[2]) ? parseFloat(paras[2]):  0.7
+        attackNoise : handlePara(paras[0], 1),
+        dampening : handlePara(paras[1], 4000),
+        resonance : handlePara(paras[2], 0.7),
     })
     return trigger.connector(pluck)
 }
 
 const metalphone = (paras) => (trigger) => {
-    var synth = new Tone.MetalSynth()
+    var synth = new Tone.MetalSynth({
+        frequency: handlePara(paras[0], 200),
+        harmonicity : handlePara(paras[1], 5.1),
+        modulationIndex : handlePara(paras[2], 32),
+        resonance : handlePara(paras[3], 4000),
+        octaves : handlePara(paras[4], 1.5)
+    })
     return trigger.connector(synth)
 }
 
 const fm = (paras) => (trigger) => {
     var synth = new Tone.FMSynth({
-        harmonicity: !isNaN(paras[0])  ? parseFloat(paras[0]): 3,
-        modulationIndex : !isNaN(paras[1]) ? parseFloat(paras[1]): 10
+        harmonicity: handlePara(paras[0], 3),
+        modulationIndex : handlePara(paras[1], 10)
     })
     return trigger.connector(synth)
 }
 const sampler = (paras) => (trigger) => {
-    // "./Clap.wav"
-
     
     return trigger.connector(sampler)
 }

@@ -1,6 +1,7 @@
-var Tone = require('tone')
+import {handlePara} from './helpers'
+import Tone from 'tone'
 
-const amp = (paras) => (signal) => {
+const amp = paras => signal => {
 
     // console.log(signal)
     let amp = isNaN(paras[0]) ? 0.3 : parseFloat(paras[0])
@@ -12,97 +13,76 @@ const amp = (paras) => (signal) => {
     // console.log(window.playlist)
 }
 
-const filter = (type) => {
-    return (paras) => {
-        // paras has freq and q
-        var freq = parseFloat(paras[0])
-        var q = parseFloat(paras[1])
+const filter = type => paras => signal => {
 
-        return (signal) => {
+    var freq = parseFloat(paras[0])
 
-            var fx = new Tone.Filter({
-                type: type,
-                Q: isNaN(q) ? 1 : q // if Q is not number, it is "_", use default val 1
-            })
-            
-            if (isNaN(freq)) {
-                if (freq === "_") {
-                    fx.frequency.value = 1000
-                } else {
-                    freq = paras[0]
-                    freq = window.funcList[freq][0]()
-                    freq.connect(fx.frequency)
-                    freq.start()  
-                }
-            } else {
-                fx.frequency.value = freq
-            }
-
-            signal.effects.push(fx)
-            return signal
+    var fx = new Tone.Filter({
+        type: type,
+        Q: handlePara(paras[1], 1)
+    })
+    
+    if (isNaN(freq)) {
+        if (freq === "_") {
+            fx.frequency.value = 1000
+        } else {
+            freq = paras[0]
+            freq = window.funcList[freq][0]()
+            freq.connect(fx.frequency)
+            freq.start()  
         }
+    } else {
+        fx.frequency.value = freq
     }
+
+    signal.effects.push(fx)
+    return signal
 }
 
 
-const adsr = (paras) => {
-
-    return signal => {
-
-        let p = paras.map(parseFloat)
-        let env = {
-            "attack": isNaN(p[0]) ? 0.1 : p[0],
-            "decay": isNaN(p[1]) ? 0.1 : p[1],
-            "sustain": isNaN(p[2]) ? 0.5 : p[2],
-            "release": isNaN(p[3]) ? 0.5 : p[3] 
-        }
-        try {
-            signal.synth.set({envelope: env})
-        } catch {}
-        return signal
+const adsr = paras => signal => {
+    let env = {
+        "attack": handlePara(paras[0], 0.1),
+        "decay": handlePara(paras[1], 0.1),
+        "sustain": handlePara(paras[2], 0.5),
+        "release": handlePara(paras[3], 0.5),
     }
+    try {
+        signal.synth.set({envelope: env})
+    } catch {}
+    return signal
 }
 
-
-const reverb = (paras) => (signal) => {
-
-    // let decay = isNaN(paras[0]) ? 1.5 : parseFloat(paras[0]) 
-    // let preDelay = isNaN(paras[1]) ? 0.01 : parseFloat(paras[1])
-
-    // let fx = new Tone.Reverb({
-    //     decay: decay,
-    //     preDelay: preDelay
-    // });
-    // signal.effects.push(fx)
-    // return signal
-    let roomSize = isNaN(paras[0]) ? 0.7 : parseFloat(paras[0]) 
-    let dampening = isNaN(paras[1]) ? 3000 : parseFloat(paras[1])
+const reverb = paras => signal => {
+    
+    let roomSize = handlePara(paras[0], 0.7)
+    let dampening = handlePara(paras[1], 3000)
     let fx = new Tone.Freeverb(roomSize, dampening);     
     signal.effects.push(fx)
     return signal
 }
 
-const freeverb = (paras) => (signal) => {
+const freeverb = paras => signal => {
     
-    let roomSize = isNaN(paras[0]) ? 0.7 : parseFloat(paras[0]) 
-    let dampening = isNaN(paras[1]) ? 3000 : parseFloat(paras[1])
+    let roomSize = handlePara(paras[0], 0.7)
+    let dampening = handlePara(paras[1], 3000)
     let fx = new Tone.Freeverb(roomSize, dampening);     
     signal.effects.push(fx)
     return signal
 }
 
-const jcreverb = (paras) => (signal) => {
+const jcreverb = paras => signal => {
     
-    let roomSize = isNaN(paras[0]) ? 0.5 : parseFloat(paras[0]) 
+    let roomSize = handlePara(paras[0], 0.5)
     let fx = new Tone.JCReverb(roomSize)     
     signal.effects.push(fx)
     return signal
 }
 
-const delay = (paras) => (signal) => {
+const delay = paras => signal => {
 
-    let delayTime = isNaN(paras[0]) ? 0.25:  parseFloat(paras[0])
-    let maxDelay = isNaN(paras[1]) ? 1: parseFloat(paras[0])
+    let delayTime = handlePara(paras[0], 0.25)
+    let maxDelay = handlePara(paras[1], 1)
     let fx = new Tone.FeedbackDelay({
         delayTime: delayTime,
         maxDelay: maxDelay
@@ -111,10 +91,10 @@ const delay = (paras) => (signal) => {
     return signal
 }
 
-const pingpong = (paras) => (signal) => {
+const pingpong = paras => signal => {
 
-        let delayTime = isNaN(paras[0]) ? 0.25 : parseFloat(paras[0])
-        let maxDelayTime = isNaN(paras[1]) ? 1: parseFloat(paras[1])
+        let delayTime = handlePara(paras[0], 0.25)
+        let maxDelayTime = handlePara(paras[1], 1)
         let fx = new Tone.PingPongDelay({
             delayTime: delayTime,
             maxDelayTime: maxDelayTime
@@ -123,4 +103,4 @@ const pingpong = (paras) => (signal) => {
         return signal
 }
 
-export {amp, filter, reverb, pingpong, adsr, freeverb, jcreverb, delay}
+export {amp, filter, pingpong, adsr, reverb, freeverb, jcreverb, delay}

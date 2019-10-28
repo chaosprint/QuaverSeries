@@ -1,8 +1,8 @@
 import {lang} from './lang'
 import {funcLib} from './func'
 import {nextBar, reducer} from './helpers'
+import Tone from 'tone'
 
-var Tone = require('tone')
 var ohm = require('ohm-js')
 var grammar = ohm.grammar(lang)
 var semantics = grammar.createSemantics();

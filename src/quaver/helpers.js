@@ -1,4 +1,4 @@
-const Tone = require('tone')
+import Tone from 'tone'
 
 const reducer = (funcChain, currentFunc) => {
     if (typeof currentFunc === "function") {
@@ -83,10 +83,12 @@ const numToMIDI = (item) => {
 }
 
 const notesFuncExec = firstLayerArray => {
-        if (typeof firstLayerArray === "function"){
-            firstLayerArray = firstLayerArray()
-        }
-        return firstLayerArray
+    if (typeof firstLayerArray === "function"){
+        firstLayerArray = firstLayerArray()
+    }
+    return firstLayerArray
 }
 
-export {nextBar, noteToNum, numToMIDI, notesFuncExec, reducer}
+const handlePara = (para, dft) => isNaN(parseFloat(para)) ? dft: parseFloat(para)
+
+export {nextBar, noteToNum, numToMIDI, notesFuncExec, reducer, handlePara}
