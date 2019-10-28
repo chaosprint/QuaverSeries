@@ -1,5 +1,7 @@
 var Tone = require('tone')
 
+
+
 const monoSynth = (type) => (paras) => (trigger) => {
     const sawtooth = new Tone.MonoSynth({
         oscillator: {
@@ -56,7 +58,11 @@ const membrane = (paras) => (trigger) => {
 }
 
 const pluck = (paras) => (trigger) => {
-    const pluck = new Tone.PluckSynth()
+    const pluck = new Tone.PluckSynth({
+        attackNoise : !isNaN(paras[0]) ? parseFloat(paras[0]): 1 ,
+        dampening : !isNaN(paras[1])  ? parseFloat(paras[1]):  4000 ,
+        resonance : !isNaN(paras[2]) ? parseFloat(paras[2]):  0.7
+    })
     return trigger.connector(pluck)
 }
 
@@ -66,8 +72,18 @@ const metalphone = (paras) => (trigger) => {
 }
 
 const fm = (paras) => (trigger) => {
-    var synth = new Tone.FMSynth()
+    var synth = new Tone.FMSynth({
+        harmonicity: !isNaN(paras[0])  ? parseFloat(paras[0]): 3,
+        modulationIndex : !isNaN(paras[1]) ? parseFloat(paras[1]): 10
+    })
     return trigger.connector(synth)
 }
+const sampler = (paras) => (trigger) => {
+    // "./Clap.wav"
 
-export {noise, monoSynth, lfo, membrane, pluck, metalphone, fm}
+    
+    return trigger.connector(sampler)
+}
+
+
+export {noise, monoSynth, lfo, membrane, pluck, metalphone, fm, sampler}

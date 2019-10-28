@@ -26,6 +26,7 @@ const loop = (paras) => (ref) => ({ // this obj is the trigger for sytnh
                     // the function to call for each note
 
                     (time, note) => {
+                        
                         if (synth.noise) {
                             synth.triggerAttack(time);
                         } else {

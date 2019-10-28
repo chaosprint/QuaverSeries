@@ -1,9 +1,9 @@
 var Tone = require('tone')
 
-const amp = (vol) => (signal) => {
+const amp = (paras) => (signal) => {
 
     // console.log(signal)
-    let amp = vol[0] !== "_" ? parseFloat(vol[0]) : 0.5
+    let amp = isNaN(paras[0]) ? 0.3 : parseFloat(paras[0])
     signal.synth.volume.value = 20 * Math.log10(amp)
     signal.effects.push(Tone.Master)
     signal.synth.chain(...signal.effects)
@@ -63,19 +63,58 @@ const adsr = (paras) => {
     }
 }
 
+
 const reverb = (paras) => (signal) => {
 
-    let roomSize = paras[0] ? parseFloat(paras[0]) : 0.7
-    let dampening = paras[1] ? parseFloat(paras[1]) : 3000
+    // let decay = isNaN(paras[0]) ? 1.5 : parseFloat(paras[0]) 
+    // let preDelay = isNaN(paras[1]) ? 0.01 : parseFloat(paras[1])
+
+    // let fx = new Tone.Reverb({
+    //     decay: decay,
+    //     preDelay: preDelay
+    // });
+    // signal.effects.push(fx)
+    // return signal
+    let roomSize = isNaN(paras[0]) ? 0.7 : parseFloat(paras[0]) 
+    let dampening = isNaN(paras[1]) ? 3000 : parseFloat(paras[1])
     let fx = new Tone.Freeverb(roomSize, dampening);     
+    signal.effects.push(fx)
+    return signal
+}
+
+const freeverb = (paras) => (signal) => {
+    
+    let roomSize = isNaN(paras[0]) ? 0.7 : parseFloat(paras[0]) 
+    let dampening = isNaN(paras[1]) ? 3000 : parseFloat(paras[1])
+    let fx = new Tone.Freeverb(roomSize, dampening);     
+    signal.effects.push(fx)
+    return signal
+}
+
+const jcreverb = (paras) => (signal) => {
+    
+    let roomSize = isNaN(paras[0]) ? 0.5 : parseFloat(paras[0]) 
+    let fx = new Tone.JCReverb(roomSize)     
+    signal.effects.push(fx)
+    return signal
+}
+
+const delay = (paras) => (signal) => {
+
+    let delayTime = isNaN(paras[0]) ? 0.25:  parseFloat(paras[0])
+    let maxDelay = isNaN(paras[1]) ? 1: parseFloat(paras[0])
+    let fx = new Tone.FeedbackDelay({
+        delayTime: delayTime,
+        maxDelay: maxDelay
+    });   
     signal.effects.push(fx)
     return signal
 }
 
 const pingpong = (paras) => (signal) => {
 
-        let delayTime = paras[0] ? parseFloat(paras[0]) : 0.25
-        let maxDelayTime = paras[1] ? parseFloat(paras[1]) : 1
+        let delayTime = isNaN(paras[0]) ? 0.25 : parseFloat(paras[0])
+        let maxDelayTime = isNaN(paras[1]) ? 1: parseFloat(paras[1])
         let fx = new Tone.PingPongDelay({
             delayTime: delayTime,
             maxDelayTime: maxDelayTime
@@ -84,4 +123,4 @@ const pingpong = (paras) => (signal) => {
         return signal
 }
 
-export {amp, filter, reverb, pingpong, adsr}
+export {amp, filter, reverb, pingpong, adsr, freeverb, jcreverb, delay}

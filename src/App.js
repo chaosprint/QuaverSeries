@@ -87,7 +87,6 @@ export default function App() {
         window.firebase.initializeApp(firebaseConfig);
     }, [])
 
-
     useEffect(()=>{
         
         const load = ()=> {
@@ -220,7 +219,7 @@ export default function App() {
                 editorTheme.current = "tomorrow"
                 setDarkMode(false)
             }
-        } catch {}
+        } catch (e){console.log(e)}
     }
 
     const submitRoom = (e) => {

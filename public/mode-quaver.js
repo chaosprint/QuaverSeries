@@ -14,7 +14,7 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
     var storageType = "sawtooth|square|pluck|brown|white|metalphone|fm|membrane|lfo"
     var storageModifiers = "";
     var keywordOperators = ">>"
-    var builtinConstants = "lpf|hpf|reverb|pingpong|adsr|amp"
+    var builtinConstants = "lpf|hpf|reverb|pingpong|adsr|amp|jcreverb|freeverb|delay"
     var keywordMapper = this.$keywords = this.createKeywordMapper({
         "keyword.control" : keywordControls,
         "storage.type" : storageType,

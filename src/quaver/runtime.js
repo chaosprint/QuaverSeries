@@ -86,6 +86,8 @@ const initGlobalVariables = () => {
 
 const run = (code) => {
 
+    console.clear()
+
     let match = grammar.match(code)
 
     if (match.succeeded()) {
@@ -115,17 +117,19 @@ const run = (code) => {
             window.tracks[item].seq.start()
         }
 
-        // console.log(
-        //     "window.funcList\n\n",window.funcList,
-        //     "\n\nwindow.playlist\n\n", window.playlist,
-        //     "\n\nwindow.tracks\n\n", window.tracks,
-        //     "\n\nunModifiedRefList\n\n", unModifiedRefList,
-        //     "\n\nmodifiedRefList\n\n", modifiedRefList
-        // )
+        console.log(
+            "window.funcList\n\n",window.funcList,
+            "\n\nwindow.playlist\n\n", window.playlist,
+            "\n\nwindow.tracks\n\n", window.tracks,
+            "\n\nunModifiedRefList\n\n", unModifiedRefList,
+            "\n\nmodifiedRefList\n\n", modifiedRefList
+        )
     };
 }
 
 const update = (code) => {
+
+    console.clear()
 
     let match = grammar.match(code)
 
@@ -138,6 +142,7 @@ const update = (code) => {
         // get global variables right
         semantics(match).run()
 
+        
         // 1. user can comment in and out the same thing
         let commentOutList = Object.keys(codeRef).filter(
             // neither in unModifiedRefList nor in modifiedRefList
@@ -185,7 +190,7 @@ const update = (code) => {
                 try {
                     window.funcList[ref].reduce(reducer, ref)
                 } catch(e){
-                    // console.log(e)
+                    console.log(e)
                 }
             }
         }
@@ -197,13 +202,13 @@ const update = (code) => {
             }
         })
 
-        // console.log(
-        //     "window.funcList\n\n",window.funcList,
-        //     "\n\nwindow.playlist\n\n", window.playlist,
-        //     "\n\nwindow.tracks\n\n", window.tracks,
-        //     "\n\nunModifiedRefList\n\n", unModifiedRefList,
-        //     "\n\nmodifiedRefList\n\n", modifiedRefList
-        // )
+        console.log(
+            "window.funcList\n\n",window.funcList,
+            "\n\nwindow.playlist\n\n", window.playlist,
+            "\n\nwindow.tracks\n\n", window.tracks,
+            "\n\nunModifiedRefList\n\n", unModifiedRefList,
+            "\n\nmodifiedRefList\n\n", modifiedRefList
+        )
 
     };
 }

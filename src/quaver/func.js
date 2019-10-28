@@ -1,5 +1,5 @@
-import {amp, filter, reverb, pingpong, adsr} from "./fx"
-import {monoSynth, noise, lfo, membrane, metalphone, fm, pluck} from './synth'
+import {amp, filter, reverb, pingpong, adsr, freeverb, jcreverb, delay} from "./fx"
+import {monoSynth, noise, lfo, membrane, metalphone, fm, pluck, sampler} from './synth'
 import {bpm, loop, shift, every, speed, range, choose} from './control'
 
 const funcLib = {
@@ -11,6 +11,7 @@ const funcLib = {
     metalphone: metalphone,
     fm: fm,
     pluck: pluck,
+    sampler: sampler,
     white: noise("white"),
     pink: noise("pink"),
     brown: noise("brown"),
@@ -21,6 +22,9 @@ const funcLib = {
     hpf: filter("highpass"),
     reverb: reverb,
     pingpong: pingpong,
+    jcreverb: jcreverb,
+    freeverb: freeverb,
+    delay: delay,
     adsr: adsr,
     amp: amp,
 
