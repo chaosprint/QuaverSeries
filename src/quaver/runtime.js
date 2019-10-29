@@ -23,7 +23,7 @@ var actions = {
         pieceStackOrBlock.run()
     },
 
-    Piece_stack: (piece, _newLineToken1, _newLineToken2, _newLineToken3, block) => {
+    Piece_stack: (piece, _listOfNewLineToken, block) => {
         piece.run()
         block.run()
     },
@@ -61,10 +61,11 @@ var actions = {
     },
 
     Func: (name, elem) => {
-
+       
         let funcName = name.sourceString
         let funcElem = elem.sourceString.replace(/,/g, "").split(" ")
 
+        // console.log(funcName, funcElem)
         if (funcName === "") { // the func is only a ref e.g. >> ~func >>
             window.funcList[refName].push(funcElem[0]) // funcElem is sth like "~my_fx"
 

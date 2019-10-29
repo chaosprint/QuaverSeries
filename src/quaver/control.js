@@ -53,7 +53,7 @@ const loop = paras => ref => ({ // this obj is the trigger for sytnh
     }
 })
 
-const every = paras => triggerObj => {
+const every = paras => trigger => {
 
     let period = parseFloat(paras[0])
     let ref = paras[1]
@@ -66,13 +66,13 @@ const every = paras => triggerObj => {
 
     let newNotes = []
     for (let i = 0; i < period - 1; i++) {
-        newNotes.push(triggerObj.notes)
+        newNotes.push(trigger.notes)
     }
     newNotes.push(notes)
     // console.log(newNotes)
-    triggerObj.period = triggerObj.period * period
-    triggerObj.notes = newNotes
-    return triggerObj
+    trigger.period = trigger.period * period
+    trigger.notes = newNotes
+    return trigger
 }
 
 const speed = paras => trigger => {

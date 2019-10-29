@@ -2,8 +2,8 @@ const lang = `
 
 Quaver {
     
-    Piece = Piece #"\\n"? #"\\n"? #"\\n"? Block --stack
-    | Block 
+    Piece = Piece listOf<"\\n", "\\n"> Block --stack
+    | Block
 
     Block = comment | Track
     

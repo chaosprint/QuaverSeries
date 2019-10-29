@@ -20,35 +20,23 @@ const nextBar = () => {
 const noteToNum = (shift) => (note) => {
 
     // console.log(note)
-
     if (typeof note === "function" || typeof note  === "number" || note  === null) {
-
         return note
-
     } else if (Array.isArray(note)) {
-
         return note.map( noteToNum(shift) )
-
     } else {
-
         if (note.indexOf("_")===-1) { // x is only MIDI note number
-
             if (!isNaN(parseFloat(note))) {
                 return parseFloat(note) + shift
             } else {
                 return window.funcList[note].reduce(reducer, shift)
             }
-        
         } else if (note ==="_") { // x is a rest
-
             return null
-
         } else { // note is compound note
-
             while (note.indexOf("_") !== -1) { // seperate the compound note
                 note = note.replace("_", "@$")
             }
-
             // return an array to make it nested, Tone.js uses Tidal style
             return note.split("$").filter(note => note !== "").map(
                 note => {
@@ -61,7 +49,8 @@ const noteToNum = (shift) => (note) => {
                             return window.funcList[note].reduce(reducer, shift)
                         }
                     }
-            })
+                }
+            )
         }
     }
 }
@@ -89,6 +78,6 @@ const notesFuncExec = firstLayerArray => {
     return firstLayerArray
 }
 
-const handlePara = (para, dft) => isNaN(parseFloat(para)) ? dft: parseFloat(para)
+const handlePara = (para, defaultVal) => isNaN(parseFloat(para)) ? defaultVal: parseFloat(para)
 
 export {nextBar, noteToNum, numToMIDI, notesFuncExec, reducer, handlePara}

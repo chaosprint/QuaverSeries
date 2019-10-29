@@ -65,6 +65,9 @@ loop 1 2 3 4, 1 2 3 4, 1 2 3 4, 1 2 3 4
 >> adsr 0.01 0.1 0 _
 >> amp 0.3
 ```
+
+But there will be a better way to do it, which we will explain later.
+
 ## Synth
 
 Currently, there are only a few available synths, including ```sawtooth```, ```square```, ```membrane```, ```fm```, ```brown```, ```white```, ```pluck```. No parameter after the synth can be edited, which we will update soon.
@@ -169,7 +172,7 @@ To use it more expressively, you can write some code like this:
 
 ## Block
 
-To form a complete music piece, you need to separate each function chain with an empty line.
+To form a complete music piece, you need to separate each function chain with an **empty line**.
 
 The following code is a simplified cover of Kraftwerk's *The Model*:
 
@@ -214,7 +217,7 @@ Comment can be used with the ```update``` button or hotkey to mute a track in a 
 
 Always use the lowered case characters for the reference name, connected with underscores. So, no numbers are allowed in the reference name, at least for now.
 
-Always make sure to have a blank line between two function chains.
+Always make sure to have an **empty line** between two function chains.
 
 ## Reference
 
