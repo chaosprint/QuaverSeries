@@ -70,7 +70,9 @@ But there will be a better way to do it, which we will explain later.
 
 ## Synth
 
-Currently, there are only a few available synths, including ```sawtooth```, ```square```, ```membrane```, ```fm```, ```brown```, ```white```, ```pluck```. No parameter after the synth can be edited, which we will update soon.
+Currently, there are only a few available synths, including ```sawtooth```, ```square```, ```membrane```, ```fm```, ```brown```, ```white```, ```pluck```.
+
+See [QuaverSeries cheat sheet](/doc/cheatsheet.md).
 
 ## Effect
 
