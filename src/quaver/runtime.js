@@ -115,7 +115,11 @@ const run = (code) => {
         }
 
         for (let item in window.tracks) {
-            window.tracks[item].seq.start()
+            if ("seq" in window.tracks[item]) {
+                window.tracks[item].seq.start()
+            } else {
+                window.tracks[item].env.triggerAttack()
+            }
         }
 
         console.log(
@@ -181,7 +185,11 @@ const update = (code) => {
         // schedule to stop current playing tracks on the start of next bar 
         for (let item in window.tracks) {
             if (unModifiedRefList.indexOf(item) === -1) {
-                window.tracks[item].seq.stop(next)
+                if ("seq" in window.tracks[item]) {
+                    window.tracks[item].seq.stop(next)
+                } else {
+                    window.tracks[item].env.triggerRelease()
+                }
             }
         }
 
@@ -199,7 +207,11 @@ const update = (code) => {
         // schedule to start new playlist
         window.playlist.forEach( item => {
             if (unModifiedRefList.indexOf(item) === -1) {
-                window.tracks[item].seq.start(next)
+                if ("seq" in window.tracks[item]) {
+                    window.tracks[item].seq.start(next)
+                } else {
+                    window.tracks[item].env.triggerAttack(0.003)
+                }
             }
         })
 

@@ -1,6 +1,6 @@
 import {amp, filter, pingpong, adsr, reverb, freeverb, jcreverb, delay} from "./fx"
-import {monoSynth, noise, lfo, membrane, metalphone, fm, pluck, sampler} from './synth'
-import {bpm, loop, shift, every, speed, range, choose} from './control'
+import {monoSynth, noise, lfo, membrane, metalphone, fm, pluck, sampler, pwm} from './synth'
+import {bpm, loop, shift, every, speed, range, choose, switch_on} from './control'
 
 const funcLib = {
 
@@ -12,10 +12,15 @@ const funcLib = {
     fm: fm,
     pluck: pluck,
     sampler: sampler,
+    pwm: pwm,
     white: noise("white"),
     pink: noise("pink"),
     brown: noise("brown"),
-    lfo: lfo,
+    lfo: lfo("sine"),
+    sin_lfo: lfo("sine"),
+    squ_lfo: lfo("square"),
+    saw_lfo: lfo("sawtooth"),
+    tri_lfo: lfo("triangle"),
 
     // effect
     lpf: filter("lowpass"),
@@ -35,7 +40,8 @@ const funcLib = {
     every: every,
     speed: speed,
     range: range,
-    choose: choose
+    choose: choose,
+    switch_on: switch_on
 }
 
 export {funcLib}

@@ -21,12 +21,14 @@ Quaver {
     funcElem = funcElem subPara -- combine
     | subPara
     
-    subPara = number | "_" | funcRef
+    subPara = number | "_" | funcRef | duration
 
 	number = "+"? "-"? digit* "." digit+ -- fullFloat
     | "+"? "-"? digit "." -- dot
-	| "+"? "-"? digit+ -- int
+    | "+"? "-"? digit+ -- int
     
+    duration = "\\\\" digit+ "n"
+
     funcRef = "~" funcName
     
     funcName = listOf<letter+, "_">

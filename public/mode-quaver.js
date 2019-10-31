@@ -10,8 +10,9 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
   var TextHighlightRules = acequire("./text_highlight_rules").TextHighlightRules;
 
   var QuaverHighlightRules = function QuaverHighlightRules() {
-    var keywordControls = "loop|bpm|shift|every|speed|choose|range";
-    var storageType = "sawtooth|square|pluck|brown|white|metalphone|fm|membrane|lfo"
+    var keywordControls = "loop|bpm|shift|every|speed|choose|range|switch_on";
+    var storageType = `sawtooth|square|pluck|brown|white|metalphone
+    |fm|membrane|lfo|sin_lfo|tri_lfo|saw_lfo|squ_lfo|pwm`
     var storageModifiers = "";
     var keywordOperators = ">>"
     var builtinConstants = "lpf|hpf|reverb|pingpong|adsr|amp|jcreverb|freeverb|delay"
@@ -44,6 +45,9 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
       }, {
         token : "constant.character",
         regex : "(((((_)+)?([0-9]+)((_)+)?)+)|(_))(\\s|\\n|~)?\\b"
+      }, {
+        token : "constant.character",
+        regex : "\\\\([0-9]+)[a-z]\\b"
       }, {
         token: "string",
         regex: "((~)([a-z]+(_)?)+)\\b"

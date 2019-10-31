@@ -101,4 +101,21 @@ const choose = paras => shift => {
     return () => choice[Math.floor(Math.random() * choice.length)] + shift
 }
 
-export {bpm, loop, shift, every, speed, range, choose}
+const switch_on = paras => ref => ({
+    connector: function (synth) {
+        var env = new Tone.Envelope({
+            "attack" : 0.002,
+            "decay" : 0,
+            "sustain" : 1,
+            "release" : 0.002,
+        });
+        return { // a Signal
+            ref: ref,
+            env: env,
+            synth: synth,
+            effects: []
+        }
+    }
+})
+
+export {bpm, loop, shift, every, speed, range, choose, switch_on}

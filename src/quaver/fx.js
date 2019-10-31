@@ -4,10 +4,18 @@ import Tone from 'tone'
 const amp = paras => signal => {
 
     // console.log(signal)
-    let amp = isNaN(paras[0]) ? 0.3 : parseFloat(paras[0])
-    signal.synth.volume.value = 20 * Math.log10(amp)
+    let amp = handlePara(paras[0], 0.3)
+    var vol = new Tone.Volume(20 * Math.log10(amp));
+    
+    signal.effects.push(vol)
     signal.effects.push(Tone.Master)
     signal.synth.chain(...signal.effects)
+
+    if (signal.env) {
+        signal.synth.start()
+        signal.env.connect(signal.synth.volume)
+    }
+
     window.playlist.push(signal.ref)
     window.tracks[signal.ref] = signal
     // console.log(window.playlist)
