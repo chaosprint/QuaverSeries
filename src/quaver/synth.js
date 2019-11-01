@@ -1,7 +1,7 @@
 import {handlePara} from './helpers'
 import Tone from 'tone'
 
-const monoSynth = (type) => (paras) => (trigger) => {
+const monoSynth = type => paras => trigger => {
     const sawtooth = new Tone.MonoSynth({
         oscillator: {
             type: type
@@ -23,12 +23,12 @@ const noiseSynth = type => paras => trigger => {
     return trigger.connector(synth)
 }
 
-const membrane = (paras) => (trigger) => {
+const membrane = paras => trigger => {
     var synth = new Tone.MembraneSynth()
     return trigger.connector(synth)
 }
 
-const pluck = (paras) => (trigger) => {
+const pluck = paras => trigger => {
     const pluck = new Tone.PluckSynth({
         attackNoise : handlePara(paras[0], 1),
         dampening : handlePara(paras[1], 4000),
@@ -37,7 +37,7 @@ const pluck = (paras) => (trigger) => {
     return trigger.connector(pluck)
 }
 
-const metalphone = (paras) => (trigger) => {
+const metalphone = paras => trigger => {
     var synth = new Tone.MetalSynth({
         frequency: handlePara(paras[0], 200),
         harmonicity : handlePara(paras[1], 5.1),
@@ -48,15 +48,16 @@ const metalphone = (paras) => (trigger) => {
     return trigger.connector(synth)
 }
 
-const fm = (paras) => (trigger) => {
+const fm = paras => trigger => {
     var synth = new Tone.FMSynth({
         harmonicity: handlePara(paras[0], 3),
         modulationIndex : handlePara(paras[1], 10)
     })
     return trigger.connector(synth)
 }
-const sampler = (paras) => (trigger) => {
+const sampler = paras => (trigger => {
     
+    // in development
     return trigger.connector(sampler)
 }
 

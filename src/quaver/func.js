@@ -17,7 +17,7 @@ const funcLib = {
     sin_synth: membrane,
     pluck: pluck,
 
-    // in-develop
+    // incomplete
     metalphone: metalphone,
     fm: fm,
     sampler: sampler,
