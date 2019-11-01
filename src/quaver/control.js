@@ -104,10 +104,10 @@ const choose = paras => shift => {
 const switch_on = paras => ref => ({
     connector: function (synth) {
         var env = new Tone.Envelope({
-            "attack" : 0.002,
+            "attack" : 0.6,
             "decay" : 0,
             "sustain" : 1,
-            "release" : 0.002,
+            "release" : 0.6,
         });
         return { // a Signal
             ref: ref,

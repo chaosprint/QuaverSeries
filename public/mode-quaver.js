@@ -12,7 +12,7 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
   var QuaverHighlightRules = function QuaverHighlightRules() {
     var keywordControls = "loop|bpm|shift|every|speed|choose|range|switch_on";
     var storageType = `sawtooth|square|pluck|brown|white|metalphone
-    |fm|membrane|lfo|sin_lfo|tri_lfo|saw_lfo|squ_lfo|pwm`
+    |fm|membrane|lfo|sin_lfo|tri_lfo|saw_lfo|squ_lfo|pwm|sin_osc|squ_osc|saw_osc|tri_osc`
     var storageModifiers = "";
     var keywordOperators = ">>"
     var builtinConstants = "lpf|hpf|reverb|pingpong|adsr|amp|jcreverb|freeverb|delay"

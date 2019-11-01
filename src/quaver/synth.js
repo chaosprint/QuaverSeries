@@ -85,7 +85,7 @@ const sampler = (paras) => (trigger) => {
     return trigger.connector(sampler)
 }
 
-const pwm = (paras) => (trigger) => {
+const pwm = paras => trigger => {
     
     var synth = new Tone.PWMOscillator({
         frequency: handlePara(paras[0], 440),
@@ -96,4 +96,10 @@ const pwm = (paras) => (trigger) => {
     return trigger.connector(synth)
 }
 
-export {noise, monoSynth, lfo, membrane, pluck, metalphone, fm, sampler, pwm}
+const oscillator = type => paras => trigger => {
+    var osc = new Tone.Oscillator(handlePara(paras[0], 440), type)
+    return trigger.connector(osc) 
+
+}
+
+export {noise, monoSynth, lfo, membrane, pluck, metalphone, fm, sampler, pwm, oscillator}

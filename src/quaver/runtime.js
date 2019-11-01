@@ -118,7 +118,7 @@ const run = (code) => {
             if ("seq" in window.tracks[item]) {
                 window.tracks[item].seq.start()
             } else {
-                window.tracks[item].env.triggerAttack()
+               window.tracks[item].env.triggerAttack()
             }
         }
 
@@ -210,7 +210,7 @@ const update = (code) => {
                 if ("seq" in window.tracks[item]) {
                     window.tracks[item].seq.start(next)
                 } else {
-                    window.tracks[item].env.triggerAttack(0.003)
+                    window.tracks[item].env.triggerAttack()
                 }
             }
         })
