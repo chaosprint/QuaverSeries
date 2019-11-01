@@ -1,21 +1,32 @@
 import {amp, filter, pingpong, adsr, reverb, freeverb, jcreverb, delay} from "./fx"
-import {monoSynth, noise, lfo, membrane, metalphone, fm, pluck, sampler, pwm, oscillator} from './synth'
-import {bpm, loop, shift, every, speed, range, choose, switch_on} from './control'
+import {monoSynth, noiseSynth, membrane, metalphone, fm, pluck, sampler} from './synth'
+import {noise, pwm, oscillator, lfo} from './oscillator'
+import {bpm, loop, shift, every, speed, range, choose, play} from './control'
 
 const funcLib = {
 
-    // oscillator
+    // synth
     sawtooth: monoSynth("sawtooth"),
     square: monoSynth("square"),
+    triangle: monoSynth("triangle"),
     membrane: membrane,
+
+    saw_synth: monoSynth("sawtooth"),
+    squ_synth: monoSynth("square"),
+    tri_synth: monoSynth("square"),
+    sin_synth: membrane,
+    pluck: pluck,
+
+    // in-develop
     metalphone: metalphone,
     fm: fm,
-    pluck: pluck,
     sampler: sampler,
+
+    // oscillator
     pwm: pwm,
-    white: noise("white"),
-    pink: noise("pink"),
-    brown: noise("brown"),
+    white: noiseSynth("white"),
+    pink: noiseSynth("pink"),
+    brown: noiseSynth("brown"),
     lfo: lfo("sine"),
     sin_lfo: lfo("sine"),
     squ_lfo: lfo("square"),
@@ -25,6 +36,9 @@ const funcLib = {
     saw_osc: oscillator("sawtooth"),
     squ_osc: oscillator("square"),
     tri_osc: oscillator("triangle"),
+    white_noise: noise("white"),
+    pink_noise: noise("pink"),
+    brown_noise: noise("brown"),
 
     // effect
     lpf: filter("lowpass"),
@@ -45,7 +59,7 @@ const funcLib = {
     speed: speed,
     range: range,
     choose: choose,
-    switch_on: switch_on
+    play: play
 }
 
 export {funcLib}

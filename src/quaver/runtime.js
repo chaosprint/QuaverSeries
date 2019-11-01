@@ -118,7 +118,12 @@ const run = (code) => {
             if ("seq" in window.tracks[item]) {
                 window.tracks[item].seq.start()
             } else {
-               window.tracks[item].env.triggerAttack()
+                if (window.tracks[item].dur === "hold") {
+                    
+                    window.tracks[item].env.triggerAttack()
+                } else {
+                    window.tracks[item].env.triggerAttackRelease(window.tracks[item].dur)
+                }
             }
         }
 
@@ -210,7 +215,11 @@ const update = (code) => {
                 if ("seq" in window.tracks[item]) {
                     window.tracks[item].seq.start(next)
                 } else {
-                    window.tracks[item].env.triggerAttack()
+                    if (window.tracks[item].dur === "hold") {
+                        window.tracks[item].env.triggerAttack()
+                    } else {
+                        window.tracks[item].env.triggerAttackRelease(window.tracks[item].dur)
+                    }
                 }
             }
         })

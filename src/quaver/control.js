@@ -1,4 +1,4 @@
-import {noteToNum, numToMIDI, notesFuncExec, reducer} from './helpers'
+import {noteToNum, numToMIDI, notesFuncExec, reducer, handlePara} from './helpers'
 import Tone from 'tone'
 
 const bpm = paras => {
@@ -101,21 +101,26 @@ const choose = paras => shift => {
     return () => choice[Math.floor(Math.random() * choice.length)] + shift
 }
 
-const switch_on = paras => ref => ({
+const play = paras => ref => ({
     connector: function (synth) {
+
+        let dur = handlePara(paras[0], "hold")
+        
         var env = new Tone.Envelope({
             "attack" : 0.6,
             "decay" : 0,
             "sustain" : 1,
             "release" : 0.6,
         });
+        
         return { // a Signal
             ref: ref,
             env: env,
+            dur: dur,
             synth: synth,
             effects: []
         }
     }
 })
 
-export {bpm, loop, shift, every, speed, range, choose, switch_on}
+export {bpm, loop, shift, every, speed, range, choose, play}

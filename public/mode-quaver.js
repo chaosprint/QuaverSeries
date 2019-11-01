@@ -10,9 +10,13 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
   var TextHighlightRules = acequire("./text_highlight_rules").TextHighlightRules;
 
   var QuaverHighlightRules = function QuaverHighlightRules() {
-    var keywordControls = "loop|bpm|shift|every|speed|choose|range|switch_on";
-    var storageType = `sawtooth|square|pluck|brown|white|metalphone
-    |fm|membrane|lfo|sin_lfo|tri_lfo|saw_lfo|squ_lfo|pwm|sin_osc|squ_osc|saw_osc|tri_osc`
+    var keywordControls = "loop|bpm|shift|every|speed|choose|range|play";
+    var storageType = `sawtooth|square|triangle|
+    |sin_synth|saw_synth|squ_synth|tri_synth|
+    |membrane|pluck|brown|white|pink|
+    |metalphone|fm|lfo|sin_lfo|tri_lfo|saw_lfo|squ_lfo|
+    |pwm|sin_osc|squ_osc|saw_osc|tri_osc|
+    |pink_noise|brown_noise|white_noise`
     var storageModifiers = "";
     var keywordOperators = ">>"
     var builtinConstants = "lpf|hpf|reverb|pingpong|adsr|amp|jcreverb|freeverb|delay"

@@ -4,7 +4,7 @@ import Tone from 'tone'
 const amp = paras => signal => {
 
     // console.log(signal)
-    let amp = handlePara(paras[0], 0.3)
+    let amp = handlePara(paras[0], 0.1)
     var vol = new Tone.Volume(20 * Math.log10(amp));
     
     signal.effects.push(vol)
@@ -56,7 +56,11 @@ const adsr = paras => signal => {
         "release": handlePara(paras[3], 0.5),
     }
     try {
-        signal.synth.set({envelope: env})
+        if ("env" in signal) {
+            signal.env = new Tone.Envelope(env)
+        } else {
+            signal.synth.set({envelope: env})
+        }   
     } catch {}
     return signal
 }
