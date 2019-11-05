@@ -85,9 +85,13 @@ const initGlobalVariables = () => {
     modifiedRefList = []
 }
 
+
+
 const run = (code) => {
 
     console.clear()
+    
+    Tone.context.latencyHint = "balanced"
 
     let match = grammar.match(code)
 
@@ -134,6 +138,8 @@ const run = (code) => {
             "\n\nunModifiedRefList\n\n", unModifiedRefList,
             "\n\nmodifiedRefList\n\n", modifiedRefList
         )
+
+        console.log(Tone.context.latencyHint)
     };
 }
 
@@ -189,6 +195,10 @@ const update = (code) => {
 
         // schedule to stop current playing tracks on the start of next bar 
         for (let item in window.tracks) {
+            if ("seq" in window.tracks[item]) {
+                console.log("progress", item, window.tracks[item].seq.progress)
+            }
+
             if (unModifiedRefList.indexOf(item) === -1) {
                 if ("seq" in window.tracks[item]) {
                     window.tracks[item].seq.stop(next)

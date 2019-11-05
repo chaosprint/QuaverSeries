@@ -37,7 +37,7 @@ export default function App() {
 
     var date = new Date()
     var hour = date.getHours()
-    const dm = hour < 9 || hour > 10 // darkMode
+    const dm = hour < 9 || hour > 15 // darkMode
     const et = dm ? "tomorrow-night" : "tomorrow" // editorTheme
     const editorTheme = useRef(et)
     const [darkMode, setDarkMode] = useState(dm)

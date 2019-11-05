@@ -5,7 +5,13 @@ const monoSynth = type => paras => trigger => {
     const sawtooth = new Tone.MonoSynth({
         oscillator: {
             type: type
-        }, 
+        },
+        envelope: {
+            attack : 0.005,
+            decay : 0.1,
+            sustain : 0.9,
+            release : 1
+        },
         filter: {
             Q: 1
         }
@@ -55,13 +61,11 @@ const fm = paras => trigger => {
     })
     return trigger.connector(synth)
 }
-const sampler = paras => (trigger => {
+const sampler = paras => trigger => {
     
     // in development
     return trigger.connector(sampler)
 }
-
-
 
 export {noiseSynth, monoSynth, membrane, pluck,
     metalphone, fm, sampler}

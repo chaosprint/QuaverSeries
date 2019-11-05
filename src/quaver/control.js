@@ -13,29 +13,42 @@ const loop = paras => ref => ({ // this obj is the trigger for sytnh
     shift: 0,
     period: 1,
     connector: function (synth) { // non-arrow function in order to use "this"
+        let i = 0;
 
         // console.log(this.notes.map(notesFuncExec))
         return { // this obj is the signal for fx
-
             ref: ref, // ref can be empty ""
             synth: synth,
             effects: [],
             seq: new Tone.Sequence(
-
                 // the function to call for each note
-
                 (time, note) => {
-                    
+
+                    if (typeof note === "function") {      
+                        note = numToMIDI(note())
+                    }
+
+                    if (typeof this.gate === "undefined") {
+                        this.gate = ["_"]
+                    }
+
+                    if (typeof this.defaultGate === "undefined") {
+                        this.defaultGate = "16n"
+                    }
+
+                    let dur = isNaN(
+                        parseFloat(this.gate[i])
+                    ) ? this.defaultGate : this.gate[i]
+
+                    // console.log(dur, time)
                     if (synth.noise) {
-                        synth.triggerAttack(time);
+                        synth.triggerAttackRelease(dur, time);
                     } else {
-                        // console.log(typeof note)
-                        if (typeof note === "function") {      
-                            note = numToMIDI(note())
-                        }
                         if (note !== "C-1") {
-                            synth.triggerAttackRelease(note, "16n", time);
-                            // todo: sustain time should not be limited to "16n"
+                            // console.log(note, dur)
+                            synth.triggerAttackRelease(note, dur, time)
+                            i += 1
+                            i = i === this.gate.length ? 0 : i
                         }
                     }
                 },
@@ -86,6 +99,16 @@ const shift = shift => trigger => {
     return trigger
 }
 
+const set_gate_all = paras => trigger => {
+    trigger.defaultGate = isNaN(parseFloat(paras[0])) ? "16n" : paras[0]
+    return trigger
+}
+
+const set_gate = paras => trigger => {
+    trigger.gate = paras
+    return trigger
+}
+
 const range = paras => shift => {
     // console.log("shift is", shift)
     let a = parseFloat(paras[0])
@@ -123,4 +146,4 @@ const play = paras => ref => ({
     }
 })
 
-export {bpm, loop, shift, every, speed, range, choose, play}
+export {bpm, loop, shift, every, speed, range, choose, play, set_gate, set_gate_all}

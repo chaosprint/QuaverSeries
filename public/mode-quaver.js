@@ -10,7 +10,7 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
   var TextHighlightRules = acequire("./text_highlight_rules").TextHighlightRules;
 
   var QuaverHighlightRules = function QuaverHighlightRules() {
-    var keywordControls = "loop|bpm|shift|every|speed|choose|range|play";
+    var keywordControls = "loop|bpm|shift|every|speed|choose|range|play|set_gate|set_gate_all";
     var storageType = `sawtooth|square|triangle|
     |sin_synth|saw_synth|squ_synth|tri_synth|
     |membrane|pluck|brown|white|pink|
