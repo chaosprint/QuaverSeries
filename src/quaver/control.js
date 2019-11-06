@@ -1,11 +1,60 @@
 import {noteToNum, numToMIDI, notesFuncExec, reducer, handlePara} from './helpers'
 import Tone from 'tone'
 
+const JZZ = require('jzz');
+
+console.log(JZZ().info())
+
 const bpm = paras => {
     try {
         Tone.Transport.bpm.value = parseFloat(paras[0])
     } catch(e) {console.log(e)} 
     return () => {}
+}
+
+
+const midi_out = paras => () => {
+    var devices = []
+    navigator.requestMIDIAccess()
+    .then(
+        // success
+        (midi) => {
+            for (let output of midi.outputs.values()) {
+                console.log(output)
+                devices.push(output.name)
+            }
+        },
+    // failure
+    ()=>{});
+
+    const seq = new Tone.Sequence(
+        // the function to call for each note
+        (time, note) => {
+
+            if (typeof note === "function") {      
+                note = numToMIDI(note())
+            }
+
+            if (note !== "C-1") {
+                devices.forEach((d)=>{
+                    JZZ().or('Cannot start MIDI engine!')
+                    .openMidiOut(d).or('Cannot open MIDI Out port!')
+                    .wait(0).send([0x90,Tone.Midi(note).toMidi(),127]) // note on
+                    .wait(Tone.Time("0.5").toMilliseconds()).send(
+                        [0x80,Tone.Midi(note).toMidi(),0]);
+                })
+            }
+        },
+        
+        // an array of notes
+        paras
+        .map(notesFuncExec) // keep the shape same, only process functions
+        .map( noteToNum(0) ) // one array or nested array
+        .map(numToMIDI),
+        // the gap between each note
+        Tone.Time('1m') / paras.map( noteToNum(0) ).length
+    )
+    seq.start()
 }
 
 const loop = paras => ref => ({ // this obj is the trigger for sytnh
@@ -146,4 +195,4 @@ const play = paras => ref => ({
     }
 })
 
-export {bpm, loop, shift, every, speed, range, choose, play, set_gate, set_gate_all}
+export {bpm, loop, shift, every, speed, range, choose, play, set_gate, set_gate_all, midi_out}

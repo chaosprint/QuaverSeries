@@ -250,6 +250,7 @@ const stop = () => {
     Tone.context = new AudioContext();
     initGlobalVariables()
     codeRef = {}
+
 }
 
 export default {run, stop, update}
