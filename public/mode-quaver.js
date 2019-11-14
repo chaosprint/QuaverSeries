@@ -18,7 +18,7 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
     |pwm|sin_osc|squ_osc|saw_osc|tri_osc|
     |pink_noise|brown_noise|white_noise`
     var storageModifiers = "";
-    var keywordOperators = ">>"
+    var keywordOperators = ">>|->|="
     var builtinConstants = "lpf|hpf|reverb|pingpong|adsr|amp|jcreverb|freeverb|delay"
     var keywordMapper = this.$keywords = this.createKeywordMapper({
         "keyword.control" : keywordControls,
@@ -51,7 +51,7 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
         regex : "(((((_)+)?([0-9]+)((_)+)?)+)|(_))(\\s|\\n|~)?\\b"
       }, {
         token : "constant.character",
-        regex : "\\\\([0-9]+)[a-z]\\b"
+        regex : "\`([0-9]+)[a-z]\\b"
       }, {
         token: "string",
         regex: "((~)([a-z]+(_)?)+)\\b"

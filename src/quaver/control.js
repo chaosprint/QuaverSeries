@@ -3,7 +3,7 @@ import Tone from 'tone'
 
 const JZZ = require('jzz');
 
-console.log(JZZ().info())
+// console.log(JZZ().info())
 
 const bpm = paras => {
     try {

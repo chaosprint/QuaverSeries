@@ -107,7 +107,7 @@ export default function App() {
             editor.current.setTheme("ace/theme/"+editorTheme.current);
             editor.current.setFontSize("20px");
             editor.current.setOptions({
-                fontFamily: "Fira Code",
+                fontFamily: "B612 Mono",
                 readOnly: true,
                 "highlightActiveLine": false
             })

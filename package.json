@@ -7,6 +7,7 @@
     "@material-ui/icons": "^4.2.0",
     "firebase": "^6.2.2",
     "firebase-tools": "^7.0.1",
+    "jazz-midi": "^1.7.1",
     "jzz": "^0.9.7",
     "react": "^16.8.6",
     "react-ace": "^7.0.2",

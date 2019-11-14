@@ -1,5 +1,7 @@
 ## Think in function
 
+As you may have noticed, all the build-in functions consist of lower-cased letters.
+
 You can write very straight-forward code as this:
 
 ```

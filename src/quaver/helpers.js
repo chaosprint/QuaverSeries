@@ -1,6 +1,7 @@
 import Tone from 'tone'
 
 const reducer = (funcChain, currentFunc) => {
+    // console.log("currentFunc", currentFunc)
     if (typeof currentFunc === "function") {
         return currentFunc(funcChain)
     } else { // should be a ref String

@@ -2,6 +2,7 @@ import {amp, filter, pingpong, adsr, reverb, freeverb, jcreverb, delay} from "./
 import {monoSynth, noiseSynth, membrane, metalphone, fm, pluck, sampler} from './synth'
 import {noise, pwm, oscillator, lfo} from './oscillator'
 import {bpm, loop, shift, every, speed, range, choose, play, set_gate, set_gate_all, midi_out} from './control'
+import {print} from './fp'
 
 const funcLib = {
 
@@ -62,7 +63,9 @@ const funcLib = {
     play: play,
     set_gate: set_gate,
     midi_out: midi_out,
-    set_gate_all: set_gate_all
+    set_gate_all: set_gate_all,
+
+    print:print
 }
 
 export {funcLib}

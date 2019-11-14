@@ -14,7 +14,7 @@ const lfo = type => paras => () => {
         sig.frequency.value = parseFloat(freq)
     } else if (freq.includes("n")) {
         // console.log(freq)
-        sig.frequency.value = freq.replace("\\", "")
+        sig.frequency.value = freq.replace("`", "")
     } else if (freq.includes("~")) { // freq is ref
         freq = window.funcList[paras[0]][0]()
         freq.connect(sig.frequency)

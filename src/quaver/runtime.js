@@ -2,12 +2,16 @@ import {lang} from './lang'
 import {funcLib} from './func'
 import {nextBar, reducer} from './helpers'
 import Tone from 'tone'
+import { argumentPlaceholder } from '@babel/types'
 
 var ohm = require('ohm-js')
 var grammar = ohm.grammar(lang)
 var semantics = grammar.createSemantics();
 
 var refName = "";
+var funcNameTemp, funcDefTemp;
+var userFuncLib = {};
+
 
 var codeRef = {}
 var unModifiedRefList = []
@@ -29,9 +33,49 @@ var actions = {
     },
 
     Block: block => {
-        if (block.ctorName === "Track") { // otherwise it is a comment
-            block.run()
+        if (block.ctorName !== "comment") { // otherwise it is a comment
+            if (block.sourceString !== "") {
+                block.run()
+            }    
         }
+        // if (block.ctorName === "Def") {
+        //     block.run()
+        // }
+    },
+
+    Def: (funcName, _is, funcDef, _end) => {
+
+        let args = funcDef.sourceString.match(/(?<=\[).*?(?=\])/g)
+
+        funcNameTemp = funcName.sourceString
+
+        funcDefTemp = args.join("=>")
+
+        funcDef.run()
+    },
+
+    FuncDef: (def) => {
+        def.run()
+    },
+
+    FuncDef_new: (_funcDef, funcBody) => {
+        // _funcDef.run()
+        funcBody.run()
+    },
+
+    FuncBody: (chain) => {
+
+        let init, arr;
+        if (chain.sourceString.match(/>>/g) === null) {
+            arr = chain.sourceString.split(" ")
+            init = arr.shift()
+        }
+
+        funcDefTemp = "ref=>" + funcDefTemp + "=>" + init
+
+        arr.forEach(i=> funcDefTemp += "(" + i + ")" )
+        userFuncLib[funcNameTemp] = eval(funcDefTemp)
+
     },
 
     Track: (ref, _colon, chain) => {
@@ -70,8 +114,18 @@ var actions = {
             window.funcList[refName].push(funcElem[0]) // funcElem is sth like "~my_fx"
 
         } else {
-            let func = funcLib[funcName](funcElem) // take a fun from the lib
-            window.funcList[refName].push(func)
+            // console.log(funcLib)
+            let func;
+            
+            if (funcLib[funcName]) {
+                func = funcLib[funcName](funcElem)
+                window.funcList[refName].push(func)
+            } else if (funcName in userFuncLib) {
+                func = userFuncLib[funcName]
+                window.funcList[refName].push(func)
+                funcElem.forEach( e => window.funcList[refName].push(f=>f(e)))//curry
+            }
+            
         }
     }
 }
@@ -94,6 +148,8 @@ const run = (code) => {
     Tone.context.latencyHint = "balanced"
 
     let match = grammar.match(code)
+
+    console.log(match.succeeded())
 
     if (match.succeeded()) {
 
