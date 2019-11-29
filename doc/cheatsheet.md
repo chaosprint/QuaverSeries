@@ -3,16 +3,14 @@
 ### Control
 
 #### bpm
-```bpm``` sets the tempo of the piece. The default value is 120.
+```bpm``` sets the tempo of the piece. The default value is 120. Typically, the ```bpm``` function should be the only function without a ref name.
 ```
 bpm 200
 ```
-Typically, the ```bpm``` function should be the only function without a ref name.
 
 #### loop
 Every function chain starts with a loop, though the rest of the function chain can be written in different places.
 
-Example:
 ```
 ~bass: loop 30 _32 >> sawtooth >> amp 0.3
 ```
@@ -75,30 +73,78 @@ Example:
 ~a: range 0 60
 ```
 
+#### play
+
+Different from ```loop```, ```play``` is used with an optional time in second to triggger an oscillator rather than a synth.
+
+This will play 10 second white noise as a riser:
+```
+~pp: play 10 >> white_noise >> adsr 9.99 0.01 0 _ >> amp 0.1
+```
+
 ### Synth
 
-Currently, there are only two synths that need parameters.
+Currently, there are only two synths that need parameters. If you don't give parameters, it will use the default value.
 
 #### fm
 
 ```
-~aa: loop 30 >> fm [harmonicity](3) [modulationIndex](10) >> amp 0.3
+>> fm [harmonicity = 3] [modulationIndex = 10] >>
 ```
 
 #### pluck
 
-#### lfo
+```
+>> pluck [attackNoise = 1] [dampening = 4000] [resonance = 0.7] >>
+```
 
 Parameter-free synth functions:
+- membrane
 - sawtooth
 - square
 - brown
 - white
-- membrane
 
 Example:
 ```
 ~bd: loop 20 >> speed 4 >> membrane >> amp 0.3
+```
+
+### Oscillator
+
+- white_noise
+- brown_noise
+- pink_noise
+- sin_osc
+- saw_osc
+- tri_osc
+- squ_osc
+
+```
+~pp: play >> saw_osc 220 >> amp 0.3
+```
+
+#### lfo
+
+There are four types of low freq oscillators:
+
+- lfo
+- sin_lfo
+- squ_lfo
+- tri_lfo
+- saw_lfo
+
+The syntax is 
+
+```
+lfo [freq] [min] [max]
+```
+
+You can use a note (` + 4n|8n|16n|1m) to sync:
+```
+~aa: play >> saw_osc 100 >> lpf ~ll 1 >> amp 0.1
+
+~ll: squ_lfo `8n 100 1000
 ```
 
 ### Effect
@@ -121,9 +167,16 @@ Usage:
 ```
 
 #### pingpong
+
 ```
 >> pingpong [delayTime] [maxDelayTime] >>
 ```
+
+#### delay
+```
+>> delay [delayTime] [maxDelayTime] >>
+```
+
 #### adsr
 ```
 >> adsr [attack] [decay] [sustain] [release]

@@ -10,6 +10,9 @@ const funcLib = {
     sawtooth: monoSynth("sawtooth"),
     square: monoSynth("square"),
     triangle: monoSynth("triangle"),
+    white: noiseSynth("white"),
+    pink: noiseSynth("pink"),
+    brown: noiseSynth("brown"),
     membrane: membrane,
 
     saw_synth: monoSynth("sawtooth"),
@@ -25,9 +28,6 @@ const funcLib = {
 
     // oscillator
     pwm: pwm,
-    white: noiseSynth("white"),
-    pink: noiseSynth("pink"),
-    brown: noiseSynth("brown"),
     lfo: lfo("sine"),
     sin_lfo: lfo("sine"),
     squ_lfo: lfo("square"),
