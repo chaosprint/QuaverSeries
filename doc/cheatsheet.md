@@ -57,10 +57,9 @@ Example:
 ```
 ~bass: loop 30 _ _~a _ >> sawtooth >> amp 0.3
 
-~a: choose 33 37 0 40
+~a: choose 33 37 0 0 40
 
-// zero means rest
-
+// zero means rest; more zeros can change the probability.
 ```
 #### range
 
