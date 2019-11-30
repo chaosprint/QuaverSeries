@@ -13,6 +13,8 @@ import {firebaseConfig, suffix} from './key'
 import quaver from './quaver/runtime'
 import "./App.css"
 
+import {sampleList} from './quaver/samples'
+
 export default function App() {
     const classes = useStyles();
 
@@ -84,6 +86,7 @@ export default function App() {
     }
 
     useEffect(()=>{
+        console.log(sampleList)
         window.firebase.initializeApp(firebaseConfig);
     }, [])
 
@@ -111,6 +114,10 @@ export default function App() {
                 readOnly: true,
                 "highlightActiveLine": false
             })
+            // editor.current.getSession().on('change', function() {
+            //     console.log("change")
+            //   });
+
             editor.current.$blockScrolling = Infinity
             
             var session =  editor.current.getSession();
@@ -194,7 +201,8 @@ export default function App() {
                         state: false
                     });
                     try {
-                        quaver.update(editor.current.getValue())
+                        // should run the selection
+                        quaver.update(editor.current.getValue())                        
                     } catch(e) {console.log("update", e)}                    
                 }
             })

@@ -72,6 +72,7 @@ const loop = paras => ref => ({ // this obj is the trigger for sytnh
             seq: new Tone.Sequence(
                 // the function to call for each note
                 (time, note) => {
+                    // console.log(note)
 
                     if (typeof note === "function") {      
                         note = numToMIDI(note())
@@ -90,14 +91,30 @@ const loop = paras => ref => ({ // this obj is the trigger for sytnh
                     ) ? this.defaultGate : this.gate[i]
 
                     // console.log(dur, time)
+                    // console.log(typeof synth)
                     if (synth.noise) {
                         synth.triggerAttackRelease(dur, time);
-                    } else {
+                    } else if (synth._buffer) {
+                        try {
+                            synth.start()
+                        } catch (e) {
+                            console.log(e)
+                        }
+                        
+                    }  else if (synth._buffers) {
+                        try {
+                            synth.triggerAttack(note)
+                        } catch (e) {
+                            console.log(e)
+                        }
+                    }  else {
                         if (note !== "C-1") {
-                            // console.log(note, dur)
-                            synth.triggerAttackRelease(note, dur, time)
-                            i += 1
-                            i = i === this.gate.length ? 0 : i
+                            try {
+                                // console.log(note, dur)
+                                synth.triggerAttackRelease(note, dur, time)
+                                i += 1
+                                i = i === this.gate.length ? 0 : i                    
+                            } catch(e) {console.log(e)}
                         }
                     }
                 },
@@ -160,17 +177,32 @@ const set_gate = paras => trigger => {
 
 const range = paras => shift => {
     // console.log("shift is", shift)
-    let a = parseFloat(paras[0])
-    let b = parseFloat(paras[1])
-    let min = a < b ? a : b
-    let max = a < b ? b : a
-    let range = Math.abs(max - min)
-    return () => Math.floor( Math.random() * range + min + shift)
+    let condition = paras.length === 2 & (
+        typeof parseFloat(paras[0]) === "number") & (
+        typeof parseFloat(paras[1]) === "number")
+    if (condition) {
+        let a = parseFloat(paras[0])
+        let b = parseFloat(paras[1])
+        let min = a < b ? a : b
+        let max = a < b ? b : a
+        let range = Math.abs(max - min)
+        return () => Math.floor( Math.random() * range + min + shift)
+    } else {
+        return () => Math.floor(30 + shift)
+    }
 }
 
 const choose = paras => shift => {
     let choice = paras.map(parseFloat)
-    return () => choice[Math.floor(Math.random() * choice.length)] + shift
+    console.log(choice)
+    let condition = choice.every(currentValue => typeof currentValue === "number")
+    console.log(condition)
+    if (condition) {
+        return () => choice[Math.floor(Math.random() * choice.length)] + shift
+    } else {
+        return () => (30 + shift)
+    }
+    
 }
 
 const play = paras => ref => ({

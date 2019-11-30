@@ -1,4 +1,5 @@
 import {handlePara} from './helpers'
+import {sampleList} from './samples'
 import Tone from 'tone'
 
 const monoSynth = type => paras => trigger => {
@@ -61,10 +62,44 @@ const fm = paras => trigger => {
     })
     return trigger.connector(synth)
 }
+
 const sampler = paras => trigger => {
+
+    try {
+        if (paras.length === 2) {
+            let name = paras[0]
+            let number = parseInt(paras[1])
+            let sampleName = sampleList[name][number]
+
+            const synth = new Tone.Sampler({
+                "C4": name+'/'+sampleName 
+            }, function(){
+                //sampler will repitch the closest sample
+                // sampler.triggerAttack("D3")
+            }, 'https://raw.githubusercontent.com/tidalcycles/Dirt-Samples/master/')
+            return trigger.connector(synth)
+        }
+    } catch (error) {
+        console.log(error)
+    }
     
-    // in development
-    return trigger.connector(sampler)
+    // if (paras.length === 2) {
+    //     try {
+    //         let name = paras[0]
+    //         let number = parseInt(paras[1])
+    //         let sampleName = sampleList[name][number]
+    //         // let obj = {}
+    //         let obj = 'https://raw.githubusercontent.com/tidalcycles/Dirt-Samples/master/'+name+'/'+sampleName 
+    //         // obj["C2"] = 'https://raw.githubusercontent.com/Tonejs/Tone.js/dev/examples/audio/casio/C2.mp3'
+
+    //         const synth = new Tone.Player(obj, () => {
+    //             console.log("loaded")
+    //         })
+    //         console.log(synth)
+    //         return trigger.connector(synth)
+
+    //     } catch(e) {console.log(e)}
+    // }
 }
 
 export {noiseSynth, monoSynth, membrane, pluck,

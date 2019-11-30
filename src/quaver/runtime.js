@@ -1,8 +1,8 @@
 import {lang} from './lang'
 import {funcLib} from './func'
 import {nextBar, reducer} from './helpers'
+import {sampleList} from './samples'
 import Tone from 'tone'
-import { argumentPlaceholder } from '@babel/types'
 
 var ohm = require('ohm-js')
 var grammar = ohm.grammar(lang)
@@ -202,6 +202,7 @@ const run = (code) => {
 const update = (code) => {
 
     console.clear()
+    console.log(sampleList)
 
     let match = grammar.match(code)
 
@@ -214,7 +215,6 @@ const update = (code) => {
         // get global variables right
         semantics(match).run()
 
-        
         // 1. user can comment in and out the same thing
         let commentOutList = Object.keys(codeRef).filter(
             // neither in unModifiedRefList nor in modifiedRefList

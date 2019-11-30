@@ -2,8 +2,7 @@ import {handlePara} from './helpers'
 import Tone from 'tone'
 
 const amp = paras => signal => {
-
-    // console.log(signal)
+    console.log(signal)
     let amp = handlePara(paras[0], 0.1)
     var vol = new Tone.Volume(20 * Math.log10(amp));
     
@@ -37,7 +36,7 @@ const filter = type => paras => signal => {
             freq = paras[0]
             freq = window.funcList[freq][0]()
             freq.connect(fx.frequency)
-            freq.start()  
+            freq.start()
         }
     } else {
         fx.frequency.value = freq
