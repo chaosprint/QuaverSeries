@@ -30,7 +30,9 @@ Quaver {
     funcElem = funcElem subPara -- combine
     | subPara
     
-    subPara = number | "_" | funcRef | duration | var
+    subPara = number | "_" | funcRef | duration | var | symbol
+
+    symbol = "\\\\" funcName
 
     var = letter+
 
@@ -38,7 +40,7 @@ Quaver {
     | "+"? "-"? digit "." -- dot
     | "+"? "-"? digit+ -- int
     
-    duration = "\`" digit+ "n"
+    duration = "\\\\" digit+ "n"
 
     funcRef = "~" funcName
     

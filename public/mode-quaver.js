@@ -14,7 +14,7 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
     var storageType = `sawtooth|square|triangle|
     |sin_synth|saw_synth|squ_synth|tri_synth|sampler|
     |membrane|pluck|brown|white|pink|
-    |metalphone|fm|lfo|sin_lfo|tri_lfo|saw_lfo|squ_lfo|
+    |metalphone|fm_synth|lfo|sin_lfo|tri_lfo|saw_lfo|squ_lfo|
     |pwm|sin_osc|squ_osc|saw_osc|tri_osc|
     |pink_noise|brown_noise|white_noise`
     var storageModifiers = "";
@@ -51,7 +51,10 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
         regex : "(((((_)+)?([0-9]+)((_)+)?)+)|(_))(\\s|\\n|~)?\\b"
       }, {
         token : "constant.character",
-        regex : "\`([0-9]+)[a-z]\\b"
+        regex : "\\\\([0-9]+)[a-z]\\b"
+      }, {
+        token : "constant.character",
+        regex : "\\\\(([a-z]+)(_)?)+\\b"
       }, {
         token: "string",
         regex: "((~)([a-z]+(_)?)+)\\b"

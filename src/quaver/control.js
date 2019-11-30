@@ -194,15 +194,12 @@ const range = paras => shift => {
 
 const choose = paras => shift => {
     let choice = paras.map(parseFloat)
-    console.log(choice)
     let condition = choice.every(currentValue => typeof currentValue === "number")
-    console.log(condition)
     if (condition) {
         return () => choice[Math.floor(Math.random() * choice.length)] + shift
     } else {
         return () => (30 + shift)
     }
-    
 }
 
 const play = paras => ref => ({

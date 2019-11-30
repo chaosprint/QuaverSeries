@@ -45,12 +45,11 @@ var actions = {
 
     Def: (funcName, _is, funcDef, _end) => {
 
-        let args = funcDef.sourceString.match(/(?<=\[).*?(?=\])/g)
+        // let args = funcDef.sourceString.match(/(?<=\[).*?(?=\])/g)
 
+        let args = funcDef.sourceString.match("random")
         funcNameTemp = funcName.sourceString
-
         funcDefTemp = args.join("=>")
-
         funcDef.run()
     },
 
@@ -139,12 +138,22 @@ const initGlobalVariables = () => {
     modifiedRefList = []
 }
 
-
+const sampleInfo = () => {
+    let arr = []
+    Object.keys(sampleList).forEach((item)=>{
+        // arr.push("")
+        arr.push(item)
+        arr.push(sampleList[item].length)
+        arr.push("      ")
+    })
+    console.info(...arr)
+}
 
 const run = (code) => {
 
     console.clear()
-    
+    sampleInfo()
+
     Tone.context.latencyHint = "balanced"
 
     let match = grammar.match(code)
@@ -202,7 +211,7 @@ const run = (code) => {
 const update = (code) => {
 
     console.clear()
-    console.log(sampleList)
+    sampleInfo()
 
     let match = grammar.match(code)
 

@@ -10,10 +10,9 @@ import { ThemeProvider } from '@material-ui/styles';
 import {useStyles, theme, buttonTheme, modalStyle} from './styles'
 
 import {firebaseConfig, suffix} from './key'
+import {sampleList} from './quaver/samples'
 import quaver from './quaver/runtime'
 import "./App.css"
-
-import {sampleList} from './quaver/samples'
 
 export default function App() {
     const classes = useStyles();
@@ -86,11 +85,19 @@ export default function App() {
     }
 
     useEffect(()=>{
-        console.log(sampleList)
         window.firebase.initializeApp(firebaseConfig);
     }, [])
 
     useEffect(()=>{
+
+        let arr = []
+        Object.keys(sampleList).forEach((item)=>{
+            // arr.push("")
+            arr.push(item)
+            arr.push(sampleList[item].length)
+            arr.push("      ")
+        })
+        console.info(...arr)
         
         const load = ()=> {
             try {

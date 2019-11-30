@@ -23,7 +23,7 @@ const funcLib = {
 
     // incomplete
     metalphone: metalphone,
-    fm: fm,
+    fm_synth: fm,
     sampler: sampler,
 
     // oscillator

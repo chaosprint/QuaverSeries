@@ -67,16 +67,17 @@ const sampler = paras => trigger => {
 
     try {
         if (paras.length === 2) {
-            let name = paras[0]
-            let number = parseInt(paras[1])
-            let sampleName = sampleList[name][number]
+            let name = paras[0].replace("\\", "")
+            let index = parseInt(paras[1])
+            let limit = sampleList[name].length
+            let sampleName = index > (limit - 1) ? sampleList[name][limit-1] : sampleList[name][index]
 
             const synth = new Tone.Sampler({
                 "C4": name+'/'+sampleName 
             }, function(){
                 //sampler will repitch the closest sample
                 // sampler.triggerAttack("D3")
-            }, 'https://raw.githubusercontent.com/tidalcycles/Dirt-Samples/master/')
+            }, 'https://raw.githubusercontent.com/chaosprint/Dirt-Samples/master/')
             return trigger.connector(synth)
         }
     } catch (error) {
