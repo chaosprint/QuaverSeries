@@ -68,7 +68,7 @@ const sampler = paras => trigger => {
     try {
         if (paras.length === 2) {
             let name = paras[0].replace("\\", "")
-            let index = parseInt(paras[1])
+            let index = handlePara(paras[1], 0)
             let limit = sampleList[name].length
             let sampleName = index > (limit - 1) ? sampleList[name][limit-1] : sampleList[name][index]
 
@@ -83,24 +83,6 @@ const sampler = paras => trigger => {
     } catch (error) {
         console.log(error)
     }
-    
-    // if (paras.length === 2) {
-    //     try {
-    //         let name = paras[0]
-    //         let number = parseInt(paras[1])
-    //         let sampleName = sampleList[name][number]
-    //         // let obj = {}
-    //         let obj = 'https://raw.githubusercontent.com/tidalcycles/Dirt-Samples/master/'+name+'/'+sampleName 
-    //         // obj["C2"] = 'https://raw.githubusercontent.com/Tonejs/Tone.js/dev/examples/audio/casio/C2.mp3'
-
-    //         const synth = new Tone.Player(obj, () => {
-    //             console.log("loaded")
-    //         })
-    //         console.log(synth)
-    //         return trigger.connector(synth)
-
-    //     } catch(e) {console.log(e)}
-    // }
 }
 
 export {noiseSynth, monoSynth, membrane, pluck,

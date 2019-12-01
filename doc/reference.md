@@ -90,13 +90,23 @@ Hence, it has build-in envelops and filters, which is difference from the *Oscil
 ### fm_synth
 
 ```
->> fm [harmonicity = 3] [modulationIndex = 10] >>
+>> fm_synth [harmonicity = 3] [modulationIndex = 10] >>
 ```
 
 ### pluck
 
 ```
 >> pluck [attackNoise = 1] [dampening = 4000] [resonance = 0.7] >>
+```
+
+### sampler
+
+From Dirt Samples.
+
+See available samples in the browser console.
+
+```
+>> sampler [sample symbol] [index] >>
 ```
 
 Parameter-free synth functions:
@@ -143,11 +153,11 @@ The syntax is:
 lfo [freq] [min] [max]
 ```
 
-You can use a note (` + 4n|8n|16n|1m) to sync to the beat:
+You can use a note *Symbol* ( a slash \ + 4n|8n|16n|1m ) to sync to the beat:
 ```
 ~aa: play >> saw_osc 100 >> lpf ~ll 1 >> amp 0.1
 
-~ll: squ_lfo `8n 100 1000
+~ll: squ_lfo \8n 100 1000
 ```
 
 ## Effect
