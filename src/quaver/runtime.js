@@ -146,7 +146,7 @@ const run = (code) => {
     console.clear()
     sampleInfo()
 
-    Tone.context.latencyHint = "balanced"
+    Tone.context.latencyHint = "interactive"
 
     let match = grammar.match(code)
 

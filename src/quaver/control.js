@@ -56,80 +56,82 @@ const midi_out = paras => () => {
     seq.start()
 }
 
-const loop = paras => ref => ({ // this obj is the trigger for sytnh
-    notes: paras,
-    shift: 0,
-    period: 1,
-    connector: function (synth) { // non-arrow function in order to use "this"
-        let i = 0;
+const loop = paras => ref => {
+    paras = paras[0] ? paras : ["60"]
+    var initEnv = undefined
+    return { // this obj is the trigger for sytnh
+        env: initEnv,
+        notes: paras,
+        shift: 0,
+        period: 1,
+        connector: function (synth) { // non-arrow function in order to use "this"
+            let i = 0;
+            // console.log(this.notes.map(notesFuncExec))
+            return { // this obj is the signal for fx
+                env: this.env,
+                ref: ref, // ref can be empty ""
+                synth: synth,
+                effects: [],
+                seq: new Tone.Sequence(
+                    // the function to call for each note
+                    (time, note) => {
 
-        // console.log(this.notes.map(notesFuncExec))
-        return { // this obj is the signal for fx
-            ref: ref, // ref can be empty ""
-            synth: synth,
-            effects: [],
-            seq: new Tone.Sequence(
-                // the function to call for each note
-                (time, note) => {
-                    // console.log(note)
-
-                    if (typeof note === "function") {      
-                        note = numToMIDI(note())
-                    }
-
-                    if (typeof this.gate === "undefined") {
-                        this.gate = ["_"]
-                    }
-
-                    if (typeof this.defaultGate === "undefined") {
-                        this.defaultGate = "16n"
-                    }
-
-                    let dur = isNaN(
-                        parseFloat(this.gate[i])
-                    ) ? this.defaultGate : this.gate[i]
-
-                    // console.log(dur, time)
-                    // console.log(typeof synth)
-                    if (synth.noise) {
-                        synth.triggerAttackRelease(dur, time);
-                    } else if (synth._buffer) {
-                        try {
-                            synth.start()
-                        } catch (e) {
-                            console.log(e)
+                        if (typeof note === "function") {      
+                            note = numToMIDI(note())
                         }
-                        
-                    }  else if (synth._buffers) {
-                        try {
-                            synth.triggerAttack(note)
-                        } catch (e) {
-                            console.log(e)
+
+                        if (typeof this.gate === "undefined") {
+                            this.gate = ["_"]
                         }
-                    }  else {
-                        if (note !== "C-1") {
+
+                        if (typeof this.defaultGate === "undefined") {
+                            this.defaultGate = "16n"
+                        }
+
+                        let dur = isNaN(
+                            parseFloat(this.gate[i])
+                        ) ? this.defaultGate : this.gate[i]
+
+                        if (synth.noise) {
+                            synth.triggerAttackRelease(dur, time);
+                        } else if (synth._buffer) {
                             try {
-                                // console.log(note, dur)
-                                synth.triggerAttackRelease(note, dur, time)
-                                i += 1
-                                i = i === this.gate.length ? 0 : i                    
-                            } catch(e) {console.log(e)}
+                                synth.start()
+                            } catch (e) {
+                                console.log(e)
+                            }
+                            
+                        }  else if (synth._buffers) {
+                            try {
+                                synth.triggerAttack(note)
+                            } catch (e) {
+                                console.log(e)
+                            }
+                        }  else {
+                            if (note !== "C-1") {
+                                try {
+                                    // console.log(note, dur)
+                                    synth.triggerAttackRelease(note, dur, time)
+                                    i += 1
+                                    i = i === this.gate.length ? 0 : i                    
+                                } catch(e) {console.log(e)}
+                            }
                         }
-                    }
-                },
+                    },
 
                     // an array of notes
-                this.notes
-                .map(notesFuncExec) // keep the shape same, only process functions
-                .map( noteToNum(this.shift) ) // one array or nested array
-                .map(numToMIDI),
+                    this.notes
+                    .map(notesFuncExec) // keep the shape same, only process functions
+                    .map( noteToNum(this.shift) ) // one array or nested array
+                    .map(numToMIDI),
 
-                // the gap between each note
-                Tone.Time('1m') * this.period / this.notes.map(noteToNum(this.shift)).length
-            )
+                    // the gap between each note
+                    Tone.Time('1m') * this.period / this.notes.map(noteToNum(this.shift)).length
+                )
+            }
         }
     }
-})
+}
 
 const every = paras => trigger => {
 
@@ -201,26 +203,44 @@ const choose = paras => shift => {
     }
 }
 
-const play = paras => ref => ({
-    connector: function (synth) {
-
-        let dur = handlePara(paras[0], "hold")
-        
-        var env = new Tone.Envelope({
-            "attack" : 0.6,
-            "decay" : 0,
-            "sustain" : 1,
-            "release" : 0.6,
-        });
-        
-        return { // a Signal
-            ref: ref,
-            env: env,
-            dur: dur,
-            synth: synth,
-            effects: []
+const play = paras => ref => {
+    var initEnv = {
+        "attack" : 0.6,
+        "decay" : 0,
+        "sustain" : 1,
+        "release" : 0.6,
+    }
+    return { // this is a trigger
+        env: initEnv,
+        connector: function (synth) {
+            let dur = handlePara(paras[0], "hold")
+            let synthEnv = new Tone.Envelope(this.env)
+            return { // a Signal
+                ref: ref,
+                env: synthEnv,
+                dur: dur,
+                synth: synth,
+                effects: []
+            }
         }
     }
-})
+}
 
-export {bpm, loop, shift, every, speed, range, choose, play, set_gate, set_gate_all, midi_out}
+
+const adsr = paras => trigger => {
+    let env = {
+        "attack": handlePara(paras[0], 0.1),
+        "decay": handlePara(paras[1], 0.1),
+        "sustain": handlePara(paras[2], 0.5),
+        "release": handlePara(paras[3], 0.5),
+    }
+    try {
+        if ("env" in trigger) {
+            trigger.env = env
+        }
+    } catch {}
+    return trigger
+}
+
+export {bpm, loop, shift, every, speed, range,
+    choose, play, set_gate, set_gate_all, midi_out, adsr}

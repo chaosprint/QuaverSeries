@@ -1,7 +1,7 @@
-import {amp, filter, pingpong, adsr, reverb, freeverb, jcreverb, delay} from "./fx"
+import {amp, filter, pingpong, reverb, freeverb, jcreverb, delay} from "./fx"
 import {monoSynth, noiseSynth, membrane, metalphone, fm, pluck, sampler} from './synth'
 import {noise, pwm, oscillator, lfo} from './oscillator'
-import {bpm, loop, shift, every, speed, range, choose, play, set_gate, set_gate_all, midi_out} from './control'
+import {bpm, adsr, loop, shift, every, speed, range, choose, play, set_gate, set_gate_all, midi_out} from './control'
 import {print} from './fp'
 
 const funcLib = {

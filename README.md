@@ -14,7 +14,7 @@ Just try this line of code in your newly created room:
 loop 20 20 20 20 >> membrane >> amp 0.3
 ```
 
-Put it into the editing area, and then press ```Run``` button or use the shortcut ```Command + Enter```. 
+Put it into the editing area, and then press ```Run``` button or use the shortcut ```Command + Enter``` (```CTRL + Enter``` on Windows, similarly hereinafte).
 
 This will create a flat-four kick drum loop, with the default beat-per-minute of 120. The numbers after ```loop``` means MIDI notes. As QuaverSeries is a beat-based live coding environment, ```loop``` will be very useful.
 
@@ -70,9 +70,17 @@ But there will be a better way to do it, which we will explain later.
 
 ## Synth
 
-Currently, there are only a few available synths, including ```sawtooth```, ```square```, ```membrane```, ```fm```, ```brown```, ```white```, ```pluck```.
+Currently, there are only a few available synths, including:
+- ```sawtooth```, also written as ```saw_synth```
+- ```square```, also written as ```squ_synth```
+- ```membrane```
+- ```fm_synth```
+- ```pluck```
+- ```brown```
+- ```white```
+- ```sampler```
 
-See [QuaverSeries cheat sheet](/doc/cheatsheet.md).
+See [QuaverSeries Reference](/doc/reference.md).
 
 ## Effect
 
@@ -149,6 +157,10 @@ For the sake of consistency, we strongly recommend you add a ```ref``` to the ma
 ~cutoff_freq: lfo 20 200 3000
 ```
 
+*Functions without refs are "anonymous".*
+
+*Only the last one anonymous function will be effective.*
+
 ## Laziness
 The reference in QuaverSeries is lazy, which means that you can define a ref before or after using it. For the abovementioned example, the following order is also valid:
 ```
@@ -171,7 +183,6 @@ To use it more expressively, you can write some code like this:
 >> ~fx >> amp 0.3
 ```
 
-
 ## Block
 
 To form a complete music piece, you need to separate each function chain with an **empty line**.
@@ -181,7 +192,7 @@ The following code is a simplified cover of Kraftwerk's *The Model*:
 ```
 bpm 68
 
-~bass: loop 33 _33 _ 33 >> fm >> adsr 0.04 0.2 0 _ >> amp 1
+~bass: loop 33 _33 _ 33 >> fm_synth >> adsr 0.04 0.2 0 _ >> amp 1
 
 ~lead: loop 45 _45 48_45_ 48_45_ 40 _40 43_40_ 43
 >> sawtooth
@@ -215,11 +226,11 @@ Comment should start with ```//```. For multi lines, just use multiple ```//```.
 
 Comment can be used with the ```update``` button or hotkey to mute a track in a performance.
 
-## Miscellaneous
+## Best practice
 
 Always use the lowered case characters for the reference name, connected with underscores. So, no numbers are allowed in the reference name, at least for now.
 
-Always make sure to have an **empty line** between two function chains.
+Always make sure to have an **empty line** between two *Blocks*.
 
 ## Reference
 

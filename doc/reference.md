@@ -81,6 +81,11 @@ This will play 10 second white noise as a riser:
 ~pp: play 10 >> white_noise >> adsr 9.99 0.01 0 _ >> amp 0.1
 ```
 
+### adsr
+```
+>> adsr [attack] [decay] [sustain] [release]
+```
+
 ## Synth
 
 *Synth* is a group of functions that take a *Trigger* as input and output a *Signal*.
@@ -196,11 +201,6 @@ Usage:
 ### delay
 ```
 >> delay [delayTime] [maxDelayTime] >>
-```
-
-### adsr
-```
->> adsr [attack] [decay] [sustain] [release]
 ```
 ### amp
 

@@ -10,7 +10,7 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
   var TextHighlightRules = acequire("./text_highlight_rules").TextHighlightRules;
 
   var QuaverHighlightRules = function QuaverHighlightRules() {
-    var keywordControls = "loop|bpm|shift|every|speed|choose|range|play|set_gate|set_gate_all|midi_out";
+    var keywordControls = "adsr|loop|bpm|shift|every|speed|choose|range|play|set_gate|set_gate_all|midi_out";
     var storageType = `sawtooth|square|triangle|
     |sin_synth|saw_synth|squ_synth|tri_synth|sampler|
     |membrane|pluck|brown|white|pink|
@@ -19,7 +19,7 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
     |pink_noise|brown_noise|white_noise`
     var storageModifiers = "";
     var keywordOperators = ">>|->|="
-    var builtinConstants = "lpf|hpf|reverb|pingpong|adsr|amp|jcreverb|freeverb|delay"
+    var builtinConstants = "lpf|hpf|reverb|pingpong|amp|jcreverb|freeverb|delay"
     var keywordMapper = this.$keywords = this.createKeywordMapper({
         "keyword.control" : keywordControls,
         "storage.type" : storageType,

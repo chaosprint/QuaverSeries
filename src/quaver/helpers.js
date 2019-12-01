@@ -79,6 +79,9 @@ const notesFuncExec = firstLayerArray => {
     return firstLayerArray
 }
 
+// para should be a number or ref or symbol
+// 
+
 const handlePara = (para, defaultVal) => isNaN(parseFloat(para)) ? defaultVal: parseFloat(para)
 
 export {nextBar, noteToNum, numToMIDI, notesFuncExec, reducer, handlePara}

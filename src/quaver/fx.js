@@ -19,15 +19,22 @@ const amp = paras => signal => {
         amp = handlePara(amp, 0.1)
         vol = new Tone.Volume(20 * Math.log10(amp));
     }
-    
+
+    // console.log(signal.env)
     signal.effects.push(vol)
     signal.effects.push(Tone.Master)
     signal.synth.chain(...signal.effects)
 
-    if (signal.env) {
+    // console.log(signal.synth)
+
+    if (signal.env !== undefined) {
+        signal.synth.set({envelope: signal.env})
+    }
+
+    try {
         signal.synth.start()
         signal.env.connect(signal.synth.volume)
-    }
+    } catch {}
 
     window.playlist.push(signal.ref)
     window.tracks[signal.ref] = signal
@@ -66,24 +73,6 @@ const filter = type => paras => signal => {
     // }
 
     signal.effects.push(fx)
-    return signal
-}
-
-
-const adsr = paras => signal => {
-    let env = {
-        "attack": handlePara(paras[0], 0.1),
-        "decay": handlePara(paras[1], 0.1),
-        "sustain": handlePara(paras[2], 0.5),
-        "release": handlePara(paras[3], 0.5),
-    }
-    try {
-        if ("env" in signal) {
-            signal.env = new Tone.Envelope(env)
-        } else {
-            signal.synth.set({envelope: env})
-        }   
-    } catch {}
     return signal
 }
 
@@ -148,4 +137,4 @@ const pingpong = paras => signal => {
         return signal
 }
 
-export {amp, filter, pingpong, adsr, reverb, freeverb, jcreverb, delay}
+export {amp, filter, pingpong, reverb, freeverb, jcreverb, delay}
