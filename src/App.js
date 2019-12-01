@@ -90,12 +90,10 @@ export default function App() {
 
     useEffect(()=>{
 
+        console.clear()
         let arr = []
-        Object.keys(sampleList).forEach((item)=>{
-            // arr.push("")
-            arr.push(item)
-            arr.push(sampleList[item].length)
-            arr.push("      ")
+        Object.keys(sampleList).sort((a,b)=>a.length - b.length).forEach((item)=>{
+            arr.push(item, sampleList[item].length, " ")
         })
         console.info(...arr)
         

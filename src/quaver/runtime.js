@@ -12,7 +12,6 @@ var refName = "";
 var funcNameTemp, funcDefTemp;
 var userFuncLib = {};
 
-
 var codeRef = {}
 var unModifiedRefList = []
 var modifiedRefList = []
@@ -38,16 +37,12 @@ var actions = {
                 block.run()
             }    
         }
-        // if (block.ctorName === "Def") {
-        //     block.run()
-        // }
     },
 
     Def: (funcName, _is, funcDef, _end) => {
 
         // let args = funcDef.sourceString.match(/(?<=\[).*?(?=\])/g)
-
-        let args = funcDef.sourceString.match("random")
+        let args = funcDef.sourceString.match("random") // temp; to support Firefox
         funcNameTemp = funcName.sourceString
         funcDefTemp = args.join("=>")
         funcDef.run()
@@ -140,11 +135,8 @@ const initGlobalVariables = () => {
 
 const sampleInfo = () => {
     let arr = []
-    Object.keys(sampleList).forEach((item)=>{
-        // arr.push("")
-        arr.push(item)
-        arr.push(sampleList[item].length)
-        arr.push("      ")
+    Object.keys(sampleList).sort((a,b)=>a.length - b.length).forEach((item)=>{
+        arr.push(item, sampleList[item].length, " ")
     })
     console.info(...arr)
 }
@@ -215,6 +207,7 @@ const update = (code) => {
 
     let match = grammar.match(code)
 
+    console.log(match.succeeded())
     if (match.succeeded()) {
 
         let next = nextBar()

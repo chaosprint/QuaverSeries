@@ -7,11 +7,10 @@ const JZZ = require('jzz');
 
 const bpm = paras => {
     try {
-        Tone.Transport.bpm.value = parseFloat(paras[0])
+        Tone.Transport.bpm.value = handlePara(paras[0], 120)
     } catch(e) {console.log(e)} 
     return () => {}
 }
-
 
 const midi_out = paras => () => {
     var devices = []
@@ -134,7 +133,7 @@ const loop = paras => ref => ({ // this obj is the trigger for sytnh
 
 const every = paras => trigger => {
 
-    let period = parseFloat(paras[0])
+    let period = handlePara(paras[0], 4)
     let ref = paras[1]
 
     let notes = () => {
@@ -155,13 +154,13 @@ const every = paras => trigger => {
 }
 
 const speed = paras => trigger => {
-    let speedTimes = parseFloat(paras[0])
+    let speedTimes = handlePara(paras[0], 1)
     trigger.period = trigger.period / speedTimes
     return trigger
 }
 
-const shift = shift => trigger => {
-    trigger.shift = parseFloat(shift)
+const shift = paras => trigger => {
+    trigger.shift = handlePara(paras[0], 0)
     return trigger
 }
 

@@ -3,8 +3,22 @@ import Tone from 'tone'
 
 const amp = paras => signal => {
     console.log(signal)
-    let amp = handlePara(paras[0], 0.1)
-    var vol = new Tone.Volume(20 * Math.log10(amp));
+
+    let amp = paras[0] ? paras[0] : 0.1
+    let vol
+
+    if (amp.includes("~")) {
+        vol = new Tone.Volume(20 * Math.log10(0.1))
+        amp = window.funcList[amp][0]()
+        console.log(amp)
+        amp.max = 20 * Math.log10(amp.max)
+        amp.min = 20 * Math.log10(amp.min)
+        amp.connect(vol.volume)
+        amp.start()
+    } else {
+        amp = handlePara(amp, 0.1)
+        vol = new Tone.Volume(20 * Math.log10(amp));
+    }
     
     signal.effects.push(vol)
     signal.effects.push(Tone.Master)
@@ -22,25 +36,34 @@ const amp = paras => signal => {
 
 const filter = type => paras => signal => {
 
-    var freq = parseFloat(paras[0])
+    let freq = paras[0] ? paras[0] : 1000
+    let q = paras[1] ? paras[1] : 1
 
     var fx = new Tone.Filter({
         type: type,
-        Q: handlePara(paras[1], 1)
+        Q: handlePara(q, 1)
     })
-    
-    if (isNaN(freq)) {
-        if (freq === "_") {
-            fx.frequency.value = 1000
-        } else {
-            freq = paras[0]
-            freq = window.funcList[freq][0]()
-            freq.connect(fx.frequency)
-            freq.start()
-        }
+
+    if (freq.includes("~")) {
+        freq = window.funcList[freq][0]()
+        freq.connect(fx.frequency)
+        freq.start()
     } else {
-        fx.frequency.value = freq
+        fx.frequency.value = handlePara(freq, 1000)
     }
+    
+    // if (isNaN(freq)) {
+    //     if (freq === "_") {
+    //         fx.frequency.value = 1000
+    //     } else {
+    //         freq = paras[0]
+    //         freq = window.funcList[freq][0]()
+    //         freq.connect(fx.frequency)
+    //         freq.start()
+    //     }
+    // } else {
+    //     fx.frequency.value = freq
+    // }
 
     signal.effects.push(fx)
     return signal
@@ -83,9 +106,20 @@ const freeverb = paras => signal => {
 }
 
 const jcreverb = paras => signal => {
+
+    let roomSize = paras[0] ? paras[0] : 0.3
+    let fx
     
-    let roomSize = handlePara(paras[0], 0.5)
-    let fx = new Tone.JCReverb(roomSize)     
+    if (roomSize.includes("~")) {
+        roomSize = window.funcList[roomSize][0]()
+        fx = new Tone.JCReverb(0.3)
+        roomSize.connect(fx.roomSize)
+        roomSize.start()
+    } else {
+        roomSize = handlePara(roomSize, 0.3)
+        fx = new Tone.JCReverb(roomSize)
+    }
+
     signal.effects.push(fx)
     return signal
 }

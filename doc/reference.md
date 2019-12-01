@@ -1,4 +1,4 @@
-# Cheat sheet
+# Reference
 
 ## Control
 
@@ -22,12 +22,12 @@ Every function chain starts with a loop, though the rest of the function chain c
 ~bb: ~note >> membrane >> amp 0.3
 ```
 
-#### speed
+### speed
 ```
 ~hh: loop 1 >> speed 16 >> white >> hpf 8000 2 >> amp 0.3
 ```
 
-#### shift
+### shift
 ```
 ~aa: loop 30 31
 
@@ -40,7 +40,7 @@ Every function chain starts with a loop, though the rest of the function chain c
 ~track_b: ~bb >> ~xx
 ```
 
-#### every
+### every
 ```
 ~aa: loop 30 31
 
@@ -50,7 +50,7 @@ Every function chain starts with a loop, though the rest of the function chain c
 
 ~tt: ~aa >> every 4 ~bb >> ~xx
 ```
-#### choose
+### choose
 ```choose``` is used as a ref to a note in the sequence. To make it more tidy, it is recommened to use only the tilde plus a-z, e.g ```~a```, ```~b```, ```~z```.
 
 Example:
@@ -61,7 +61,7 @@ Example:
 
 // zero means rest; more zeros can change the probability.
 ```
-#### range
+### range
 
 Similar to ```choose```, range is also used as a ref to a note. Everytime the func runs, it will choose a note within the given range.
 
@@ -72,7 +72,7 @@ Example:
 ~a: range 0 60
 ```
 
-#### play
+### play
 
 Different from ```loop```, ```play``` is used with an optional time in second to triggger an oscillator rather than a synth.
 
@@ -81,17 +81,19 @@ This will play 10 second white noise as a riser:
 ~pp: play 10 >> white_noise >> adsr 9.99 0.01 0 _ >> amp 0.1
 ```
 
-### Synth
+## Synth
 
-Currently, there are only two synths that need parameters. If you don't give parameters, it will use the default value.
+*Synth* is a group of functions that take a *Trigger* as input and output a *Signal*.
 
-#### fm
+Hence, it has build-in envelops and filters, which is difference from the *Oscillator* functions we will introduce below.
+
+### fm_synth
 
 ```
 >> fm [harmonicity = 3] [modulationIndex = 10] >>
 ```
 
-#### pluck
+### pluck
 
 ```
 >> pluck [attackNoise = 1] [dampening = 4000] [resonance = 0.7] >>
@@ -109,7 +111,7 @@ Example:
 ~bd: loop 20 >> speed 4 >> membrane >> amp 0.3
 ```
 
-### Oscillator
+## Oscillator
 
 - white_noise
 - brown_noise
@@ -123,9 +125,11 @@ Example:
 ~pp: play >> saw_osc 220 >> amp 0.3
 ```
 
-#### lfo
+### lfo
 
-There are four types of low freq oscillators:
+*LFO* is a specially kind of *Oscillator*.
+
+There are four types of low freq oscillators.
 
 - lfo
 - sin_lfo
@@ -133,55 +137,65 @@ There are four types of low freq oscillators:
 - tri_lfo
 - saw_lfo
 
-The syntax is 
+The syntax is:
 
 ```
 lfo [freq] [min] [max]
 ```
 
-You can use a note (` + 4n|8n|16n|1m) to sync:
+You can use a note (` + 4n|8n|16n|1m) to sync to the beat:
 ```
 ~aa: play >> saw_osc 100 >> lpf ~ll 1 >> amp 0.1
 
 ~ll: squ_lfo `8n 100 1000
 ```
 
-### Effect
+## Effect
 
 The *Synth* functions take a *Trigger* as input, and output a *Signal*. The *Effect* functions take the *Signal* and output the processed *Signal*. Hence, changing the order will not cause errors. But the ```amp``` function should always be the end of a function chain to get the sound to the real world.
 
-#### lpf
+### lpf(hpf)
 
-Low pass filter.
+Low(High) pass filter.
 
 ```
 >> lpf [cut_off_frequency] [Q] >>
 ```
+
+```
+>> hpf [cut_off_frequency] [Q] >>
+```
+
 *Note: [cut_off_frequency] can be modulated by a ```lfo```*
-#### jcreverb
+
+### jcreverb
 
 Usage:
 ```
 >> jcreverb [roomSize] >>
 ```
 
-#### pingpong
+*Note: [roomSize] can be modulated by a ```lfo```*
+
+### pingpong
 
 ```
 >> pingpong [delayTime] [maxDelayTime] >>
 ```
 
-#### delay
+### delay
 ```
 >> delay [delayTime] [maxDelayTime] >>
 ```
 
-#### adsr
+### adsr
 ```
 >> adsr [attack] [decay] [sustain] [release]
 ```
-#### amp
+### amp
 
 ```
 >> amp [amplitude value]
 ```
+
+*Note: [amplitude value] can be modulated by a ```lfo```*

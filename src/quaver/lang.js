@@ -32,7 +32,9 @@ Quaver {
     
     subPara = number | "_" | funcRef | duration | var | symbol
 
-    symbol = "\\\\" funcName
+    symbol = "\\\\" fix? funcName? fix?
+
+    fix = digit+
 
     var = letter+
 
