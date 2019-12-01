@@ -1,5 +1,9 @@
 # Reference
 
+A ```loop``` takes the *Sequence* and outputs a *Trigger*. The *Trigger* can trigger the *Synth* or *Oscillator* and output a *Signal*. The *Signal* will then go through several *Effects*, in which the ```amp``` should be the last to play the *Signal* out.
+
+*Note: ```play``` is another function that can output a Trigger*
+
 ## Control
 
 ### bpm
@@ -9,18 +13,11 @@ bpm 200
 ```
 
 ### loop
-Every function chain starts with a loop, though the rest of the function chain can be written in different places.
 
 ```
 ~bass: loop 30 _32 >> sawtooth >> amp 0.3
 ```
-```
-~note: loop 30 _32
 
-~aa: ~note >> sawtooth >> amp 0.3
-
-~bb: ~note >> membrane >> amp 0.3
-```
 
 ### speed
 ```
@@ -29,20 +26,21 @@ Every function chain starts with a loop, though the rest of the function chain c
 
 ### shift
 ```
-~aa: loop 30 31
-
-~bb: ~aa >> shift -7
-
-~xx: sawtooth >> amp 0.3
-
-~track_a: ~aa >> ~xx
-
-~track_b: ~bb >> ~xx
+~aa: loop 57 67 >> shift -7 >> sawtooth >> amp 0.3
 ```
+
+This is the same as:
+
+```
+~aa: loop 50 60 >> sawtooth >> amp 0.3 
+```
+
+It can be used with ```every``` explained below.
 
 ### every
+
 ```
-~aa: loop 30 31
+~aa: loop 57 67
 
 ~bb: ~aa >> shift -7
 
@@ -50,31 +48,34 @@ Every function chain starts with a loop, though the rest of the function chain c
 
 ~tt: ~aa >> every 4 ~bb >> ~xx
 ```
+
 ### choose
+
 ```choose``` is used as a ref to a note in the sequence. To make it more tidy, it is recommened to use only the tilde plus a-z, e.g ```~a```, ```~b```, ```~z```.
 
-Example:
 ```
 ~bass: loop 30 _ _~a _ >> sawtooth >> amp 0.3
 
 ~a: choose 33 37 0 0 40
-
-// zero means rest; more zeros can change the probability.
 ```
+
+*Note: zero means rest; more zeros can change the probability.*
+
 ### range
 
 Similar to ```choose```, range is also used as a ref to a note. Everytime the func runs, it will choose a note within the given range.
 
-Example:
 ```
-~test: loop ~a >> speed 16 >> membrane >> amp 0.3
+~random: loop ~a >> speed 16 >> membrane >> amp 0.3
 
 ~a: range 0 60
 ```
 
 ### play
 
-Different from ```loop```, ```play``` is used with an optional time in second to triggger an oscillator rather than a synth.
+```play``` is used to triggger an oscillator rather than a synth.
+
+Different from ```loop```, ```play``` takes an optional parameter (time in second) and outputs a *Trigger*.
 
 This will play 10 second white noise as a riser:
 ```
@@ -106,9 +107,11 @@ Hence, it has build-in envelops and filters, which is difference from the *Oscil
 
 ### sampler
 
-From Dirt Samples.
+The samples are from Tidal.
 
-See available samples in the browser console.
+See [Dirt-Samples](https://github.com/tidalcycles/Dirt-Samples).
+
+You can find available samples in the browser console.
 
 ```
 >> sampler [sample symbol] [index] >>

@@ -226,6 +226,11 @@ const play = paras => ref => {
     }
 }
 
+const mode = paras => {
+    try {
+        Tone.context.latencyHint = paras[0].replace("\\", "")
+    } catch (e) {console.log(e)}
+}
 
 const adsr = paras => trigger => {
     let env = {
@@ -242,5 +247,5 @@ const adsr = paras => trigger => {
     return trigger
 }
 
-export {bpm, loop, shift, every, speed, range,
+export {bpm, loop, shift, every, speed, range, mode,
     choose, play, set_gate, set_gate_all, midi_out, adsr}
