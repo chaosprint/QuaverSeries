@@ -87,6 +87,14 @@ This will play 10 second white noise as a riser:
 >> adsr [attack] [decay] [sustain] [release]
 ```
 
+### set_gate
+
+```set_gate``` can set the duration of sustain. The parameters will match the notes recursively.
+
+```
+~test: loop 33 _ _37 30  >> set_gate 0.01 1 >> sawtooth >> amp 0.3
+```
+
 ## Synth
 
 *Synth* is a group of functions that take a *Trigger* as input and output a *Signal*.
