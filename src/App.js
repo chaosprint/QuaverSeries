@@ -105,11 +105,13 @@ export default function App() {
 
         console.clear()
         let arr = []
-        Object.keys(sampleList).sort((a,b)=>a.length - b.length).forEach((item)=>{
-            arr.push(item, sampleList[item].length, " ")
+
+        // (a,b)=>a.length - b.length
+        Object.keys(sampleList).sort().forEach((item)=>{
+            arr.push([item, sampleList[item].length])
         })
-        // arr.forEach(i=>console.info(i))
-        console.info(...arr)
+        arr.forEach(i=>console.info(...i))
+        // console.info(...arr)
         
         const load = ()=> {
             try {
