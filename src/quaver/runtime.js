@@ -162,8 +162,13 @@ const run = (code) => {
 
         const seq = new Tone.Sequence(
             // the function to call for each note
-            (time, note) => {   
-                document.title = note                         
+            (time, note) => { 
+                
+                Tone.Draw.schedule(function(){
+                    //this callback is invoked from a requestAnimationFrame
+                    //and will be invoked close to AudioContext time
+                    document.title = note
+                }, time) //use AudioContext time of the event  
                 // window.history.pushState("", "", note);
                 // + "  " Tone.Transport.position
             },

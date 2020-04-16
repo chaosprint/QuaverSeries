@@ -1,3 +1,5 @@
+# QuaverSeries Crash Course
+
 Just try this line of code in your newly created room:
 
 ```
@@ -12,9 +14,11 @@ The ```membrane``` function means a sound generator. It is essentially a sine wa
 
 Obviously, ```amp``` means amplitute. It is treated as part of the audio effect chain in QuaverSeries. In this line of code, the audio effect only contains the ```amp```.
 
-So, the example above demonstrates how the syntax works: we have three functions, i.e. ```loop```, ```membrane``` and ```amp```, written from left to right and connected by the double greater-than sign ```>>```. This also indicates the signal flows. The ```loop``` function takes a ```sequence``` as input and outputs a ```trigger```. The ```membrane``` takes a trigger from left, and outputs a ```signal```. The ```amp``` takes a ```signal``` and outputs it as sound in the browser.
+So, the example above demonstrates how the syntax works: we have three functions, i.e. ```loop```, ```membrane``` and ```amp```, written from left to right and connected by the double greater-than sign ```>>```.
 
-You can change the parameters to experience the differences, e.g. changing 20 to 40, 0.3 to 0.8. After you modify the parameters, you need to click the ```Update``` button of use keyboard shortcut ```Shift + Enter``` to update the whole piece. The update will be effective on the beginning of the next bar.
+This also indicates the signal flows. The ```loop``` function takes a ```sequence``` as input and outputs a ```trigger```. The ```membrane``` takes a trigger from left, and outputs a ```signal```. The ```amp``` takes a ```signal``` and outputs it as sound in the browser.
+
+You can tweek the parameters, e.g. changing 20 to 40, 0.3 to 0.8. After you modify the parameters, you need to click the ```Update``` button of use keyboard shortcut ```Shift + Enter``` to update the whole piece. The update will be effective on the beginning of the next bar.
 
 ## Understand the note representation
 
@@ -46,17 +50,6 @@ This example may help you understand the note representation better:
 ```
 loop 30 _ _31 _ >> sawtooth >> amp 0.3
 ```
-
-In some context such as 16th hi-hat, we need to write 16 notes in total. Comma can be used as a visual hint, which basically doesn't do anything in the sequence.
-```
-loop 1 2 3 4, 1 2 3 4, 1 2 3 4, 1 2 3 4
->> brown
->> hpf 8000 1
->> adsr 0.01 0.1 0 _
->> amp 0.3
-```
-
-But there will be a better way to do it, which we will explain later.
 
 ## Synth
 
