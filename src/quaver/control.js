@@ -75,7 +75,7 @@ const loop = paras => ref => {
                 seq: new Tone.Sequence(
                     // the function to call for each note
                     (time, note) => {
-
+                        
                         if (typeof note === "function") {      
                             note = numToMIDI(note())
                         }
@@ -93,6 +93,7 @@ const loop = paras => ref => {
                         ) ? this.defaultGate : this.gate[i]
 
                         if (synth.noise) {
+                            
                             synth.triggerAttackRelease(dur, time);
                         } else if (synth._buffer) {
                             try {
@@ -103,6 +104,9 @@ const loop = paras => ref => {
                             
                         }  else if (synth._buffers) {
                             try {
+                                // console.log(count);
+                                // count += 1;
+                                
                                 synth.triggerAttack(note)
                             } catch (e) {
                                 console.log(e)
@@ -136,7 +140,9 @@ const loop = paras => ref => {
 const every = paras => trigger => {
 
     let period = handlePara(paras[0], 4)
-    let ref = paras[1]
+    try {
+        var ref = paras[1] // how to check
+    } catch (e){console.log(e)}
 
     let notes = () => {
         // this will ignore the speed
@@ -162,7 +168,9 @@ const speed = paras => trigger => {
 }
 
 const shift = paras => trigger => {
-    trigger.shift = handlePara(paras[0], 0)
+    let note = paras[0]
+    note = parseInt(paras[0])
+    trigger.shift = isNaN(note) ? 0 : handlePara(String(note), 0)
     return trigger
 }
 
@@ -215,12 +223,17 @@ const play = paras => ref => {
         connector: function (synth) {
             let dur = handlePara(paras[0], "hold")
             let synthEnv = new Tone.Envelope(this.env)
-            return { // a Signal
-                ref: ref,
-                env: synthEnv,
-                dur: dur,
-                synth: synth,
-                effects: []
+
+            if (synth.filter) {
+                console.log("mismatch play and synth")
+            } else {
+                return { // a Signal
+                    ref: ref,
+                    env: synthEnv,
+                    dur: dur,
+                    synth: synth,
+                    effects: []
+                }
             }
         }
     }
@@ -247,5 +260,34 @@ const adsr = paras => trigger => {
     return trigger
 }
 
+const line = paras => () => {
+    let curve = paras[3] === "\\exp" ? "exponential": "linear"
+    let env = new Tone.ScaledEnvelope({
+        "attack" : handlePara(paras[0], 1),
+        "decay": 0,
+        "sustain": handlePara(paras[2], 1),
+        "min" : handlePara(paras[1], 0),
+        "max" : handlePara(paras[2], 1),
+        "attackCurve": curve
+    });
+
+    return env
+}
+
+const noise_control = paras => () => {
+    
+    let a = handlePara(paras[0], 0)
+    let b = handlePara(paras[1], 1)
+    let min = a < b ? a : b
+    let max = a < b ? b : a
+    let scale = new Tone.Scale(min, max);
+    let controller = new Tone.Noise().connect(scale)
+    controller._playbackRate = handlePara(paras[2], 1)
+    // let scale = new Tone.Scale(min, max);
+    // controller.connect(scale)
+    controller.start()
+    return scale
+}
+
 export {bpm, loop, shift, every, speed, range, mode,
-    choose, play, set_gate, set_gate_all, midi_out, adsr}
+    choose, play, set_gate, set_gate_all, midi_out, adsr, line, noise_control}

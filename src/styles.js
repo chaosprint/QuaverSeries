@@ -1,11 +1,11 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
-import { pink, green, grey } from '@material-ui/core/colors';
+import { red, green, grey } from '@material-ui/core/colors';
 
 const theme = createMuiTheme({
   palette: {
     primary: grey,
-    secondary: pink,
+    secondary: red,
   },
   typography: {
     fontFamily: '\'Inconsolata\', monospace'
@@ -14,9 +14,10 @@ const theme = createMuiTheme({
 });
 
 const buttonTheme = createMuiTheme({
+  borderRadius: 0,
   palette: {
     primary: green,
-    secondary: pink,
+    secondary: red,
   },
 });
 
@@ -27,6 +28,10 @@ const useStyles = makeStyles(theme => ({
   },
   text: {
     margin: theme.spacing(1),
+    [`& fieldset`]: {
+      borderRadius: 0,
+    },
+    // textAlign: "center",
     width: 120
   },
   password: {
@@ -39,6 +44,10 @@ const useStyles = makeStyles(theme => ({
   },
   room: {
     marginLeft: 'auto',
+    textAlign: "center",
+    [`& fieldset`]: {
+      borderRadius: 0,
+    },
   },
   paper: {
     position: 'absolute',
@@ -48,8 +57,10 @@ const useStyles = makeStyles(theme => ({
     outline: 'none',
   },
   fab: {
-    position: 'absolute',
+    position: 'fixed',
     zIndex: 2000,
+    // button: "10%",
+    // right: "5%"
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   },
@@ -60,6 +71,9 @@ const useStyles = makeStyles(theme => ({
   },
   inside: {
     padding: theme.spacing(3, 2),
+    [`& fieldset`]: {
+      borderRadius: 0,
+    },
   },
   link: {
     margin: theme.spacing(1),
@@ -67,6 +81,10 @@ const useStyles = makeStyles(theme => ({
   back: {
     position: 'absolute',
     left: '50%',
+    textAlign: "center",
+    [`& fieldset`]: {
+      borderRadius: 0,
+    },
     top: '50%',
     transform: 'translate(-50%, -50%)',
     zIndex:"-2000",

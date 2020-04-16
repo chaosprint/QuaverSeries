@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react'
-import {AppBar, Toolbar, Typography, Paper} from '@material-ui/core/'
+import {AppBar, Toolbar, Typography} from '@material-ui/core/'
 import {Modal, Button, TextField, Fab, IconButton, InputAdornment} from '@material-ui/core/'
 
-import VpnKey from '@material-ui/icons/VpnKey';
+// import VpnKey from '@material-ui/icons/VpnKey';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import Brightness3Icon from '@material-ui/icons/Brightness3';
+import GitHubIcon from '@material-ui/icons/GitHub';
 
 import { ThemeProvider } from '@material-ui/styles';
 import {useStyles, theme, buttonTheme, modalStyle} from './styles'
@@ -14,8 +15,19 @@ import {sampleList} from './quaver/samples'
 import quaver from './quaver/runtime'
 import "./App.css"
 
-export default function App() {
+import AceEditor from "react-ace";
+import {exampleCode} from './example'
+
+import "ace-builds/src-noconflict/mode-java";
+import "ace-builds/src-noconflict/theme-github";
+
+// import "ace-builds/src-noconflict/theme-github";
+
+export default function App() { 
     const classes = useStyles();
+
+    const exampleRef = useRef(exampleCode)
+    const [example, setExample] = useState(exampleCode)
 
     const [room, setRoom] = useState()
     const roomRef = useRef(room)
@@ -25,8 +37,9 @@ export default function App() {
     const [disable, setDisable] = useState(true)
 
     const [needPassword, setNeedPassword] = useState(true)
-    const [showIcon, setShowIcon] = useState(true)
+    // const [showIcon, setShowIcon] = useState(true)
     const [run, setRun] = useState(false)
+    const [noUpdate, setNoUpdate] = useState(true)
 
     const modalRef = useRef()
     const editor = useRef()
@@ -139,7 +152,7 @@ export default function App() {
                     exec: handleUpdate.current
                 }, {
                     name: 'stop',
-                    bindKey: {win: 'Ctrl-Alt-.', mac: 'Command-.'},
+                    bindKey: {win: 'Ctrl-Alt-.', mac: 'Command-Shift-.'},
                     exec: handleStop.current
                 }, {
                     name: 'comment-norge-mac',
@@ -195,7 +208,9 @@ export default function App() {
                     try{
                         quaver.run(editor.current.getValue())
                     } catch(e) {console.log("run", e)}
-                    setRun(true)               
+                    setRun(true)
+                    // setNoUpdate(false)
+                    // setTimeout(()=>{setNoUpdate(true)}, 5)             
                 }
             })
             var updateRef = window.firebase.database().ref(
@@ -208,7 +223,10 @@ export default function App() {
                     try {
                         // should run the selection
                         quaver.update(editor.current.getValue())                        
-                    } catch(e) {console.log("update", e)}                    
+                    } catch(e) {console.log("update", e)}
+                    setRun(true)
+                    setNoUpdate(false)
+                    setTimeout(()=>{setNoUpdate(true)}, 100)
                 }
             })
 
@@ -241,7 +259,7 @@ export default function App() {
             setRoom(roomRef.current)
             setDisable(true)
             quaver.stop()
-            setShowIcon(true)
+            // setShowIcon(true)
         }
     } // end of submit room
 
@@ -256,7 +274,7 @@ export default function App() {
                             setDisable(false)
                             setOpen(false)
                             setNeedPassword(false)
-                            setShowIcon(false)
+                            // setShowIcon(false)
                             editor.current.setOptions({
                                 readOnly: false
                             })
@@ -273,7 +291,7 @@ export default function App() {
                 setOpen(false)
                 setDisable(false)
                 setNeedPassword(true)
-                setShowIcon(false)
+                // setShowIcon(false)
                 editor.current.setOptions({
                     readOnly: false
                 })
@@ -284,6 +302,38 @@ export default function App() {
         } else {alert("Password much be longer than 6 digits.")}
     }
 
+    const onLoad = (editor) => {
+
+        const setSize = () => {
+
+            let w = document.getElementById('AppBar').offsetWidth * 0.618
+            // let border =  document.documentElement.clientWidth - w
+            let h = document.documentElement.clientHeight * 0.618;
+            // h = h - document.getElementById('AppBar').offsetHeight - border
+
+            editor.container.style.width = `${w}px`
+            editor.container.style.height = `${h}px`
+            editor.resize()
+        }
+        setSize()
+        window.onresize = setSize
+    }
+
+    const handleRunExample = ()=> {
+        // console.log(e)
+        quaver.run(exampleRef.current)
+    }
+
+    const handleUpdateExample = () => {
+        quaver.update(exampleRef.current)
+    }
+
+    const handleChangeExample = (v) => {
+        // console.log(v)
+        setExample(v)
+        exampleRef.current = v
+    }
+
     return (
         <div className="App">
         <div className={classes.root}>
@@ -291,10 +341,12 @@ export default function App() {
         <AppBar position="static" id="AppBar">
         <Toolbar>
 
-        <ThemeProvider theme={buttonTheme}>
+        {room ? <ThemeProvider theme={buttonTheme}>
             <Button
                 variant="contained"
                 color={run ? "default": "primary"}
+                // buttonStyle={{ borderRadius: 0 }} style={{borderRadius:0}}
+                style={{borderRadius:0, fontFamily: 'Inconsolata'}}
                 disabled={disable || (run)}
                 className={classes.button}
                 onClick={handleRun.current}>
@@ -302,29 +354,34 @@ export default function App() {
             </Button>
             <Button
                 variant="contained"
-                color={run ? "primary": "default"}
+                color={(run && noUpdate)? "primary": "default"}
                 disabled={disable || (!run)}
                 className={classes.button}
-                onClick={handleUpdate.current}>
+                onClick={handleUpdate.current}
+                // buttonStyle={{ borderRadius: 0 }} style={{borderRadius:0}}
+                style={{borderRadius:0, fontFamily: 'Inconsolata'}}
+                >
                 Update
             </Button>
+
             <Button
                 variant="contained" color="secondary"
-                className={classes.button} onClick={handleStop.current}>
+                className={classes.button} onClick={handleStop.current}
+                // buttonStyle={{ borderRadius: 0 }} style={{borderRadius:0}}
+                style={{borderRadius:0, fontFamily: 'Inconsolata'}}
+                >
                 Stop
             </Button>
-        </ThemeProvider>
+        </ThemeProvider>: <div id="logo" className="animated fadeInLeft"> <h2>QuaverSeries</h2> </div>}
         <div className={classes.room}>
         <form onSubmit={submitRoom}>
             <TextField
                 id="room"
                 className={classes.text}
-                label="room"
+                // label="room"
                 type="text"
                 name="room"
-                autoComplete="room"
-                margin="normal"
-                variant="outlined"
+                placeholder="room"
                 onChange={e=>{roomRef.current=e.target.value}}
                 InputProps={{
                  endAdornment: (
@@ -384,20 +441,49 @@ export default function App() {
         {      
             room ? <div className={classes.firepad} id="firepad"></div> :
 
-            <div className={classes.back}>
-            <Paper className={classes.inside}>
-                <ThemeProvider theme={theme}>
-                <Typography variant="h6" component="h6">
-                QuaverSeries is a live coding environment for music performance. For further informantion, please see <a target={"_blank"} rel={"noopener noreferrer"} href={"https://github.com/chaosprint/QuaverSeries"}>QuaverSeries GitHub repository</a>.
-                </Typography>
-                </ThemeProvider>
-            </Paper>
+            <div>
+            <div id="slogan">
+            
+            <span id="slogana" className="animated fadeIn">Live coding to make music with QuaverSeries</span>
+            <span id="sloganb" className="animated fadeIn delay-1s">, elegantly.</span>
+            </div>
+
+            <div id="editor">
+            <AceEditor
+                mode="quaver"
+                className="animated fadeIn delay-2s"
+                theme="tomorrow-night"
+                fontSize="14px"
+                width="600px"
+                height="500px"
+                value={example}
+                onLoad={onLoad}
+                onChange={handleChangeExample}
+                commands={[{
+                    name: 'Run', //name for the key binding.
+                    bindKey: {win: 'Ctrl-Enter', mac: 'Command-Enter'},
+                    exec: handleRunExample  //function to execute when keys are pressed.
+                }, {
+                    name: 'Update',
+                    bindKey: {win: 'Shift-Enter', mac: 'Shift-Enter'},
+                    exec: handleUpdateExample
+                }, {
+                    name: 'Stop',
+                    bindKey: {win: 'Ctrl-Shift-.', mac: 'Command-Shift-.'},
+                    exec: quaver.stop
+                }]}
+                name="UNIQUE_ID_OF_DIV"
+                editorProps={{ $blockScrolling: true }}
+            />
+            </ div>
+
+            <Fab id="github" className="animated fadeIn delay-1s" target={"_blank"} rel={"noopener noreferrer"} href="https://github.com/chaosprint/QuaverSeries"><GitHubIcon /></Fab>
             </div>
         }
 
-        {(room && showIcon)? <Fab className={classes.fab}  onClick={()=>setOpen(true)}><VpnKey /></Fab>: null}
-
         </div>
+        {/* {(room && showIcon)? <Fab className={classes.fab}  onClick={()=>setOpen(true)}><VpnKey /></Fab>: null} */}
+
     </div>
   )
 };

@@ -10,7 +10,7 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
   var TextHighlightRules = acequire("./text_highlight_rules").TextHighlightRules;
 
   var QuaverHighlightRules = function QuaverHighlightRules() {
-    var keywordControls = "adsr|loop|bpm|shift|every|speed|choose|range|play|set_gate|set_gate_all|midi_out";
+    var keywordControls = "loop|bpm|line|shift|every|speed|choose|range|play|set_gate|set_gate_all|midi_out";
     var storageType = `sawtooth|square|triangle|
     |sin_synth|saw_synth|squ_synth|tri_synth|sampler|
     |membrane|pluck|brown|white|pink|
@@ -19,7 +19,7 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
     |pink_noise|brown_noise|white_noise`
     var storageModifiers = "";
     var keywordOperators = ">>|->|="
-    var builtinConstants = "lpf|hpf|reverb|pingpong|amp|jcreverb|freeverb|delay"
+    var builtinConstants = "lpf|hpf|reverb|pingpong|amp|jcreverb|freeverb|delay|pan|adsr"
     var keywordMapper = this.$keywords = this.createKeywordMapper({
         "keyword.control" : keywordControls,
         "storage.type" : storageType,
@@ -47,25 +47,29 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
         token : "support.constant",
         regex : ","
       }, {
+        token: "meta.tag",
+        regex: "[-+]?([0-9]{1,}[\.][0-9]+)"
+        // regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?(?:L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
+      }, {
         token : "constant.character",
         regex : "(((((_)+)?([0-9]+)((_)+)?)+)|(_))(\\s|\\n|~)?\\b"
       }, {
-        token : "constant.character",
-        regex : "\\\\([0-9]+)([a-z]+)\\b"
+        token : "support.type",
+        regex : "\\\\([0-9]{1,2})([a-z]+)\\b"
       }, {
         token : "constant.character",
-        regex : "\\\\(([a-z]+)(_)?)+\\b"
+        regex : "\\\\(([a-z]+)(_)?([0-9]+)?)+\\b"
       }, {
         token: "string",
         regex: "((~)([a-z]+(_)?)+)\\b"
-      },{
-        token: "constant.numeric",
-        regex: "[-+]?[0-9]*\.?[0-9]+"
+      }, {
+        // token: "constant.numeric",
+        // regex: "[-+]?[0-9]"
         // regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?(?:L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
       }, {
         token : keywordMapper,
         regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
-      },{
+      }, {
         token: "text",
         regex: "\\\\s+"
       }],

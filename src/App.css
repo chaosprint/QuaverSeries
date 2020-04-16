@@ -2,10 +2,48 @@ a.powered-by-firepad {
     display: none;
 }
 
-a:link,a:hover,a:active,a:visited {
-    color:rgb(0, 0, 0);
-    text-decoration:none;
-    font-style:italic
+#slogan {
+    position: absolute;
+    top: 15%;
+    left: 10%;
 }
 
+#slogana {
+    animation-duration: 3s;
+    font-family: 'Inconsolata', monospace;
+}
+
+#sloganb {
+    animation-duration: 3s;
+    font-family: 'Inconsolata', monospace;
+}
+
+#github {
+    animation-duration: 5s;
+    position: absolute;
+    bottom: 10%;
+    right: 5%;
+}
+
+.ace_editor {
+    font-family:"B612 Mono";
+}
+
+#logo {
+    font-family: 'Kaushan Script', cursive;
+    color: rgba(0, 0, 0, 0.432);
+}
+
+#editor {
+    position: absolute;
+    top: 20%;
+    left: 10%;
+}
+
+/* a:link,a:hover,a:active,a:visited {
+    color:rgb(0, 0, 0);
+    text-decoration:none;
+    /* font-style:italic; */
+    /* font-size: 12;
+    font-family: 'Inconsolata', monospace; */
 /* html { font-family: 'Inconsolata', monospace; } */

@@ -48,11 +48,11 @@ ace.define("ace/theme/tomorrow",["require","exports","module","ace/lib/dom"], fu
   .ace-tomorrow .ace_storage,\
   .ace-tomorrow .ace_storage.ace_type,\
   .ace-tomorrow .ace_support.ace_type {\
-  color: #8959A8\
+  color: #a84275\
   }\
   .ace-tomorrow .ace_constant.ace_language,\
   .ace-tomorrow .ace_keyword.ace_operator {\
-  color: #3E999F\
+  color: #8959A8\
   }\
   .ace-tomorrow .ace_constant.ace_character,\
   .ace-tomorrow .ace_constant.ace_numeric,\
@@ -66,7 +66,7 @@ ace.define("ace/theme/tomorrow",["require","exports","module","ace/lib/dom"], fu
   }\
   .ace-tomorrow .ace_invalid {\
   color: #FFFFFF;\
-  background-color: #C82829\
+  background-color: #a84275\
   }\
   .ace-tomorrow .ace_invalid.ace_deprecated {\
   color: #FFFFFF;\
@@ -96,7 +96,7 @@ ace.define("ace/theme/tomorrow",["require","exports","module","ace/lib/dom"], fu
   .ace-tomorrow .ace_meta.ace_tag,\
   .ace-tomorrow .ace_string.ace_regexp,\
   .ace-tomorrow .ace_variable {\
-  color: #C82829\
+  color: #3E999F\
   }\
   .ace-tomorrow .ace_comment {\
   color: #8E908C\

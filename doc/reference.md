@@ -79,7 +79,7 @@ Different from ```loop```, ```play``` takes an optional parameter (time in secon
 
 This will play 10 second white noise as a riser:
 ```
-~pp: play 10 >> white_noise >> adsr 9.99 0.01 0 _ >> amp 0.1
+~pp: play 10 >> adsr 9.99 0.01 0 _  >> white_noise>> amp 0.1
 ```
 
 ### adsr

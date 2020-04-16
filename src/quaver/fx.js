@@ -4,17 +4,21 @@ import Tone from 'tone'
 const amp = paras => signal => {
     console.log(signal)
 
-    let amp = paras[0] ? paras[0] : 0.1
+    let amp = paras[0] !== "" ? paras[0] : "0.1"
     let vol
 
     if (amp.includes("~")) {
         vol = new Tone.Volume(20 * Math.log10(0.1))
         amp = window.funcList[amp][0]()
-        console.log(amp)
-        amp.max = 20 * Math.log10(amp.max)
-        amp.min = 20 * Math.log10(amp.min)
         amp.connect(vol.volume)
-        amp.start()
+        if (amp.start) { // an LFO
+            amp.max = 20 * Math.log10(amp.max)
+            amp.min = 20 * Math.log10(amp.min)
+            amp.start()
+        } else if (amp.triggerAttack) { // an Env
+            amp.triggerAttack()
+        }
+
     } else {
         amp = handlePara(amp, 0.1)
         vol = new Tone.Volume(20 * Math.log10(amp));
@@ -37,7 +41,13 @@ const amp = paras => signal => {
     } catch {}
 
     window.playlist.push(signal.ref)
+    // if (window.tracks[signal.ref]) {
+    //     window.tracks[signal.ref].synth = signal.synth
+    //     window.tracks[signal.ref].seq = signal.seq
+    // } else {
     window.tracks[signal.ref] = signal
+    // }
+    
     // console.log(window.playlist)
 }
 
@@ -54,23 +64,15 @@ const filter = type => paras => signal => {
     if (freq.includes("~")) {
         freq = window.funcList[freq][0]()
         freq.connect(fx.frequency)
-        freq.start()
+        if (freq.start) {
+            freq.start()
+        } else if (freq.triggerAttack) {
+            freq.triggerAttack()
+        }
+
     } else {
         fx.frequency.value = handlePara(freq, 1000)
     }
-    
-    // if (isNaN(freq)) {
-    //     if (freq === "_") {
-    //         fx.frequency.value = 1000
-    //     } else {
-    //         freq = paras[0]
-    //         freq = window.funcList[freq][0]()
-    //         freq.connect(fx.frequency)
-    //         freq.start()
-    //     }
-    // } else {
-    //     fx.frequency.value = freq
-    // }
 
     signal.effects.push(fx)
     return signal
@@ -81,6 +83,29 @@ const reverb = paras => signal => {
     let roomSize = handlePara(paras[0], 0.7)
     let dampening = handlePara(paras[1], 3000)
     let fx = new Tone.Freeverb(roomSize, dampening);     
+    signal.effects.push(fx)
+    return signal
+}
+
+const pan = paras => signal => {
+
+    let lr = paras[0] ? paras[0] : 0
+    let fx
+    
+    if (lr.includes("~")) {
+        lr = window.funcList[lr][0]()
+        fx = new Tone.Panner(0);
+        lr.connect(fx.pan)
+        if (lr.start) {
+            lr.start()
+        } else if(lr.triggerAttack) {
+            lr.triggerAttack()
+        }  
+    } else {
+        lr = handlePara(lr, 0)
+        fx = new Tone.Panner(lr)
+    }
+     
     signal.effects.push(fx)
     return signal
 }
@@ -137,4 +162,4 @@ const pingpong = paras => signal => {
         return signal
 }
 
-export {amp, filter, pingpong, reverb, freeverb, jcreverb, delay}
+export {amp, filter, pingpong, reverb, freeverb, jcreverb, delay, pan}

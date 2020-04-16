@@ -19,6 +19,7 @@ var modifiedRefList = []
 window.funcList = {}
 window.tracks = {}
 window.playlist = []
+window.next = {}
 
 var actions = {
 
@@ -103,25 +104,23 @@ var actions = {
         let funcName = name.sourceString
         let funcElem = elem.sourceString.replace(/,/g, "").split(" ")
 
-        // console.log(funcName, funcElem)
         if (funcName === "") { // the func is only a ref e.g. >> ~func >>
             window.funcList[refName].push(funcElem[0]) // funcElem is sth like "~my_fx"
 
         } else {
-            // console.log(funcLib)
             let func;
-            
+
             if (funcLib[funcName]) {
                 func = funcLib[funcName](funcElem)
                 window.funcList[refName].push(func)
+
             } else if (funcName in userFuncLib) {
                 func = userFuncLib[funcName]
                 window.funcList[refName].push(func)
                 funcElem.forEach( e => window.funcList[refName].push(f=>f(e)))//curry
             }
-            
         }
-    }
+    },
 }
 
 semantics.addOperation('run', actions);
@@ -143,10 +142,12 @@ const sampleInfo = () => {
 
 const run = (code) => {
 
+    // code = code + "\n\n~nonexist: loop 1 1 1 1 >> membrane >> amp 0"
     console.clear()
     sampleInfo()
 
     Tone.context.latencyHint = "interactive"
+    // Tone.immediate()
 
     let match = grammar.match(code)
 
@@ -158,6 +159,21 @@ const run = (code) => {
         initGlobalVariables()
         window.tracks = {}
         codeRef = {}
+
+        const seq = new Tone.Sequence(
+            // the function to call for each note
+            (time, note) => {   
+                document.title = note                         
+                // window.history.pushState("", "", note);
+                // + "  " Tone.Transport.position
+            },
+            // [">>  ● | ○ | ○ | ○ ", "○●○○", "○○●○", "○○○●"],
+            [" ■ □ □ □ ", " □ ■ □ □ ", " □ □ ■ □ ", " □ □ □ ■ "],
+            // ["... ● | ○ | ○ | ○ ", ">> ○ | ● | ○ | ○ ",
+            // "... ○ | ○ | ● | ○ ", ">> ○ | ○ | ○ | ● "],
+            Tone.Time('4n')
+        )
+        seq.start()
 
         Tone.Transport.start()
 
@@ -174,6 +190,8 @@ const run = (code) => {
                 }
             }
         }
+
+        // let next = nextBar()
 
         for (let item in window.tracks) {
             if ("seq" in window.tracks[item]) {
@@ -202,6 +220,8 @@ const run = (code) => {
 
 const update = (code) => {
 
+    // code = code + "\n\n~nonexist: loop 1 1 1 1 >> membrane >> amp 0"
+
     console.clear()
     sampleInfo()
 
@@ -210,7 +230,7 @@ const update = (code) => {
     console.log(match.succeeded())
     if (match.succeeded()) {
 
-        let next = nextBar()
+        // let next = nextBar()
 
         initGlobalVariables()
 
@@ -253,13 +273,14 @@ const update = (code) => {
 
         // schedule to stop current playing tracks on the start of next bar 
         for (let item in window.tracks) {
-            if ("seq" in window.tracks[item]) {
-                console.log("progress", item, window.tracks[item].seq.progress)
-            }
+            // if ("seq" in window.tracks[item]) {
+                // window.next[item] = Tone.Time("1m") - window.tracks[item].seq.progress
+                // console.log("progress", window.tracks[item].seq.progress, item, window.next[item])
+            // }
 
             if (unModifiedRefList.indexOf(item) === -1) {
                 if ("seq" in window.tracks[item]) {
-                    window.tracks[item].seq.stop(next)
+                    window.tracks[item].seq.stop(nextBar())
                 } else {
                     window.tracks[item].env.triggerRelease()
                 }
@@ -281,10 +302,14 @@ const update = (code) => {
         window.playlist.forEach( item => {
             if (unModifiedRefList.indexOf(item) === -1) {
                 if ("seq" in window.tracks[item]) {
-                    window.tracks[item].seq.start(next)
+                    console.log(item, "schedule", window.next[item])
+                    Tone.immediate()
+
+
+                    window.tracks[item].seq.start( nextBar() )
                 } else {
                     if (window.tracks[item].dur === "hold") {
-                        window.tracks[item].env.triggerAttack()
+                        window.tracks[item].env.triggerAttack(nextBar())
                     } else {
                         window.tracks[item].env.triggerAttackRelease(window.tracks[item].dur)
                     }
@@ -305,6 +330,9 @@ const update = (code) => {
 
 const stop = () => {
     Tone.context.dispose()
+    document.title = " _ "
+    // document.title = " _ "
+    // window.history.pushState("", "", "/");
     Tone.context = new AudioContext();
     initGlobalVariables()
     codeRef = {}

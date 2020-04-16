@@ -80,8 +80,14 @@ const notesFuncExec = firstLayerArray => {
 }
 
 // para should be a number or ref or symbol
-// 
 
-const handlePara = (para, defaultVal) => isNaN(parseFloat(para)) ? defaultVal: parseFloat(para)
+const handlePara = (para, defaultVal) => {
+    if (para.includes(".")) {
+        return isNaN(parseFloat(para)) ? defaultVal: parseFloat(para)
+    } else {
+        let x = isNaN(parseFloat(para)) ? defaultVal: parseFloat(para);
+        return Tone.Midi(x).toFrequency()
+    }
+}
 
 export {nextBar, noteToNum, numToMIDI, notesFuncExec, reducer, handlePara}

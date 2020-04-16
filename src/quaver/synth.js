@@ -2,8 +2,8 @@ import {handlePara} from './helpers'
 import {sampleList} from './samples'
 import Tone from 'tone'
 
-const monoSynth = type => paras => trigger => {
-    const sawtooth = new Tone.MonoSynth({
+const synth = type => paras => trigger => {
+    const synth = new Tone.MonoSynth({
         oscillator: {
             type: type
         },
@@ -12,13 +12,24 @@ const monoSynth = type => paras => trigger => {
             decay : 0.1,
             sustain : 0.9,
             release : 1
-        },
-        filter: {
-            Q: 1
         }
     })
-    // console.log("connector", trigger)
-    return trigger.connector(sawtooth)
+    return trigger.connector(synth)
+}
+
+const monoSynth = type => paras => trigger => {
+    const synth = new Tone.MonoSynth({
+        oscillator: {
+            type: type
+        },
+        envelope: {
+            attack : 0.005,
+            decay : 0.1,
+            sustain : 0.9,
+            release : 1
+        }
+    })
+    return trigger.connector(synth)
 }
 
 const noiseSynth = type => paras => trigger => {
@@ -77,7 +88,7 @@ const sampler = paras => trigger => {
             }, function(){
                 //sampler will repitch the closest sample
                 // sampler.triggerAttack("D3")
-            }, 'https://raw.githubusercontent.com/chaosprint/Dirt-Samples/master/')
+            }, "https://raw.githubusercontent.com/chaosprint/Dirt-Samples/master/")
             return trigger.connector(synth)
         }
     } catch (error) {
@@ -86,4 +97,4 @@ const sampler = paras => trigger => {
 }
 
 export {noiseSynth, monoSynth, membrane, pluck,
-    metalphone, fm, sampler}
+    metalphone, fm, sampler, synth}

@@ -1,15 +1,15 @@
-import {amp, filter, pingpong, reverb, freeverb, jcreverb, delay} from "./fx"
-import {monoSynth, noiseSynth, membrane, metalphone, fm, pluck, sampler} from './synth'
+import {amp, filter, pingpong, reverb, freeverb, jcreverb, delay, pan} from "./fx"
+import {monoSynth, synth, noiseSynth, membrane, metalphone, fm, pluck, sampler} from './synth'
 import {noise, pwm, oscillator, lfo} from './oscillator'
-import {bpm, adsr, mode, loop, shift, every, speed, range, choose, play, set_gate, set_gate_all, midi_out} from './control'
+import {bpm, adsr, noise_control, mode, loop, shift, every, speed, range, choose, play, line, set_gate, set_gate_all, midi_out} from './control'
 import {print} from './fp'
 
 const funcLib = {
 
     // synth
-    sawtooth: monoSynth("sawtooth"),
-    square: monoSynth("square"),
-    triangle: monoSynth("triangle"),
+    sawtooth: synth("sawtooth"),
+    square: synth("square"),
+    triangle: synth("triangle"),
     white: noiseSynth("white"),
     pink: noiseSynth("pink"),
     brown: noiseSynth("brown"),
@@ -49,11 +49,14 @@ const funcLib = {
     jcreverb: jcreverb,
     freeverb: freeverb,
     delay: delay,
-    adsr: adsr,
+    pan: pan,
     amp: amp,
 
     // control
     bpm: bpm,
+    line: line,
+    noise_control: noise_control,
+    adsr: adsr,
     mode: mode,
     loop: loop,
     shift: shift,
