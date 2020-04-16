@@ -58,9 +58,9 @@ ace.define("ace/mode/quaver_highlight_rules", ["require", "exports", "module", "
         regex : "\\\\([0-9]{1,2})([a-z]+)\\b"
       }, {
         token : "constant.character",
-        regex : "\\\\(([a-z]+)(_)?([0-9]+)?)+\\b"
+        regex : "\\\\(([0-9]+)?([a-z]+)(_)?([0-9]+)?)+\\b"
       }, {
-        token: "string",
+        token: "string", // ref
         regex: "((~)([a-z]+(_)?)+)\\b"
       }, {
         // token: "constant.numeric",

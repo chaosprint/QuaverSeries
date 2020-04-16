@@ -159,17 +159,18 @@ const run = (code) => {
         window.tracks = {}
         codeRef = {}
 
-        const seq = new Tone.Sequence(
-            // the function to call for each note
-            (time, note) => { 
-                document.title = note
+        const metro = new Tone.Sequence(
+            (time, note) => {               
+                Tone.Draw.schedule(function(){
+                    document.title = note
+                }, time - 0.2)
             },
             [" ■ □ □ □ ", " □ ■ □ □ ", " □ □ ■ □ ", " □ □ □ ■ "],
             Tone.Time('4n')
         )
 
-        Tone.Transport.start()
-        seq.start("0:0:0.02")
+        Tone.Transport.start(0)
+        metro.start("0:0:0.3")
 
         // get global variables right
         semantics(match).run()
@@ -189,7 +190,7 @@ const run = (code) => {
 
         for (let item in window.tracks) {
             if ("seq" in window.tracks[item]) {
-                window.tracks[item].seq.start("0:0:0.02")
+                window.tracks[item].seq.start("0:0:0.3")
             } else {
                 if (window.tracks[item].dur === "hold") {
                     

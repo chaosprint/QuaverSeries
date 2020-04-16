@@ -14,7 +14,7 @@ const amp = paras => signal => {
         if (amp.start) { // an LFO
             amp.max = 20 * Math.log10(amp.max)
             amp.min = 20 * Math.log10(amp.min)
-            amp.start()
+            amp.start(0.01)
         } else if (amp.triggerAttack) { // an Env
             amp.triggerAttack()
         }
@@ -36,7 +36,7 @@ const amp = paras => signal => {
     }
 
     try {
-        signal.synth.start()
+        signal.synth.start(0.01)
         signal.env.connect(signal.synth.volume)
     } catch {}
 
@@ -65,7 +65,7 @@ const filter = type => paras => signal => {
         freq = window.funcList[freq][0]()
         freq.connect(fx.frequency)
         if (freq.start) {
-            freq.start()
+            freq.start(0.01)
         } else if (freq.triggerAttack) {
             freq.triggerAttack()
         }
@@ -97,7 +97,7 @@ const pan = paras => signal => {
         fx = new Tone.Panner(0);
         lr.connect(fx.pan)
         if (lr.start) {
-            lr.start()
+            lr.start(0.01)
         } else if(lr.triggerAttack) {
             lr.triggerAttack()
         }  
@@ -128,7 +128,7 @@ const jcreverb = paras => signal => {
         roomSize = window.funcList[roomSize][0]()
         fx = new Tone.JCReverb(0.3)
         roomSize.connect(fx.roomSize)
-        roomSize.start()
+        roomSize.start(0.01)
     } else {
         roomSize = handlePara(roomSize, 0.3)
         fx = new Tone.JCReverb(roomSize)

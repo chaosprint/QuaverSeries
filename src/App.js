@@ -108,6 +108,7 @@ export default function App() {
         Object.keys(sampleList).sort((a,b)=>a.length - b.length).forEach((item)=>{
             arr.push(item, sampleList[item].length, " ")
         })
+        // arr.forEach(i=>console.info(i))
         console.info(...arr)
         
         const load = ()=> {

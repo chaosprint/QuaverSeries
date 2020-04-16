@@ -88,7 +88,9 @@ const sampler = paras => trigger => {
             }, function(){
                 //sampler will repitch the closest sample
                 // sampler.triggerAttack("D3")
+            // }, "samplers/")
             }, "https://raw.githubusercontent.com/chaosprint/Dirt-Samples/master/")
+            // synth.sync()
             return trigger.connector(synth)
         }
     } catch (error) {

@@ -53,7 +53,7 @@ const midi_out = paras => () => {
         // the gap between each note
         Tone.Time('1m') / paras.map( noteToNum(0) ).length
     )
-    seq.start()
+    seq.start("0:0:0.01")
 }
 
 const loop = paras => ref => {
@@ -97,7 +97,7 @@ const loop = paras => ref => {
                             synth.triggerAttackRelease(dur, time);
                         } else if (synth._buffer) {
                             try {
-                                synth.start()
+                                synth.start(0.01)
                             } catch (e) {
                                 console.log(e)
                             }
@@ -107,7 +107,7 @@ const loop = paras => ref => {
                                 // console.log(count);
                                 // count += 1;
                                 
-                                synth.triggerAttack(note)
+                                synth.triggerAttack(note, time)
                             } catch (e) {
                                 console.log(e)
                             }
@@ -285,7 +285,7 @@ const noise_control = paras => () => {
     controller._playbackRate = handlePara(paras[2], 1)
     // let scale = new Tone.Scale(min, max);
     // controller.connect(scale)
-    controller.start()
+    controller.start(0.01)
     return scale
 }
 

@@ -19,7 +19,7 @@ const lfo = type => paras => () => {
         freq = window.funcList[freq][0]()
         freq.connect(sig.frequency)
         if (freq.start) {
-            freq.start()
+            freq.start(0.01)
         } else if (freq.triggerAttack) {
             freq.triggerAttack()
         }
@@ -49,7 +49,7 @@ const oscillator = type => paras => trigger => {
         osc = new Tone.Oscillator(440, type)
         freq.connect(osc.frequency)
         if (freq.start) {
-            freq.start()
+            freq.start(0.01)
         } else if (freq.triggerAttack) {
             freq.triggerAttack()
         }
