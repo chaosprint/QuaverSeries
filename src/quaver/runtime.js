@@ -142,7 +142,6 @@ const sampleInfo = () => {
 
 const run = (code) => {
 
-    // code = code + "\n\n~nonexist: loop 1 1 1 1 >> membrane >> amp 0"
     console.clear()
     sampleInfo()
 
@@ -163,24 +162,14 @@ const run = (code) => {
         const seq = new Tone.Sequence(
             // the function to call for each note
             (time, note) => { 
-                
-                Tone.Draw.schedule(function(){
-                    //this callback is invoked from a requestAnimationFrame
-                    //and will be invoked close to AudioContext time
-                    document.title = note
-                }, time) //use AudioContext time of the event  
-                // window.history.pushState("", "", note);
-                // + "  " Tone.Transport.position
+                document.title = note
             },
-            // [">>  ● | ○ | ○ | ○ ", "○●○○", "○○●○", "○○○●"],
             [" ■ □ □ □ ", " □ ■ □ □ ", " □ □ ■ □ ", " □ □ □ ■ "],
-            // ["... ● | ○ | ○ | ○ ", ">> ○ | ● | ○ | ○ ",
-            // "... ○ | ○ | ● | ○ ", ">> ○ | ○ | ○ | ● "],
             Tone.Time('4n')
         )
-        seq.start()
 
         Tone.Transport.start()
+        seq.start("0:0:0.02")
 
         // get global variables right
         semantics(match).run()
@@ -200,7 +189,7 @@ const run = (code) => {
 
         for (let item in window.tracks) {
             if ("seq" in window.tracks[item]) {
-                window.tracks[item].seq.start()
+                window.tracks[item].seq.start("0:0:0.02")
             } else {
                 if (window.tracks[item].dur === "hold") {
                     

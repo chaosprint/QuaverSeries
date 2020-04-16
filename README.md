@@ -8,10 +8,10 @@ To get started, you need to enter a ```room```. Type a name you like on the top 
 ## Make some noise
 
 Here are some resources for you to learn to make music with QuaverSeries.
-- [QuaverSeries Crash Course](/doc/tutorial.md).
-- [QuaverSeries Example](/doc/example.md).
-- [QuaverSeries Cheatsheet](/doc/cheatsheet.md).
-- [QuaverSeries Reference](/doc/reference.md).
+- [QuaverSeries Crash Course](/doc/tutorial.md)
+- [QuaverSeries Example](/doc/example.md)
+- [QuaverSeries Cheatsheet](/doc/cheatsheet.md)
+- [QuaverSeries Reference](/doc/reference.md)
 
 ## Reference
 
