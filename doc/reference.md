@@ -9,7 +9,7 @@ A ```loop``` takes the *Sequence* and outputs a *Trigger*. The *Trigger* can tri
 ### bpm
 ```bpm``` sets the tempo of the piece. The default value is 120. Typically, the ```bpm``` function should be the only function without a ref name.
 ```
-bpm 200
+bpm 200.0
 ```
 
 ### loop
@@ -21,7 +21,7 @@ bpm 200
 
 ### speed
 ```
-~hh: loop 1 >> speed 16 >> white >> hpf 8000 2 >> amp 0.3
+~hh: loop 1 >> speed 16.0 >> white >> hpf 8000.0 2.0 >> amp 0.3
 ```
 
 ### shift
@@ -46,7 +46,7 @@ It can be used with ```every``` explained below.
 
 ~xx: sawtooth >> amp 0.3
 
-~tt: ~aa >> every 4 ~bb >> ~xx
+~tt: ~aa >> every 4.0 ~bb >> ~xx
 ```
 
 ### choose
@@ -66,7 +66,7 @@ It can be used with ```every``` explained below.
 Similar to ```choose```, range is also used as a ref to a note. Everytime the func runs, it will choose a note within the given range.
 
 ```
-~random: loop ~a >> speed 16 >> membrane >> amp 0.3
+~random: loop ~a >> speed 16.0 >> membrane >> amp 0.3
 
 ~a: range 0 60
 ```
@@ -79,7 +79,7 @@ Different from ```loop```, ```play``` takes an optional parameter (time in secon
 
 This will play 10 second white noise as a riser:
 ```
-~pp: play 10 >> adsr 9.99 0.01 0 _  >> white_noise>> amp 0.1
+~pp: play 10.0 >> adsr 9.99 0.01 0 _  >> white_noise>> amp 0.1
 ```
 
 ### adsr
@@ -104,13 +104,13 @@ Hence, it has build-in envelops and filters, which is difference from the *Oscil
 ### fm_synth
 
 ```
->> fm_synth [harmonicity = 3] [modulationIndex = 10] >>
+>> fm_synth [harmonicity = 3.0] [modulationIndex = 10.0] >>
 ```
 
 ### pluck
 
 ```
->> pluck [attackNoise = 1] [dampening = 4000] [resonance = 0.7] >>
+>> pluck [attackNoise = 1.0] [dampening = 4000.0] [resonance = 0.7] >>
 ```
 
 ### sampler
@@ -134,7 +134,7 @@ Parameter-free synth functions:
 
 Example:
 ```
-~bd: loop 20 >> speed 4 >> membrane >> amp 0.3
+~bd: loop 20 >> speed 4.0 >> membrane >> amp 0.3
 ```
 
 ## Oscillator
@@ -148,7 +148,7 @@ Example:
 - squ_osc
 
 ```
-~pp: play >> saw_osc 220 >> amp 0.3
+~pp: play >> saw_osc 220.0 >> amp 0.3
 ```
 
 ### lfo
@@ -171,9 +171,9 @@ lfo [freq] [min] [max]
 
 You can use a note *Symbol* ( a slash \ + 4n|8n|16n|1m ) to sync to the beat:
 ```
-~aa: play >> saw_osc 100 >> lpf ~ll 1 >> amp 0.1
+~aa: play >> saw_osc 100.0 >> lpf ~ll 1 >> amp 0.1
 
-~ll: squ_lfo \8n 100 1000
+~ll: squ_lfo \8n 100.0 1000.0
 ```
 
 ## Effect

@@ -1,4 +1,4 @@
-## Think in function
+# Think in function
 
 As you may have noticed, all the build-in functions consist of lower-cased letters.
 
@@ -18,10 +18,10 @@ You can write very straight-forward code as this:
 However, to discover more potential of the functional musicking:
 
 ```
-bpm 320
+bpm 320.0
 
 ~bass: sawtooth
->> adsr 0.01 0.5 0 _
+>> adsr 0.01 0.5 0.0 _
 >> amp 0.2
 
 ~a: loop 36 45 41 43
