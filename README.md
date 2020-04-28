@@ -1,4 +1,4 @@
-# QuaverSeries [![](https://tokei.rs/b1/github.com/chaosprint/QuaverSeries?category=lines)](https://github.com/chaosprint/QuaverSeries)
+# QuaverSeries [![](https://img.shields.io/badge/Lines%20of%20Code-3624-brightgreen)](https://github.com/chaosprint/QuaverSeries)
 
 QuaverSeries is a live coding environment designed to run the programming language of the same name. It features the concept of ```room``` that allows you to collaborate with your friends all around the world.
 
