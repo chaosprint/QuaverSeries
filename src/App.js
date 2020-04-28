@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import {AppBar, Toolbar, Typography} from '@material-ui/core/'
 import {Modal, Button, TextField, Fab, IconButton, InputAdornment} from '@material-ui/core/'
 
+import GitHubButton from 'react-github-btn'
 // import VpnKey from '@material-ui/icons/VpnKey';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import Brightness3Icon from '@material-ui/icons/Brightness3';
@@ -375,7 +376,12 @@ export default function App() {
                 >
                 Stop
             </Button>
-        </ThemeProvider>: <div id="logo" className="animated fadeInLeft"> <h2>QuaverSeries</h2> </div>}
+        </ThemeProvider>: (
+        <div id="logo" className="animated fadeInLeft">
+            
+            <h2>QuaverSeries</h2>
+        </div>
+        )}
         <div className={classes.room}>
         <form onSubmit={submitRoom}>
             <TextField
@@ -479,8 +485,17 @@ export default function App() {
                 editorProps={{ $blockScrolling: true }}
             />
             </ div>
-
-            <Fab id="github" className="animated fadeIn delay-1s" target={"_blank"} rel={"noopener noreferrer"} href="https://github.com/chaosprint/QuaverSeries"><GitHubIcon /></Fab>
+            <div id="github" className="animated fadeIn delay-1s">
+                <GitHubButton
+                href="https://github.com/chaosprint/QuaverSeries"
+                data-color-scheme="no-preference: light; light: light; dark: dark;"
+                data-size="large"
+                // data-show-count="true"
+                aria-label="Star chaosprint/QuaverSeries on GitHub"
+                >Star</GitHubButton>
+            </div>
+            
+                {/* <Fab id="github" className="animated fadeIn delay-1s" target={"_blank"} rel={"noopener noreferrer"} href="https://github.com/chaosprint/QuaverSeries"><GitHubIcon /></Fab> */}
             </div>
         }
 

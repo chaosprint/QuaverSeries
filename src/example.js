@@ -11,11 +11,14 @@ bpm 100.0
 ~riff: ~seq_a >> every 4.0 ~seq_b
 >> speed 2.0
 >> sawtooth
->> adsr 0.01 0.3 0.1 0.3
->> lpf 200.0 1.0
->> amp 0.6
+>> adsr 0.01 0.3 0.2 0.3
+>> lpf 100.0 0.01
+>> amp 0.9
 
 ~bd: loop 20 >> speed 4.0
->> membrane >> amp 0.6`
+>> membrane >> amp 0.5
+
+// for tutorials, examples, and references,
+// please see the GitHub repo on the right ->`
 
 export {exampleCode}

@@ -53,7 +53,7 @@ const midi_out = paras => () => {
         // the gap between each note
         Tone.Time('1m') / paras.map( noteToNum(0) ).length
     )
-    seq.start("0:0:0.01")
+    seq.start()
 }
 
 const loop = paras => ref => {
@@ -93,20 +93,15 @@ const loop = paras => ref => {
                         ) ? this.defaultGate : this.gate[i]
 
                         if (synth.noise) {
-                            
                             synth.triggerAttackRelease(dur, time);
                         } else if (synth._buffer) {
                             try {
-                                synth.start(0.01)
+                                synth.start(0)
                             } catch (e) {
                                 console.log(e)
                             }
-                            
-                        }  else if (synth._buffers) {
+                        } else if (synth._buffers) {
                             try {
-                                // console.log(count);
-                                // count += 1;
-                                
                                 synth.triggerAttack(note, time)
                             } catch (e) {
                                 console.log(e)
@@ -117,7 +112,7 @@ const loop = paras => ref => {
                                     // console.log(note, dur)
                                     synth.triggerAttackRelease(note, dur, time)
                                     i += 1
-                                    i = i === this.gate.length ? 0 : i                    
+                                    i = (i === this.gate.length) ? 0 : i                    
                                 } catch(e) {console.log(e)}
                             }
                         }
@@ -285,7 +280,7 @@ const noise_control = paras => () => {
     controller._playbackRate = handlePara(paras[2], 1)
     // let scale = new Tone.Scale(min, max);
     // controller.connect(scale)
-    controller.start(0.01)
+    controller.start(0)
     return scale
 }
 

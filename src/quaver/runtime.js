@@ -169,7 +169,7 @@ const run = (code) => {
             Tone.Time('4n')
         )
 
-        Tone.Transport.start(0)
+        Tone.Transport.start()
         metro.start("0:0:0.3")
 
         // get global variables right

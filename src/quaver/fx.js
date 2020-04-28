@@ -14,7 +14,7 @@ const amp = paras => signal => {
         if (amp.start) { // an LFO
             amp.max = 20 * Math.log10(amp.max)
             amp.min = 20 * Math.log10(amp.min)
-            amp.start(0.01)
+            amp.start(0)
         } else if (amp.triggerAttack) { // an Env
             amp.triggerAttack()
         }

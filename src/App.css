@@ -21,8 +21,8 @@ a.powered-by-firepad {
 #github {
     animation-duration: 5s;
     position: absolute;
-    bottom: 10%;
-    right: 5%;
+    bottom: 30%;
+    right: 0%;
 }
 
 .ace_editor {

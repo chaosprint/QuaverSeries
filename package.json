@@ -13,6 +13,7 @@
     "react": "^16.8.6",
     "react-ace": "^8.1.0",
     "react-dom": "^16.8.6",
+    "react-github-btn": "^1.1.1",
     "react-scripts": "3.0.1"
   },
   "scripts": {

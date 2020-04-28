@@ -7,6 +7,11 @@ const synth = type => paras => trigger => {
         oscillator: {
             type: type
         },
+        filter : {
+            Q : 1 ,
+            type : "lowpass" ,
+            rolloff : -24
+        },
         envelope: {
             attack : 0.005,
             decay : 0.1,
