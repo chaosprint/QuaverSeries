@@ -2,7 +2,7 @@ import {lang} from './lang'
 import {funcLib} from './func'
 import {nextBar, reducer} from './helpers'
 import {sampleList} from './samples'
-import Tone from 'tone'
+import * as Tone from 'tone'
 
 var ohm = require('ohm-js')
 var grammar = ohm.grammar(lang)
@@ -162,13 +162,14 @@ const run = (code) => {
         const metro = new Tone.Sequence(
             (time, note) => {               
                 Tone.Draw.schedule(function(){
-                    document.title = note
-                }, time - 0.2)
+                    let info = Tone.Transport.position.split(":")
+                    document.title = "Bar: " + String(info[0]) + " Beat: " + String(parseInt(info[1]) + 1);
+                }, time + 0.005)
             },
-            [" ■ □ □ □ ", " □ ■ □ □ ", " □ □ ■ □ ", " □ □ □ ■ "],
+            [0],
             Tone.Time('4n')
         )
-
+        // Tone.Transport.loop = true
         Tone.Transport.start()
         metro.start("0:0:0.3")
 
@@ -325,13 +326,23 @@ const update = (code) => {
 
 const stop = () => {
     Tone.context.dispose()
-    document.title = " _ "
+    document.title = " ƛ "
     // document.title = " _ "
     // window.history.pushState("", "", "/");
     Tone.context = new AudioContext();
     initGlobalVariables()
     codeRef = {}
-
 }
 
-export default {run, stop, update}
+const position = () => {
+    console.log(Tone.Transport.progress)
+    let info = Tone.Transport.position.split(":")
+    let onebar  = 60 / Tone.Transport.bpm.value * 4
+    let timeInBar = 60 / Tone.Transport.bpm.value * parseFloat(info[1]) +
+    60 / Tone.Transport.bpm.value / 4 * parseFloat(info[2]) - 0.1
+    let portion = timeInBar / onebar
+    portion = portion > 0 ? portion : 0
+    return portion
+}
+
+export default {run, stop, update, position}

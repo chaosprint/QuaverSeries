@@ -165,7 +165,8 @@ const speed = paras => trigger => {
 const shift = paras => trigger => {
     let note = paras[0]
     note = parseInt(paras[0])
-    trigger.shift = isNaN(note) ? 0 : handlePara(String(note), 0)
+    trigger.shift = isNaN(note) ? 0 : note;
+    console.log("trigger.shift", trigger.shift)
     return trigger
 }
 

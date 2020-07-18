@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
 import {AppBar, Toolbar, Typography} from '@material-ui/core/'
-import {Modal, Button, TextField, Fab, IconButton, InputAdornment} from '@material-ui/core/'
+import {Modal, Button, TextField, IconButton, InputAdornment} from '@material-ui/core/'
 
 import GitHubButton from 'react-github-btn'
 // import VpnKey from '@material-ui/icons/VpnKey';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import Brightness3Icon from '@material-ui/icons/Brightness3';
-import GitHubIcon from '@material-ui/icons/GitHub';
+// import GitHubIcon from '@material-ui/icons/GitHub';
 
 import { ThemeProvider } from '@material-ui/styles';
 import {useStyles, theme, buttonTheme, modalStyle} from './styles'
@@ -170,6 +170,10 @@ export default function App() {
                     name: 'comment-norge-win',
                     bindKey: {win: 'Ctrl-\\', mac: 'Command-\\'},
                     exec: editor.current.commands.commands.togglecomment.exec
+                }, {
+                name: 'Input',
+                bindKey: {win: 'Ctrl-Shift-o', mac: 'Command-Shift-o'},
+                exec: handleInput
             }]
 
             command.forEach(c => editor.current.commands.addCommand(c))
@@ -304,6 +308,14 @@ export default function App() {
                 editor.current.setValue("// Hello! Password created!")
             }
         } else {alert("Password much be longer than 6 digits.")}
+    }
+
+    const handleInput = () => {
+        // let t = new 
+        editor.current.session.insert(
+            editor.current.getCursorPosition(), "wow")
+        // console.log(Date.now())
+        console.log(quaver.position())
     }
 
     const onLoad = (editor) => {
@@ -480,6 +492,10 @@ export default function App() {
                     name: 'Stop',
                     bindKey: {win: 'Ctrl-Shift-.', mac: 'Command-Shift-.'},
                     exec: quaver.stop
+                }, {
+                    name: 'Input',
+                    bindKey: {win: 'Ctrl-Shift-o', mac: 'Command-Shift-o'},
+                    exec: handleInput
                 }]}
                 name="UNIQUE_ID_OF_DIV"
                 editorProps={{ $blockScrolling: true }}
