@@ -85,6 +85,7 @@ const sampler = paras => trigger => {
         if (paras.length === 2) {
             let name = paras[0].replace("\\", "")
             let index = handlePara(paras[1], 0)
+            // console.log("index", index)
             let limit = sampleList[name].length
             let sampleName = index > (limit - 1) ? sampleList[name][limit-1] : sampleList[name][index]
 

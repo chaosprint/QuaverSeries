@@ -8,7 +8,7 @@ const JZZ = require('jzz');
 const bpm = paras => {
     try {
         Tone.Transport.bpm.value = handlePara(paras[0], 120)
-    } catch(e) {console.log(e)} 
+    } catch(e) {console.log(e)}
     return () => {}
 }
 

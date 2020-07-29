@@ -32,12 +32,15 @@ const noteToNum = (shift) => (note) => {
             } else {
                 return window.funcList[note].reduce(reducer, shift)
             }
-        } else if (note ==="_") { // x is a rest
+        } else if (note === "_") { // x is a rest
             return null
         } else { // note is compound note
+
             while (note.indexOf("_") !== -1) { // seperate the compound note
-                note = note.replace("_", "@$")
+                note = note.replace("_", "$@$")
             }
+            console.log(note)
+
             // return an array to make it nested, Tone.js uses Tidal style
             return note.split("$").filter(note => note !== "").map(
                 note => {
@@ -86,7 +89,7 @@ const handlePara = (para, defaultVal) => {
         return isNaN(parseFloat(para)) ? defaultVal: parseFloat(para)
     } else {
         let x = isNaN(parseFloat(para)) ? defaultVal: parseFloat(para);
-        return Tone.Midi(x).toFrequency()
+        return x === 0.0 ? 0.0 : Tone.Midi(x).toFrequency()
     }
 }
 
